@@ -1,0 +1,21 @@
+var defaultGenres = [
+  {"key": 28, "text": "Akció"},
+  {"key": 12, "text": "Kaland"},
+  {"key": 16, "text": "Animációs"},
+  {"key": 35, "text": "Vígjáték"},
+  {"key": 80, "text": "Bűnügyi"},
+  {"key": 99, "text": "Dokumentum"},
+  {"key": 18, "text": "Dráma"},
+  {"key": 10751, "text": "Családi"},
+  {"key": 14, "text": "Fantasy"},
+  {"key": 36, "text": "Történelmi"},
+  {"key": 27, "text": "Horror"},
+  {"key": 10402, "text": "Zenei"},
+  {"key": 9648, "text": "Rejtély"},
+  {"key": 10749, "text": "Romantikus"},
+  {"key": 878, "text": "Sci-Fi"},
+  {"key": 10770, "text": "TV film"},
+  {"key": 53, "text": "Thriller"},
+  {"key": 10752, "text": "Háborús"},
+  {"key": 37, "text": "Western"}
+];
