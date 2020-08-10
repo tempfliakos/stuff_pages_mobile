@@ -102,16 +102,26 @@ class _ShowAchievementState extends State<ShowAchievement> {
       itemBuilder: (context, index) {
         final item = filteredAchievments[index];
         return InkWell(
-          child: Card(
-            child: getAchievement(item),
-            color: Colors.grey,
+          child: Dismissible(
+            key: UniqueKey(),
+            child: Card(
+              child: getAchievement(item),
+              color: Colors.grey,
+            ),
+            onDismissed: (direction) {
+              Scaffold.of(context).showSnackBar(SnackBar(
+                  content: Text(item.title +
+                      (item.earned ? ' nincs kész' : ' kész'))));
+              setState(() {
+                item.earned = !item.earned;
+                Api.put('achievements/', item, item.id);
+                filter();
+              });
+            },
+            background: Container(color: item.earned ? Colors.red : Colors.green),
           ),
           onTap: () {
-            setState(() {
-              item.earned = !item.earned;
-              Api.put('achievements/', item, item.id);
-              filter();
-            });
+            launchURL(game.title + " " + item.title);
           },
         );
       },

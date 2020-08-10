@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:Stuff_Pages/request/http.dart';
-import 'package:Stuff_Pages/utils/genres.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +19,8 @@ class _MoviesState extends State<Movies> {
   List _movies = new List<Movie>();
   List filterMovies = new List<Movie>();
   var titleFilter = "";
-  var genreFilter = "";
+  var owned = true;
+  var futureMovie = false;
 
   _getMovies() {
     filterMovies.clear();
@@ -62,42 +62,44 @@ class _MoviesState extends State<Movies> {
     );
   }
 
-  Widget filterGenreField() {
-    return Theme(
-        data: Theme.of(context).copyWith(splashColor: Colors.black),
-        child: DropdownButton(
-          value: genreFilter,
-          items: defaultGenres.map<DropdownMenuItem>((value) {
-            print(value);
-            return DropdownMenuItem(
-              value: value['key'],
-              child: Text(value['text']),
-            );
-          }).toList(),
-          onChanged: (value) {},
-        ));
+  Widget filterNotOwned() {
+    return IconButton(
+        icon: Icon(
+          Icons.file_download,
+          color: owned ? Colors.red : Colors.grey[400],
+        ),
+        onPressed: () {
+          owned = !owned;
+          filter();
+        });
+  }
+
+  Widget filterForFutureMovies() {
+    return IconButton(
+      icon: Icon(
+        Icons.access_time,
+        color: futureMovie ? Colors.yellow : Colors.grey[400],
+      ),
+      onPressed: () {
+        futureMovie = !futureMovie;
+        filter();
+      },
+    );
   }
 
   void filter() {
     filterMovies.clear();
-    filterMovies.addAll(_movies);
-    filterByTitle();
-    filterByGenre();
+    doFilter();
     setState(() {});
   }
 
-  filterByTitle() {
-    if (titleFilter.isNotEmpty) {
-      _movies.forEach((movie) {
-        if (!movie.title.toUpperCase().startsWith(titleFilter.toUpperCase())) {
-          filterMovies.remove(movie);
-        }
-      });
-    }
-  }
-
-  filterByGenre() {
-    if (genreFilter.isNotEmpty) {}
+  doFilter() {
+    _movies.forEach((movie) {
+      if (movie.title.toUpperCase().startsWith(titleFilter.toUpperCase()) &&
+          movie.owned == owned && released(movie) == !futureMovie) {
+        filterMovies.add(movie);
+      }
+    });
   }
 
   @override
@@ -105,7 +107,11 @@ class _MoviesState extends State<Movies> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Filmek'),
-        actions: <Widget>[logoutButton()],
+        actions: <Widget>[
+          filterNotOwned(),
+          filterForFutureMovies(),
+          logoutButton()
+        ],
       ),
       body: Center(
         child: Column(
@@ -238,4 +244,3 @@ class _MoviesState extends State<Movies> {
         });
   }
 }
-
