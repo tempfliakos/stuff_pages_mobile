@@ -7,7 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 Widget img(Game game) {
   if (game.picture != null && game.picture != "null") {
     return Image.network("https:" + game.picture,
-        filterQuality: FilterQuality.high, fit: BoxFit.cover);
+        filterQuality: FilterQuality.low, fit: BoxFit.cover);
   } else {
     return Image.asset('assets/images/default-movie-back.jpg', scale: 2.32);
   }
@@ -17,7 +17,7 @@ Widget achievementImg(Achievement achievement) {
   if (achievement.earned) {
     if (achievement.picture != null && achievement.picture != "null") {
       return Image.network(achievement.picture,
-          filterQuality: FilterQuality.high, fit: BoxFit.cover);
+          filterQuality: FilterQuality.low, fit: BoxFit.cover);
     } else {
       return Image.asset('assets/images/default-movie-back.jpg');
     }
@@ -29,8 +29,13 @@ Widget achievementImg(Achievement achievement) {
 Widget trophyImg(Achievement achievement) {
   if (achievement.earned) {
     if (achievement.picture != null && achievement.picture != "null") {
-      return Image.network("https:" + achievement.picture,
-          filterQuality: FilterQuality.high, fit: BoxFit.cover);
+      if(achievement.picture.startsWith("http")) {
+        return Image.network(achievement.picture,
+            filterQuality: FilterQuality.low, fit: BoxFit.cover);
+      } else {
+        return Image.network("https:" + achievement.picture,
+            filterQuality: FilterQuality.low, fit: BoxFit.cover);
+      }
     } else {
       return Image.asset('assets/images/default-movie-back.jpg');
     }

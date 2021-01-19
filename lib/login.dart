@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import 'global.dart';
@@ -63,12 +65,11 @@ class _LoginState extends State<Login> {
     );
   }
 
-  _login() {
+  _login() async {
     final body = {'email': _email.text, 'password': _pwd.text};
-    Api.post('login', body).then((res) {
-      userStorage.setItem('user', res.body);
-      Navigator.pushReplacementNamed(context, '/movies');
-    }).catchError((error) => print(error));
+    final result = await Api.post('auth/login', body);
+    userStorage.setItem('user', jsonDecode(result.body)['accessToken']);
+    Navigator.pushReplacementNamed(context, '/movies');
   }
 
   @override

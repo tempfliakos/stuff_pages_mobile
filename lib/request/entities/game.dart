@@ -1,6 +1,5 @@
 class Game {
   String id;
-  String userId;
   String gameId;
   String console;
   String title;
@@ -10,7 +9,6 @@ class Game {
 
   Game(
       {this.id,
-        this.userId,
         this.gameId,
         this.console,
         this.title,
@@ -21,7 +19,6 @@ class Game {
   factory Game.fromJson(Map json) {
     return Game(
         id: json['id'],
-        userId: json['user_id'],
         gameId: json['game_id'],
         console: json['console'],
         title: json['title'],
@@ -33,7 +30,6 @@ class Game {
   Map toJson() {
     return {
       'id': id,
-      'user_id': userId,
       'game_id': gameId,
       'console': console,
       'title': title,

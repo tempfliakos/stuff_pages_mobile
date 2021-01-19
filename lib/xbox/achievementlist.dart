@@ -26,6 +26,8 @@ class _ShowAchievementState extends State<ShowAchievement> {
   var donefilter = false;
   List _achievements = new List<Achievement>();
   List filteredAchievments = new List<Achievement>();
+  final secretTitle = "Secret achievement";
+  final secretDescription = "This achievement is secret. The more you play, the more likely you are to unlock it!";
 
   _ShowAchievementState(Game game) {
     this.game = game;
@@ -59,9 +61,8 @@ class _ShowAchievementState extends State<ShowAchievement> {
 
   _getAchievements() {
     filteredAchievments.clear();
-    final user =
-        'user=' + userStorage.getItem('user') + "&" + 'game_id=${game.gameId}';
-    Api.get("achievements/", user).then((res) {
+    final endpoint = "achievements/game=" + game.gameId;
+    Api.get(endpoint).then((res) {
       setState(() {
         Iterable list = json.decode(res.body);
         _achievements = list.map((e) => Achievement.fromJson(e)).toList();
@@ -129,6 +130,8 @@ class _ShowAchievementState extends State<ShowAchievement> {
   }
 
   Widget getAchievement(Achievement achievement) {
+    final secret = achievement.secret;
+    final earned = achievement.earned;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
@@ -141,8 +144,8 @@ class _ShowAchievementState extends State<ShowAchievement> {
                 maxHeight: 200,
               ),
               child: achievementImg(achievement)),
-          title: Text(achievement.title),
-          subtitle: Text(achievement.description),
+          title: secret && !earned ? Text(secretTitle) :Text(achievement.title),
+          subtitle: secret && !earned ? Text(secretDescription) : Text(achievement.description),
         ),
       ],
     );

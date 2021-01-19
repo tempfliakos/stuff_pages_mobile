@@ -24,8 +24,7 @@ class _MoviesState extends State<Movies> {
 
   _getMovies() {
     filterMovies.clear();
-    final user = 'user=' + userStorage.getItem('user');
-    Api.get("movies/", user).then((res) {
+    Api.get("movies/").then((res) {
       setState(() {
         Iterable list = json.decode(res.body);
         _movies = list.map((e) => Movie.fromJson(e)).toList();
@@ -192,7 +191,7 @@ class _MoviesState extends State<Movies> {
           setState(() {
             if (movie.owned) {
               movie.seen = !movie.seen;
-              Api.put("movies/", movie, movie.movieId);
+              Api.put("movies/", movie, movie.id);
             }
           });
         });
@@ -210,7 +209,7 @@ class _MoviesState extends State<Movies> {
             if (!movie.owned) {
               movie.seen = false;
             }
-            Api.put("movies/", movie, movie.movieId);
+            Api.put("movies/", movie, movie.id);
           });
         });
   }

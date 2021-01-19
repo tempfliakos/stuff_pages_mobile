@@ -22,8 +22,7 @@ class _XboxListState extends State<XboxList> {
 
   _getXboxGames() {
     filterGames.clear();
-    final user = 'user=' + userStorage.getItem('user');
-    Api.get("games/", user).then((res) {
+    Api.get("games/console=Xbox").then((res) {
       setState(() {
         Iterable list = json.decode(res.body);
         _games = list
@@ -146,6 +145,9 @@ class _XboxListState extends State<XboxList> {
   }
 
   calculatePercentage(game) {
+    if(game.sum == 0) {
+      return "0.00%";
+    }
     return (game.earned / game.sum * 100).toStringAsFixed(2) + "%";
   }
 

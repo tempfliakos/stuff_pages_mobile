@@ -7,7 +7,6 @@ import 'package:Stuff_Pages/utils/gameUtil.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../global.dart';
 import '../navigator.dart';
 
 class ShowTrophy extends StatefulWidget {
@@ -26,6 +25,8 @@ class _ShowTrophyState extends State<ShowTrophy> {
   var donefilter = false;
   List _achievements = new List<Achievement>();
   List filteredAchievments = new List<Achievement>();
+  final secretTitle = "Hidden Trophy";
+  final secretDescription = "";
 
   _ShowTrophyState(Game game) {
     this.game = game;
@@ -59,9 +60,8 @@ class _ShowTrophyState extends State<ShowTrophy> {
 
   _getAchievements() {
     filteredAchievments.clear();
-    final user =
-        'user=' + userStorage.getItem('user') + "&" + 'game_id=${game.gameId}';
-    Api.get("achievements/", user).then((res) {
+    final endpoint = "achievements/game=" + game.gameId;
+    Api.get(endpoint).then((res) {
       setState(() {
         Iterable list = json.decode(res.body);
         _achievements = list.map((e) => Achievement.fromJson(e)).toList();
@@ -129,6 +129,8 @@ class _ShowTrophyState extends State<ShowTrophy> {
   }
 
   Widget getTrophy(Achievement trophy) {
+    final secret = trophy.secret;
+    final earned = trophy.earned;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
@@ -141,8 +143,8 @@ class _ShowTrophyState extends State<ShowTrophy> {
                 maxHeight: 200,
               ),
               child: trophyImg(trophy)),
-          title: Text(trophy.title),
-          subtitle: Text(trophy.description),
+          title: secret && !earned ? Text(secretTitle) :Text(trophy.title),
+          subtitle: secret && !earned ? Text(secretDescription) : Text(trophy.description),
         ),
       ],
     );

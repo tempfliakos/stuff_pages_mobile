@@ -22,8 +22,7 @@ class _PsListState extends State<PsList> {
 
   _getPsGames() {
     filterGames.clear();
-    final user = 'user=' + userStorage.getItem('user');
-    Api.get("games/", user).then((res) {
+    Api.get("games/console=Playstation").then((res) {
       setState(() {
         Iterable list = json.decode(res.body);
         _games = list
@@ -147,6 +146,9 @@ class _PsListState extends State<PsList> {
   }
 
   calculatePercentage(game) {
+    if(game.sum == 0) {
+      return "0.00%";
+    }
     return (game.earned / game.sum * 100).toStringAsFixed(2) + "%";
   }
 

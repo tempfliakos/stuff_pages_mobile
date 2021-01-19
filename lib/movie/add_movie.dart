@@ -67,7 +67,7 @@ class _AddMovieState extends State<AddMovie> {
             addMovies.clear();
             map["results"].toList().forEach((movie) {
               addMovies
-                  .add(Movie.addFromJson(userStorage.getItem('user'), movie));
+                  .add(Movie.addFromJson(movie));
             });
           });
         }
@@ -112,7 +112,7 @@ class _AddMovieState extends State<AddMovie> {
       return IconButton(
         icon: Icon(
           Icons.check_circle_outline,
-          color: Colors.grey,
+          color: Colors.black,
         ),
         onPressed:  () {
           setState(() {
