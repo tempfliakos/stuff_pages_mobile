@@ -19,8 +19,9 @@ class _MoviesState extends State<Movies> {
   List _movies = new List<Movie>();
   List filterMovies = new List<Movie>();
   var titleFilter = "";
-  var owned = true;
-  var futureMovie = false;
+  var owned;
+  var futureMovie;
+  var liza;
 
   _getMovies() {
     filterMovies.clear();
@@ -65,10 +66,10 @@ class _MoviesState extends State<Movies> {
     return IconButton(
         icon: Icon(
           Icons.file_download,
-          color: owned ? Colors.red : Colors.grey[400],
+          color: owned != null && owned ? Colors.red : Colors.grey[400],
         ),
         onPressed: () {
-          owned = !owned;
+          owned = owned != null ? !owned : true;
           filter();
         });
   }
@@ -77,10 +78,40 @@ class _MoviesState extends State<Movies> {
     return IconButton(
       icon: Icon(
         Icons.access_time,
-        color: futureMovie ? Colors.yellow : Colors.grey[400],
+        color: futureMovie != null && futureMovie
+            ? Colors.yellow
+            : Colors.grey[400],
       ),
       onPressed: () {
-        futureMovie = !futureMovie;
+        futureMovie = futureMovie != null ? !futureMovie : true;
+        filter();
+      },
+    );
+  }
+
+  Widget filterForLizaMovies() {
+    return IconButton(
+      icon: Icon(
+        Icons.spa,
+        color: liza != null && liza ? Colors.blue : Colors.grey[400],
+      ),
+      onPressed: () {
+        liza = liza != null ? !liza : true;
+        filter();
+      },
+    );
+  }
+
+  Widget resetFilter() {
+    return IconButton(
+      icon: Icon(
+        Icons.repeat,
+        color: Colors.grey[400],
+      ),
+      onPressed: () {
+        owned = null;
+        futureMovie = null;
+        liza = null;
         filter();
       },
     );
@@ -94,9 +125,19 @@ class _MoviesState extends State<Movies> {
 
   doFilter() {
     _movies.forEach((movie) {
-      if (movie.title.toUpperCase().startsWith(titleFilter.toUpperCase()) &&
-          movie.owned == owned && released(movie) == !futureMovie) {
-        filterMovies.add(movie);
+      if (movie.title.toUpperCase().startsWith(titleFilter.toUpperCase())) {
+        if (owned != null || futureMovie != null || liza != null) {
+          owned = owned == null ? false : owned;
+          futureMovie = futureMovie == null ? false : futureMovie;
+          liza = liza == null ? false : liza;
+          if (movie.owned == owned &&
+              released(movie) == !futureMovie &&
+              movie.liza == liza) {
+            filterMovies.add(movie);
+          }
+        } else {
+          filterMovies.add(movie);
+        }
       }
     });
   }
@@ -107,8 +148,10 @@ class _MoviesState extends State<Movies> {
       appBar: AppBar(
         title: Text('Filmek'),
         actions: <Widget>[
+          resetFilter(),
           filterNotOwned(),
           filterForFutureMovies(),
+          filterForLizaMovies(),
           logoutButton()
         ],
       ),
@@ -171,14 +214,20 @@ class _MoviesState extends State<Movies> {
                         width: MediaQuery.of(context).size.width * 0.50)
                   ],
                 ),
-                released(item)
-                    ? Column(
-                        children: <Widget>[seenButton(item), ownedButton(item)])
-                    : Column(children: <Widget>[futureRelease()]),
+                Column(children: getButtons(item),)
               ],
             ));
       },
     );
+  }
+  
+  List<Widget> getButtons(Movie movie) {
+    if(released(movie)) {
+      return [seenButton(movie),
+        ownedButton(movie),
+        /*lizaButton(movie)*/];
+    }
+    return [futureRelease()];
   }
 
   Widget seenButton(movie) {
@@ -209,6 +258,20 @@ class _MoviesState extends State<Movies> {
             if (!movie.owned) {
               movie.seen = false;
             }
+            Api.put("movies/", movie, movie.id);
+          });
+        });
+  }
+
+  Widget lizaButton(movie) {
+    return IconButton(
+        icon: Icon(
+          Icons.spa,
+          color: movie.liza ? Colors.blue : Colors.grey[400],
+        ),
+        onPressed: () {
+          setState(() {
+            movie.liza = !movie.liza;
             Api.put("movies/", movie, movie.id);
           });
         });

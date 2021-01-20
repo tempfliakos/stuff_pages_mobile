@@ -120,8 +120,9 @@ class _ShowTrophyState extends State<ShowTrophy> {
             },
             background: Container(color: item.earned ? Colors.red : Colors.green),
           ),
-          onTap: () {
-            launchURL(game.title + " " + item.title);
+          onLongPress: () {
+            Scaffold.of(context).showSnackBar(SnackBar(
+                content: Text(item.title + " ( " + item.description + " )")));
           },
         );
       },
@@ -145,6 +146,9 @@ class _ShowTrophyState extends State<ShowTrophy> {
               child: trophyImg(trophy)),
           title: secret && !earned ? Text(secretTitle) :Text(trophy.title),
           subtitle: secret && !earned ? Text(secretDescription) : Text(trophy.description),
+          onTap: () {
+            launchURL(game.title + " " + trophy.title);
+          },
         ),
       ],
     );

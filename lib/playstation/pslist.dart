@@ -147,9 +147,9 @@ class _PsListState extends State<PsList> {
 
   calculatePercentage(game) {
     if(game.sum == 0) {
-      return "0.00%";
+      return "0/0";
     }
-    return (game.earned / game.sum * 100).toStringAsFixed(2) + "%";
+    return game.earned + " / " + game.sum ;
   }
 
   Widget logoutButton() {

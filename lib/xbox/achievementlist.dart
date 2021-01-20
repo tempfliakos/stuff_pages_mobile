@@ -27,7 +27,8 @@ class _ShowAchievementState extends State<ShowAchievement> {
   List _achievements = new List<Achievement>();
   List filteredAchievments = new List<Achievement>();
   final secretTitle = "Secret achievement";
-  final secretDescription = "This achievement is secret. The more you play, the more likely you are to unlock it!";
+  final secretDescription =
+      "This achievement is secret. The more you play, the more likely you are to unlock it!";
 
   _ShowAchievementState(Game game) {
     this.game = game;
@@ -111,18 +112,20 @@ class _ShowAchievementState extends State<ShowAchievement> {
             ),
             onDismissed: (direction) {
               Scaffold.of(context).showSnackBar(SnackBar(
-                  content: Text(item.title +
-                      (item.earned ? ' nincs kész' : ' kész'))));
+                  content: Text(
+                      item.title + (item.earned ? ' nincs kész' : ' kész'))));
               setState(() {
                 item.earned = !item.earned;
                 Api.put('achievements/', item, item.id);
                 filter();
               });
             },
-            background: Container(color: item.earned ? Colors.red : Colors.green),
+            background:
+                Container(color: item.earned ? Colors.red : Colors.green),
           ),
-          onTap: () {
-            launchURL(game.title + " " + item.title);
+          onLongPress: () {
+            Scaffold.of(context).showSnackBar(SnackBar(
+                content: Text(item.title + " ( " + item.description + " )")));
           },
         );
       },
@@ -144,8 +147,14 @@ class _ShowAchievementState extends State<ShowAchievement> {
                 maxHeight: 200,
               ),
               child: achievementImg(achievement)),
-          title: secret && !earned ? Text(secretTitle) :Text(achievement.title),
-          subtitle: secret && !earned ? Text(secretDescription) : Text(achievement.description),
+          title:
+              secret && !earned ? Text(secretTitle) : Text(achievement.title),
+          subtitle: secret && !earned
+              ? Text(secretDescription)
+              : Text(achievement.description),
+          onTap: () {
+            launchURL(game.title + " " + achievement.title);
+          },
         ),
       ],
     );
