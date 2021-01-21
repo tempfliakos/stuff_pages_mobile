@@ -148,7 +148,7 @@ class _XboxListState extends State<XboxList> {
     if(game.sum == 0) {
       return "0/0";
     }
-    return game.earned + " / " + game.sum ;
+    return game.earned.toString() + "/" + game.sum.toString();
   }
 
   Widget logoutButton() {
