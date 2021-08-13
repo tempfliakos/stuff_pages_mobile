@@ -16,8 +16,8 @@ class XboxList extends StatefulWidget {
 }
 
 class _XboxListState extends State<XboxList> {
-  List _games = new List<Game>();
-  List filterGames = new List<Game>();
+  List _games = [];
+  List filterGames = [];
   var titleFilter = "";
 
   _getXboxGames() {

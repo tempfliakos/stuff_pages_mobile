@@ -4,13 +4,12 @@ import 'package:Stuff_Pages/utils/movieUtil.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../global.dart';
 import '../request/entities/movie.dart';
 import '../request/http.dart';
 
 class AddMovie extends StatefulWidget {
-  var addMovies = new List<Movie>();
-  var movies = new List<Movie>();
+  var addMovies = [];
+  var movies = [];
 
   AddMovie(List<Movie> movies) {
     this.movies = movies;
@@ -21,8 +20,8 @@ class AddMovie extends StatefulWidget {
 }
 
 class _AddMovieState extends State<AddMovie> {
-  var addMovies = new List<Movie>();
-  var movies = new List<Movie>();
+  var addMovies = [];
+  var movies = [];
 
   _AddMovieState(List<Movie> movies) {
     this.movies = movies;

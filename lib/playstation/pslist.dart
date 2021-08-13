@@ -16,8 +16,8 @@ class PsList extends StatefulWidget {
 }
 
 class _PsListState extends State<PsList> {
-  List _games = new List<Game>();
-  List filterGames = new List<Game>();
+  List _games = [];
+  List filterGames = [];
   var titleFilter = "";
 
   _getPsGames() {

@@ -41,7 +41,7 @@ class Movie {
 
   factory Movie.addFromJson(Map json) {
     getGenres() {
-      List<dynamic> genres = new List<dynamic>();
+      List<dynamic> genres = [];
       json["genre_ids"].forEach((e) => {
             defaultGenres.forEach((element) {
               if (element["key"] == e) {

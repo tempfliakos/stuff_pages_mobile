@@ -7,7 +7,6 @@ import 'package:Stuff_Pages/utils/gameUtil.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../global.dart';
 import '../navigator.dart';
 
 class ShowAchievement extends StatefulWidget {
@@ -24,8 +23,8 @@ class ShowAchievement extends StatefulWidget {
 class _ShowAchievementState extends State<ShowAchievement> {
   var game;
   var donefilter = false;
-  List _achievements = new List<Achievement>();
-  List filteredAchievments = new List<Achievement>();
+  List _achievements = [];
+  List filteredAchievments = [];
   final secretTitle = "Secret achievement";
   final secretDescription =
       "This achievement is secret. The more you play, the more likely you are to unlock it!";
@@ -111,7 +110,7 @@ class _ShowAchievementState extends State<ShowAchievement> {
               color: Colors.grey,
             ),
             onDismissed: (direction) {
-              Scaffold.of(context).showSnackBar(SnackBar(
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text(
                       item.title + (item.earned ? ' nincs kész' : ' kész'))));
               setState(() {
@@ -124,7 +123,7 @@ class _ShowAchievementState extends State<ShowAchievement> {
                 Container(color: item.earned ? Colors.red : Colors.green),
           ),
           onLongPress: () {
-            Scaffold.of(context).showSnackBar(SnackBar(
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Text(item.title + " ( " + item.description + " )")));
           },
         );

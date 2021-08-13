@@ -23,8 +23,8 @@ class ShowTrophy extends StatefulWidget {
 class _ShowTrophyState extends State<ShowTrophy> {
   var game;
   var donefilter = false;
-  List _achievements = new List<Achievement>();
-  List filteredAchievments = new List<Achievement>();
+  List _achievements = [];
+  List filteredAchievments = [];
   final secretTitle = "Hidden Trophy";
   final secretDescription = "";
 
@@ -109,19 +109,20 @@ class _ShowTrophyState extends State<ShowTrophy> {
               color: Colors.grey,
             ),
             onDismissed: (direction) {
-              Scaffold.of(context).showSnackBar(SnackBar(
-                  content: Text(item.title +
-                      (item.earned ? ' nincs kész' : ' kész'))));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text(
+                      item.title + (item.earned ? ' nincs kész' : ' kész'))));
               setState(() {
                 item.earned = !item.earned;
                 Api.put('achievements/', item, item.id);
                 filter();
               });
             },
-            background: Container(color: item.earned ? Colors.red : Colors.green),
+            background:
+                Container(color: item.earned ? Colors.red : Colors.green),
           ),
           onLongPress: () {
-            Scaffold.of(context).showSnackBar(SnackBar(
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Text(item.title + " ( " + item.description + " )")));
           },
         );
@@ -144,8 +145,10 @@ class _ShowTrophyState extends State<ShowTrophy> {
                 maxHeight: 200,
               ),
               child: trophyImg(trophy)),
-          title: secret && !earned ? Text(secretTitle) :Text(trophy.title),
-          subtitle: secret && !earned ? Text(secretDescription) : Text(trophy.description),
+          title: secret && !earned ? Text(secretTitle) : Text(trophy.title),
+          subtitle: secret && !earned
+              ? Text(secretDescription)
+              : Text(trophy.description),
           onTap: () {
             launchURL(game.title + " " + trophy.title);
           },

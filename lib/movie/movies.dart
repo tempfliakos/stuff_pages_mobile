@@ -16,9 +16,10 @@ class Movies extends StatefulWidget {
 }
 
 class _MoviesState extends State<Movies> {
-  List _movies = new List<Movie>();
-  List filterMovies = new List<Movie>();
+  List _movies = [];
+  List filterMovies = [];
   var titleFilter = "";
+  var seen;
   var owned;
   var futureMovie;
   var liza;
@@ -62,11 +63,43 @@ class _MoviesState extends State<Movies> {
     );
   }
 
+  Widget filterNotSeen() {
+    return TextButton(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Icon(
+              Icons.remove_red_eye,
+              color: seen != null && seen ? Colors.blue : Colors.grey[400],
+            ),
+            Padding(padding: EdgeInsets.all(5.0)),
+            Text("Megnézett filmek",
+                style: TextStyle(
+                    color:
+                        seen != null && seen ? Colors.blue : Colors.grey[400]))
+          ],
+        ),
+        onPressed: () {
+          seen = seen != null ? !seen : true;
+          filter();
+        });
+  }
+
   Widget filterNotOwned() {
-    return IconButton(
-        icon: Icon(
-          Icons.file_download,
-          color: owned != null && owned ? Colors.red : Colors.grey[400],
+    return TextButton(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Icon(
+              Icons.file_download,
+              color: owned != null && owned ? Colors.red : Colors.grey[400],
+            ),
+            Padding(padding: EdgeInsets.all(5.0)),
+            Text("Beszerzett filmek",
+                style: TextStyle(
+                    color:
+                        owned != null && owned ? Colors.red : Colors.grey[400]))
+          ],
         ),
         onPressed: () {
           owned = owned != null ? !owned : true;
@@ -75,12 +108,23 @@ class _MoviesState extends State<Movies> {
   }
 
   Widget filterForFutureMovies() {
-    return IconButton(
-      icon: Icon(
-        Icons.access_time,
-        color: futureMovie != null && futureMovie
-            ? Colors.yellow
-            : Colors.grey[400],
+    return TextButton(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Icon(
+            Icons.access_time,
+            color: futureMovie != null && futureMovie
+                ? Colors.yellow
+                : Colors.grey[400],
+          ),
+          Padding(padding: EdgeInsets.all(5.0)),
+          Text("Jövőbeni filmek",
+              style: TextStyle(
+                  color: futureMovie != null && futureMovie
+                      ? Colors.yellow
+                      : Colors.grey[400]))
+        ],
       ),
       onPressed: () {
         futureMovie = futureMovie != null ? !futureMovie : true;
@@ -90,10 +134,21 @@ class _MoviesState extends State<Movies> {
   }
 
   Widget filterForLizaMovies() {
-    return IconButton(
-      icon: Icon(
-        Icons.spa,
-        color: liza != null && liza ? Colors.blue : Colors.grey[400],
+    return TextButton(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Icon(
+            Icons.spa,
+            color: liza != null && liza ? Colors.green[900] : Colors.grey[400],
+          ),
+          Padding(padding: EdgeInsets.all(5.0)),
+          Text("Liza filmek",
+              style: TextStyle(
+                color:
+                    liza != null && liza ? Colors.green[900] : Colors.grey[400],
+              ))
+        ],
       ),
       onPressed: () {
         liza = liza != null ? !liza : true;
@@ -103,12 +158,21 @@ class _MoviesState extends State<Movies> {
   }
 
   Widget resetFilter() {
-    return IconButton(
-      icon: Icon(
-        Icons.repeat,
-        color: Colors.grey[400],
+    return TextButton(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Icon(
+            Icons.repeat,
+            color: Colors.grey[400],
+          ),
+          Padding(padding: EdgeInsets.all(5.0)),
+          Text("Szűrők alaphalyzetbe",
+              style: TextStyle(color: Colors.grey[400]))
+        ],
       ),
       onPressed: () {
+        seen = null;
         owned = null;
         futureMovie = null;
         liza = null;
@@ -126,13 +190,14 @@ class _MoviesState extends State<Movies> {
   doFilter() {
     _movies.forEach((movie) {
       if (movie.title.toUpperCase().startsWith(titleFilter.toUpperCase())) {
-        if (owned != null || futureMovie != null || liza != null) {
-          owned = owned == null ? false : owned;
-          futureMovie = futureMovie == null ? false : futureMovie;
-          liza = liza == null ? false : liza;
-          if (movie.owned == owned &&
-              released(movie) == !futureMovie &&
-              movie.liza == liza) {
+        if (seen != null ||
+            owned != null ||
+            futureMovie != null ||
+            liza != null) {
+          if ((seen == null || movie.seen == seen) &&
+              (owned == null || movie.owned == owned) &&
+              (futureMovie == null || released(movie) == !futureMovie) &&
+              (liza == null || movie.liza == liza)) {
             filterMovies.add(movie);
           }
         } else {
@@ -147,13 +212,7 @@ class _MoviesState extends State<Movies> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Filmek'),
-        actions: <Widget>[
-          resetFilter(),
-          filterNotOwned(),
-          filterForFutureMovies(),
-          filterForLizaMovies(),
-          logoutButton()
-        ],
+        actions: <Widget>[logoutButton()],
       ),
       body: Center(
         child: Column(
@@ -163,6 +222,20 @@ class _MoviesState extends State<Movies> {
           ],
         ),
       ),
+      drawer: Theme(
+          data: Theme.of(context).copyWith(canvasColor: Colors.grey[600]),
+          child: Drawer(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                resetFilter(),
+                filterNotSeen(),
+                filterNotOwned(),
+                filterForFutureMovies(),
+                filterForLizaMovies(),
+              ],
+            ),
+          )),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           await Navigator.push(context,
@@ -186,7 +259,7 @@ class _MoviesState extends State<Movies> {
             key: UniqueKey(),
             onDismissed: (direction) {
               if (!item.seen) {
-                Scaffold.of(context).showSnackBar(
+                ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text(item.title + ' törölve')));
                 setState(() {
                   Api.delete("movies/", item);
@@ -194,7 +267,7 @@ class _MoviesState extends State<Movies> {
                   filterMovies.remove(item);
                 });
               } else {
-                Scaffold.of(context).showSnackBar(
+                ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Előbb jelöld nem megnézettnek!')));
                 setState(() {});
               }
@@ -214,18 +287,22 @@ class _MoviesState extends State<Movies> {
                         width: MediaQuery.of(context).size.width * 0.50)
                   ],
                 ),
-                Column(children: getButtons(item),)
+                Row(
+                  children: getButtons(item),
+                )
               ],
             ));
       },
     );
   }
-  
+
   List<Widget> getButtons(Movie movie) {
-    if(released(movie)) {
-      return [seenButton(movie),
+    if (released(movie)) {
+      return [
+        seenButton(movie),
         ownedButton(movie),
-        /*lizaButton(movie)*/];
+        lizaButton(movie)
+      ];
     }
     return [futureRelease()];
   }
@@ -234,7 +311,7 @@ class _MoviesState extends State<Movies> {
     return IconButton(
         icon: Icon(
           Icons.remove_red_eye,
-          color: movie.seen ? Colors.green : Colors.grey[400],
+          color: movie.seen ? Colors.blue : Colors.grey[400],
         ),
         onPressed: () {
           setState(() {
@@ -267,7 +344,7 @@ class _MoviesState extends State<Movies> {
     return IconButton(
         icon: Icon(
           Icons.spa,
-          color: movie.liza ? Colors.blue : Colors.grey[400],
+          color: movie.liza ? Colors.green[800] : Colors.grey[400],
         ),
         onPressed: () {
           setState(() {

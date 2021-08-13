@@ -55,10 +55,10 @@ class _LoginState extends State<Login> {
   }
 
   Widget loginButton(BuildContext context) {
-    return FlatButton(
-      child: Text("Bejelentkezés"),
-      color: Colors.green,
-      textColor: Colors.white,
+    return TextButton(
+      child: Text("Bejelentkezés", style: TextStyle(color: Colors.white)),
+      style:
+          ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.green)),
       onPressed: () {
         _login();
       },

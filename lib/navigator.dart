@@ -9,7 +9,7 @@ class MyNavigator extends StatefulWidget {
 }
 
 class _MyNavigatorState extends State<MyNavigator> {
-  final pages = ['/movies','/xbox', '/playstation', '/options'];
+  final pages = ['/movies', '/books','/xbox', '/playstation'];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -23,22 +23,27 @@ class _MyNavigatorState extends State<MyNavigator> {
     return BottomNavigationBar(
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.movie),
-          title: Text('Filmek'),
+          icon: Icon(Icons.movie_outlined),
+          label: 'Filmek',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.videogame_asset),
-          title: Text('Xbox'),
+          icon: Icon(Icons.menu_book_outlined),
+          label: 'Könyvek',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.videogame_asset),
-          title: Text('Playstation'),
+          icon: Icon(Icons.videogame_asset_outlined),
+          label: 'Xbox',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.videogame_asset_outlined),
+          label: 'Playstation',
         ),
       ],
       currentIndex: selectedIndex,
       selectedItemColor: Colors.white,
       onTap: _onItemTapped,
       backgroundColor: Colors.grey[600],
+      type: BottomNavigationBarType.fixed,
     );
   }
 }

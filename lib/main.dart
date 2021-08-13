@@ -1,4 +1,5 @@
 
+import 'package:Stuff_Pages/book/books.dart';
 import 'package:Stuff_Pages/playstation/pslist.dart';
 import 'package:flutter/material.dart';
 
@@ -17,9 +18,9 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => Login(),
         '/movies': (context) => Movies(),
+        '/books': (context) => Books(),
         '/xbox': (context) => XboxList(),
         '/playstation': (context) => PsList(),
-        '/options': (context) => Movies(),
       },
       theme: ThemeData(
         primaryColor: Colors.black,
