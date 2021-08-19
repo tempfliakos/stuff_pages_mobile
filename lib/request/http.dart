@@ -4,8 +4,8 @@ import 'package:http/http.dart' as http;
 
 import '../global.dart';
 
-const URL = 'http://localhost:3001/';
-// const URL = 'https://stuff-pages-server.herokuapp.com/';
+// const URL = 'http://localhost:3001/';
+const URL = 'https://stuff-pages-server.herokuapp.com/';
 
 const IMDB =
     'https://api.themoviedb.org/4/search/movie?api_key=05290ff40fe203e2de4b0e9f832245e1&language=hu';
