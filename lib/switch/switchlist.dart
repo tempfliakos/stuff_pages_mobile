@@ -7,27 +7,27 @@ import 'package:flutter/material.dart';
 
 import '../global.dart';
 import '../navigator.dart';
-import 'achievementlist.dart';
-import 'addxboxgame.dart';
+import 'addswitchgame.dart';
 
-class XboxList extends StatefulWidget {
+class SwitchList extends StatefulWidget {
   @override
-  _XboxListState createState() => _XboxListState();
+  _SwitchListState createState() => _SwitchListState();
 }
 
-class _XboxListState extends State<XboxList> {
+class _SwitchListState extends State<SwitchList> {
   List _games = [];
   List filterGames = [];
   var titleFilter = "";
 
-  _getXboxGames() {
+  _getSwitchGames() {
     filterGames.clear();
-    Api.get("games/console=Xbox").then((res) {
+    Api.get("games/console=Switch").then((res) {
       setState(() {
         Iterable list = json.decode(res.body);
         _games = list
             .map((e) => Game.fromJson(e))
-            .where((a) => a.console.toUpperCase().contains('XBOX'))
+            .where(
+                (a) => a.console.toUpperCase().contains('Switch'.toUpperCase()))
             .toList();
         _games.sort((a, b) => a.title.compareTo(b.title));
         filterGames.addAll(_games);
@@ -37,7 +37,7 @@ class _XboxListState extends State<XboxList> {
 
   initState() {
     super.initState();
-    _getXboxGames();
+    _getSwitchGames();
   }
 
   dispose() {
@@ -84,7 +84,7 @@ class _XboxListState extends State<XboxList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text("Xbox játékok listája"),
+          title: Text("Switch játékok listája"),
           actions: <Widget>[logoutButton()]),
       body: Center(
         child: Column(
@@ -93,8 +93,8 @@ class _XboxListState extends State<XboxList> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await Navigator.push(
-              context, MaterialPageRoute(builder: (context) => AddXboxGame(_games)));
+          await Navigator.push(context,
+              MaterialPageRoute(builder: (context) => AddSwitchGame(_games)));
         },
         child: Icon(Icons.add, size: 40),
         backgroundColor: Colors.green,
@@ -114,11 +114,6 @@ class _XboxListState extends State<XboxList> {
             child: getGame(item),
             color: Colors.grey,
           ),
-          onTap: () async {
-            await Navigator.push(context,
-                MaterialPageRoute(builder: (context) => ShowAchievement(item)));
-            _getXboxGames();
-          },
         );
       },
     );
@@ -145,7 +140,7 @@ class _XboxListState extends State<XboxList> {
   }
 
   calculatePercentage(game) {
-    if(game.sum == 0) {
+    if (game.sum == 0) {
       return "0/0";
     }
     return game.earned.toString() + "/" + game.sum.toString();

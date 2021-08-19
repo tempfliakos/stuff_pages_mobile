@@ -58,15 +58,14 @@ class _AddMovieState extends State<AddMovie> {
   }
 
   void findMovies(text) {
-    if(text.length > 2) {
-      Api.getAddMovie(text.toString()).then((res) {
+    if (text.length > 2) {
+      Api.getFromApi("movies", text.toString()).then((res) {
         if (res != null) {
-          Map<String, dynamic> map = json.decode(res.body);
+          List<dynamic> result = json.decode(res.body);
           setState(() {
             addMovies.clear();
-            map["results"].toList().forEach((movie) {
-              addMovies
-                  .add(Movie.addFromJson(movie));
+            result.forEach((movie) {
+              addMovies.add(Movie.addFromJson(movie));
             });
           });
         }
@@ -88,7 +87,11 @@ class _AddMovieState extends State<AddMovie> {
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[SizedBox(child:filmText(addMovies[index]),width: MediaQuery.of(context).size.width * 0.50)],
+                children: <Widget>[
+                  SizedBox(
+                      child: filmText(addMovies[index]),
+                      width: MediaQuery.of(context).size.width * 0.50)
+                ],
               ),
               Column(children: <Widget>[addButton(addMovies[index])])
             ],
@@ -103,24 +106,21 @@ class _AddMovieState extends State<AddMovie> {
           Icons.check_circle,
           color: Colors.green,
         ),
-        onPressed: () {
-
-        },
+        onPressed: () {},
       );
     } else {
       return IconButton(
-        icon: Icon(
-          Icons.check_circle_outline,
-          color: Colors.black,
-        ),
-        onPressed:  () {
-          setState(() {
-            final body = movie.toJson();
-            movies.add(movie);
-            Api.post('movies', body);
+          icon: Icon(
+            Icons.check_circle_outline,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            setState(() {
+              final body = movie.toJson();
+              movies.add(movie);
+              Api.post('movies', body);
+            });
           });
-        }
-      );
     }
   }
 }

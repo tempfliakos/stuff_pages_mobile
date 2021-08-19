@@ -95,7 +95,7 @@ class _PsListState extends State<PsList> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           await Navigator.push(
-              context, MaterialPageRoute(builder: (context) => AddPsGame()));
+              context, MaterialPageRoute(builder: (context) => AddPsGame(_games)));
         },
         child: Icon(Icons.add, size: 40),
         backgroundColor: Colors.green,

@@ -287,7 +287,7 @@ class _MoviesState extends State<Movies> {
                         width: MediaQuery.of(context).size.width * 0.50)
                   ],
                 ),
-                Row(
+                Column(
                   children: getButtons(item),
                 )
               ],

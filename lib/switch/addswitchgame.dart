@@ -6,24 +6,24 @@ import 'package:Stuff_Pages/utils/gameUtil.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class AddXboxGame extends StatefulWidget {
+class AddSwitchGame extends StatefulWidget {
   var addGames = [];
   var games = [];
 
-  AddXboxGame(List<Game> games) {
+  AddSwitchGame(List<Game> games) {
     this.games = games;
   }
 
   @override
-  _AddXboxGameState createState() => _AddXboxGameState(games);
+  _AddSwitchGameState createState() => _AddSwitchGameState(games);
 }
 
-class _AddXboxGameState extends State<AddXboxGame> {
+class _AddSwitchGameState extends State<AddSwitchGame> {
   var addGames = [];
   var games = [];
   var queryString = "";
 
-  _AddXboxGameState(List<Game> games) {
+  _AddSwitchGameState(List<Game> games) {
     this.games = games;
   }
 
@@ -70,7 +70,7 @@ class _AddXboxGameState extends State<AddXboxGame> {
 
   void findGames() {
     if (queryString.length > 2) {
-      Api.getFromApi("xbox", queryString.toString()).then((res) {
+      Api.getFromApi("switch", queryString.toString()).then((res) {
         if (res != null) {
           List<dynamic> result = json.decode(res.body);
           setState(() {

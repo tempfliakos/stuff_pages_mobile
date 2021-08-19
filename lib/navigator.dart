@@ -9,7 +9,7 @@ class MyNavigator extends StatefulWidget {
 }
 
 class _MyNavigatorState extends State<MyNavigator> {
-  final pages = ['/movies', '/books','/xbox', '/playstation'];
+  final pages = ['/movies', '/books','/xbox', '/playstation' , '/switch'];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -37,6 +37,10 @@ class _MyNavigatorState extends State<MyNavigator> {
         BottomNavigationBarItem(
           icon: Icon(Icons.videogame_asset_outlined),
           label: 'Playstation',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.videogame_asset_outlined),
+          label: 'Switch',
         ),
       ],
       currentIndex: selectedIndex,
