@@ -136,7 +136,7 @@ class _XboxListState extends State<XboxList> {
                 maxWidth: 200,
                 maxHeight: 200,
               ),
-              child: img(game)),
+              child: xboxImg(game)),
           title: Text(game.title),
           subtitle: Text(calculatePercentage(game)),
         ),

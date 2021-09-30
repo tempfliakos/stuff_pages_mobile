@@ -7,9 +7,6 @@ import '../global.dart';
 // const URL = 'http://localhost:3001/';
 const URL = 'https://stuff-pages-server.herokuapp.com/';
 
-const IMDB =
-    'https://api.themoviedb.org/4/search/movie?api_key=05290ff40fe203e2de4b0e9f832245e1&language=hu';
-
 class Api {
   static Future get(String endpoint) {
     return http.get(Uri.parse(URL + endpoint), headers: {

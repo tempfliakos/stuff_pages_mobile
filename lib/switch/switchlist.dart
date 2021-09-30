@@ -132,18 +132,10 @@ class _SwitchListState extends State<SwitchList> {
                 maxHeight: 200,
               ),
               child: img(game)),
-          title: Text(game.title),
-          subtitle: Text(calculatePercentage(game)),
+          title: Text(game.title)
         ),
       ],
     );
-  }
-
-  calculatePercentage(game) {
-    if (game.sum == 0) {
-      return "0/0";
-    }
-    return game.earned.toString() + "/" + game.sum.toString();
   }
 
   Widget logoutButton() {

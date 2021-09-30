@@ -21,6 +21,23 @@ Widget img(Game game) {
   }
 }
 
+Widget xboxImg(Game game) {
+  if (game.picture != null && game.picture != "null") {
+    return new ConstrainedBox(
+      constraints: new BoxConstraints(
+        minHeight: 5.0,
+        minWidth: 5.0,
+        maxHeight: 100.0,
+        maxWidth: 100.0,
+      ),
+      child: Image.network(game.picture,
+          scale: 4, filterQuality: FilterQuality.low),
+    );
+  } else {
+    return Image.asset('assets/images/default-movie-back.jpg', scale: 2.32);
+  }
+}
+
 Widget achievementImg(Achievement achievement) {
   if (achievement.earned) {
     if (achievement.picture != null && achievement.picture != "null") {

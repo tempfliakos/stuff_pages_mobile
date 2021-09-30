@@ -93,7 +93,11 @@ class _BooksState extends State<Books> {
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[bookText(item)],
+                  children: <Widget>[
+                    SizedBox(
+                        child: bookText(item),
+                        width: MediaQuery.of(context).size.width * 0.75)
+                  ],
                 ),
               ],
             ));
