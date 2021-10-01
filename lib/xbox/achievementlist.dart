@@ -86,7 +86,10 @@ class _ShowAchievementState extends State<ShowAchievement> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(game.title), actions: <Widget>[doneFilter()]),
+      appBar: AppBar(title: Text(game.title), actions: <Widget>[
+        refreshButton(),
+        doneFilter()]
+      ),
       body: Center(
         child: Column(
           children: <Widget>[Expanded(child: _achievementList())],
@@ -157,5 +160,20 @@ class _ShowAchievementState extends State<ShowAchievement> {
         ),
       ],
     );
+  }
+
+  Widget refreshButton() {
+    return IconButton(
+        icon: Icon(
+          Icons.refresh,
+          color: Colors.yellow,
+        ),
+        onPressed: () {
+          setState(() {
+            var endpoint = 'achievements/game=' + this.game.gameId;
+            Api.post(endpoint, []);
+            initState();
+          });
+        });
   }
 }
