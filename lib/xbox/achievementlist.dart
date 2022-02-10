@@ -6,6 +6,7 @@ import 'package:Stuff_Pages/request/http.dart';
 import 'package:Stuff_Pages/utils/gameUtil.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../navigator.dart';
 
@@ -86,10 +87,9 @@ class _ShowAchievementState extends State<ShowAchievement> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(game.title), actions: <Widget>[
-        refreshButton(),
-        doneFilter()]
-      ),
+      appBar: AppBar(
+          title: Text(game.title),
+          actions: <Widget>[refreshButton(), doneFilter()]),
       body: Center(
         child: Column(
           children: <Widget>[Expanded(child: _achievementList())],
@@ -113,9 +113,13 @@ class _ShowAchievementState extends State<ShowAchievement> {
               color: Colors.grey,
             ),
             onDismissed: (direction) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text(
-                      item.title + (item.earned ? ' nincs kész' : ' kész'))));
+              Fluttertoast.showToast(
+                  msg: item.title,
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 3,
+                  backgroundColor: item.earned ? Colors.red : Colors.green,
+                  fontSize: 16.0);
               setState(() {
                 item.earned = !item.earned;
                 Api.put('achievements/', item, item.id);
@@ -126,8 +130,13 @@ class _ShowAchievementState extends State<ShowAchievement> {
                 Container(color: item.earned ? Colors.red : Colors.green),
           ),
           onLongPress: () {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text(item.title + " ( " + item.description + " )")));
+            Fluttertoast.showToast(
+                msg: item.title + " ( " + item.description + " )",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 3,
+                backgroundColor: Colors.grey,
+                fontSize: 16.0);
           },
         );
       },

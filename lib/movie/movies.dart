@@ -9,6 +9,7 @@ import '../navigator.dart';
 import '../request/entities/movie.dart';
 import '../utils/movieUtil.dart';
 import 'add_movie.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class Movies extends StatefulWidget {
   @override
@@ -139,14 +140,14 @@ class _MoviesState extends State<Movies> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Icon(
-            Icons.spa,
-            color: liza != null && liza ? Colors.green[900] : Colors.grey[400],
+            Icons.star,
+            color: liza != null && liza ? Colors.yellow : Colors.grey[400],
           ),
           Padding(padding: EdgeInsets.all(5.0)),
           Text("Liza filmek",
               style: TextStyle(
                 color:
-                    liza != null && liza ? Colors.green[900] : Colors.grey[400],
+                    liza != null && liza ? Colors.yellow : Colors.grey[400],
               ))
         ],
       ),
@@ -255,24 +256,20 @@ class _MoviesState extends State<Movies> {
       itemCount: filterMovies.length,
       itemBuilder: (context, index) {
         final item = filterMovies[index];
-        return Dismissible(
+        return Slidable(
             key: UniqueKey(),
-            onDismissed: (direction) {
-              if (!item.seen) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(item.title + ' törölve')));
-                setState(() {
-                  Api.delete("movies/", item);
-                  _movies.remove(item);
-                  filterMovies.remove(item);
-                });
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Előbb jelöld nem megnézettnek!')));
-                setState(() {});
-              }
-            },
-            background: Container(color: Colors.red),
+            endActionPane: ActionPane(
+              // A motion is a widget used to control how the pane animates.
+              motion: const ScrollMotion(),
+
+              // All actions are defined in the children parameter.
+              children: [
+                // A SlidableAction can have an icon and/or a label.
+                ownedButton(item),
+                lizaButton(item),
+                deleteButton(item),
+              ],
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -296,15 +293,10 @@ class _MoviesState extends State<Movies> {
     );
   }
 
+  void doNothing(BuildContext context) {}
+
   List<Widget> getButtons(Movie movie) {
-    if (released(movie)) {
-      return [
-        seenButton(movie),
-        ownedButton(movie),
-        lizaButton(movie)
-      ];
-    }
-    return [futureRelease()];
+    return released(movie) ? [seenButton(movie)] : [futureRelease()];
   }
 
   Widget seenButton(movie) {
@@ -319,39 +311,68 @@ class _MoviesState extends State<Movies> {
               movie.seen = !movie.seen;
               Api.put("movies/", movie, movie.id);
             }
+            filter();
           });
         });
   }
 
   Widget ownedButton(movie) {
-    return IconButton(
-        icon: Icon(
-          Icons.file_download,
-          color: movie.owned ? Colors.red : Colors.grey[400],
-        ),
-        onPressed: () {
-          setState(() {
-            movie.owned = !movie.owned;
-            if (!movie.owned) {
-              movie.seen = false;
-            }
-            Api.put("movies/", movie, movie.id);
-          });
+    return SlidableAction(
+      backgroundColor: Colors.grey[400],
+      foregroundColor: movie.owned ? Colors.red : Colors.black,
+      icon: Icons.file_download,
+      label: movie.owned ? 'Megszerzett' : 'Megszerzettnek jelöl',
+      onPressed: (BuildContext context) {
+        setState(() {
+          movie.owned = !movie.owned;
+          if (!movie.owned) {
+            movie.seen = false;
+          }
+          Api.put("movies/", movie, movie.id);
+          filter();
         });
+      },
+    );
   }
 
   Widget lizaButton(movie) {
-    return IconButton(
-        icon: Icon(
-          Icons.spa,
-          color: movie.liza ? Colors.green[800] : Colors.grey[400],
-        ),
-        onPressed: () {
-          setState(() {
-            movie.liza = !movie.liza;
-            Api.put("movies/", movie, movie.id);
-          });
+    return SlidableAction(
+      backgroundColor: Colors.grey[400],
+      foregroundColor: movie.liza ? Colors.yellow : Colors.black,
+      icon: Icons.star,
+      label: movie.liza ? 'Liza film' : 'Liza filmnek jelöl',
+      onPressed: (BuildContext context) {
+        setState(() {
+          movie.liza = !movie.liza;
+          Api.put("movies/", movie, movie.id);
+          filter();
         });
+      },
+    );
+  }
+
+  Widget deleteButton(movie) {
+    return SlidableAction(
+      backgroundColor: Colors.red,
+      foregroundColor: Colors.grey[400],
+      icon: Icons.delete,
+      label: 'Törlés',
+      onPressed: (BuildContext context) {
+        if (!movie.seen) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(movie.title + ' törölve')));
+          setState(() {
+            Api.delete("movies/", movie);
+            _movies.remove(movie);
+            filterMovies.remove(movie);
+          });
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Előbb jelöld nem megnézettnek!')));
+          setState(() {});
+        }
+      },
+    );
   }
 
   Widget futureRelease() {

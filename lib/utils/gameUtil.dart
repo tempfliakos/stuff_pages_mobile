@@ -4,6 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+String pictureLink(String link) {
+    return !link.startsWith("http") ? "https:" + link : link;
+}
 Widget img(Game game) {
   if (game.picture != null && game.picture != "null") {
     return new ConstrainedBox(
@@ -13,7 +16,7 @@ Widget img(Game game) {
         maxHeight: 100.0,
         maxWidth: 100.0,
       ),
-      child: Image.network("https:" + game.picture,
+      child: Image.network(pictureLink(game.picture),
           scale: 4, filterQuality: FilterQuality.low),
     );
   } else {
@@ -30,7 +33,7 @@ Widget xboxImg(Game game) {
         maxHeight: 100.0,
         maxWidth: 100.0,
       ),
-      child: Image.network(game.picture,
+      child: Image.network(pictureLink(game.picture),
           scale: 4, filterQuality: FilterQuality.low),
     );
   } else {
