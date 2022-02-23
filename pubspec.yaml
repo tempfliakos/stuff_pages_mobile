@@ -48,6 +48,9 @@ flutter:
   assets:
     - assets/images/default-movie-back.jpg
     - assets/images/locked_trophy.svg
+    - assets/images/xbox_logo.png
+    - assets/images/ps_logo.png
+    - assets/images/switch_logo.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

@@ -212,6 +212,7 @@ class _MoviesState extends State<Movies> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black,
         title: Text('Filmek'),
         actions: <Widget>[logoutButton()],
       ),

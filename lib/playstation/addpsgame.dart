@@ -31,6 +31,7 @@ class _AddPsGameState extends State<AddPsGame> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black,
         title: Text("Játékok hozzáadása"),
       ),
       body: Center(

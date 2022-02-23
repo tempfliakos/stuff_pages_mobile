@@ -31,6 +31,7 @@ class _AddBookState extends State<AddBook> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black,
         title: Text("Könyvek hozzáadása"),
       ),
       body: Center(

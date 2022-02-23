@@ -75,7 +75,10 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Bejelentkezés')),
+      appBar: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.black,
+          title: Text('Bejelentkezés')),
       body: Center(
         child: Column(
           children: <Widget>[

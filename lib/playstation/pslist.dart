@@ -85,6 +85,8 @@ class _PsListState extends State<PsList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.black,
           title: Text("Playstation játékok listája"),
           actions: <Widget>[logoutButton()]),
       body: Center(

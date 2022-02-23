@@ -9,7 +9,14 @@ class MyNavigator extends StatefulWidget {
 }
 
 class _MyNavigatorState extends State<MyNavigator> {
-  final pages = ['/movies', '/books','/xbox', '/playstation' , '/switch'];
+  final pages = [
+    '/movies',
+    '/books',
+    '/xbox',
+    '/playstation',
+    '/switch',
+    '/wish'
+  ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -31,16 +38,26 @@ class _MyNavigatorState extends State<MyNavigator> {
           label: 'Könyvek',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.videogame_asset_outlined),
+          icon: ImageIcon(
+            AssetImage("assets/images/xbox_logo.png"),
+          ),
           label: 'Xbox',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.videogame_asset_outlined),
+          icon: ImageIcon(
+            AssetImage("assets/images/ps_logo.png"),
+          ),
           label: 'Playstation',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.videogame_asset_outlined),
+          icon: ImageIcon(
+            AssetImage("assets/images/switch_logo.png"),
+          ),
           label: 'Switch',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.videogame_asset_outlined),
+          label: 'Wishlist',
         ),
       ],
       currentIndex: selectedIndex,

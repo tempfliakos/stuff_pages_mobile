@@ -88,6 +88,7 @@ class _ShowAchievementState extends State<ShowAchievement> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+          backgroundColor: Colors.black,
           title: Text(game.title),
           actions: <Widget>[refreshButton(), doneFilter()]),
       body: Center(

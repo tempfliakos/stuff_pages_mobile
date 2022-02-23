@@ -84,6 +84,8 @@ class _SwitchListState extends State<SwitchList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.black,
           title: Text("Switch játékok listája"),
           actions: <Widget>[logoutButton()]),
       body: Center(

@@ -86,7 +86,10 @@ class _ShowTrophyState extends State<ShowTrophy> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(game.title), actions: <Widget>[doneFilter()]),
+      appBar: AppBar(
+          backgroundColor: Colors.black,
+          title: Text(game.title),
+          actions: <Widget>[doneFilter()]),
       body: Center(
         child: Column(
           children: <Widget>[Expanded(child: _trophyList())],

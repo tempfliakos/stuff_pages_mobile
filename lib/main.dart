@@ -2,6 +2,7 @@
 import 'package:Stuff_Pages/book/books.dart';
 import 'package:Stuff_Pages/playstation/pslist.dart';
 import 'package:Stuff_Pages/switch/switchlist.dart';
+import 'package:Stuff_Pages/wish/wishlist.dart';
 import 'package:flutter/material.dart';
 
 import 'login.dart';
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
         '/xbox': (context) => XboxList(),
         '/playstation': (context) => PsList(),
         '/switch': (context) => SwitchList(),
+        '/wish': (context) => WishList(),
       },
       theme: ThemeData(
         primaryColor: Colors.black,

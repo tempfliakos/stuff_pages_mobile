@@ -31,6 +31,7 @@ class _AddMovieState extends State<AddMovie> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black,
         title: Text("Filmek hozzáadása"),
       ),
       body: Center(

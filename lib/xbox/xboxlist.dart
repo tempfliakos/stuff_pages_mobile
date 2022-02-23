@@ -16,8 +16,8 @@ class XboxList extends StatefulWidget {
 }
 
 class _XboxListState extends State<XboxList> {
-  List _games = [];
-  List filterGames = [];
+  List<Game> _games = [];
+  List<Game> filterGames = [];
   var titleFilter = "";
 
   _getXboxGames() {
@@ -84,6 +84,8 @@ class _XboxListState extends State<XboxList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.black,
           title: Text("Xbox játékok listája"),
           actions: <Widget>[logoutButton()]),
       body: Center(
@@ -93,8 +95,8 @@ class _XboxListState extends State<XboxList> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await Navigator.push(
-              context, MaterialPageRoute(builder: (context) => AddXboxGame(_games)));
+          await Navigator.push(context,
+              MaterialPageRoute(builder: (context) => AddXboxGame(_games)));
         },
         child: Icon(Icons.add, size: 40),
         backgroundColor: Colors.green,
@@ -145,7 +147,7 @@ class _XboxListState extends State<XboxList> {
   }
 
   calculatePercentage(game) {
-    if(game.sum == 0) {
+    if (game.sum == 0) {
       return "0/0";
     }
     return game.earned.toString() + "/" + game.sum.toString();

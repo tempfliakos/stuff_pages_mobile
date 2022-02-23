@@ -6,24 +6,24 @@ import 'package:Stuff_Pages/utils/gameUtil.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class AddXboxGame extends StatefulWidget {
+class AddWishGame extends StatefulWidget {
   var addGames = [];
   var games = [];
 
-  AddXboxGame(List<Game> games) {
+  AddWishGame(List<Game> games) {
     this.games = games;
   }
 
   @override
-  _AddXboxGameState createState() => _AddXboxGameState(games);
+  _AddWishGameState createState() => _AddWishGameState(games);
 }
 
-class _AddXboxGameState extends State<AddXboxGame> {
+class _AddWishGameState extends State<AddWishGame> {
   var addGames = [];
   var games = [];
   var queryString = "";
 
-  _AddXboxGameState(List<Game> games) {
+  _AddWishGameState(List<Game> games) {
     this.games = games;
   }
 
@@ -71,12 +71,13 @@ class _AddXboxGameState extends State<AddXboxGame> {
 
   void findGames() {
     if (queryString.length > 2) {
-      Api.getFromApi("xbox", queryString.toString()).then((res) {
+      Api.getFromApi("wish", queryString.toString()).then((res) {
         if (res != null) {
           List<dynamic> result = json.decode(res.body);
           setState(() {
             addGames.clear();
             result.forEach((game) {
+              game['wish'] = true;
               addGames.add(Game.addFromJson(game));
             });
           });
@@ -105,27 +106,31 @@ class _AddXboxGameState extends State<AddXboxGame> {
                       width: MediaQuery.of(context).size.width * 0.50)
                 ],
               ),
-              Column(children: <Widget>[addButton(addGames[index])])
+              Column(children: <Widget>[
+                addButton(addGames[index], 'Xbox'),
+              ]),
+              Column(children: <Widget>[
+                addButton(addGames[index], 'Playstation'),
+              ]),
+              Column(children: <Widget>[
+                addButton(addGames[index], 'Switch')
+              ])
             ],
           );
         });
   }
 
-  Widget addButton(game) {
-    if (games.map((e) => e.title).toList().contains(game.title)) {
+  Widget addButton(game, console) {
+    game.console = console;
+    bool alreadyAdded = games.map((e) => e.title).toList().contains(game.title);
+    if (alreadyAdded) {
       return IconButton(
-        icon: Icon(
-          Icons.check_circle,
-          color: Colors.green,
-        ),
+        icon: getIcon(console, alreadyAdded),
         onPressed: () {},
       );
     } else {
       return IconButton(
-          icon: Icon(
-            Icons.check_circle_outline,
-            color: Colors.black,
-          ),
+          icon: getIcon(console, alreadyAdded),
           onPressed: () {
             setState(() {
               final body = game.toJson();
@@ -134,5 +139,23 @@ class _AddXboxGameState extends State<AddXboxGame> {
             });
           });
     }
+  }
+
+  Widget getIcon(console, alreadyAdded) {
+    if (console == 'Xbox') {
+      return ImageIcon(
+        AssetImage("assets/images/xbox_logo.png"),
+        color: alreadyAdded ? Colors.green : Colors.black,
+      );
+    } else if (console == 'Playstation') {
+      return ImageIcon(
+        AssetImage("assets/images/ps_logo.png"),
+        color: alreadyAdded ? Colors.green : Colors.black,
+      );
+    }
+    return ImageIcon(
+      AssetImage("assets/images/switch_logo.png"),
+      color: alreadyAdded ? Colors.green : Colors.black,
+    );
   }
 }

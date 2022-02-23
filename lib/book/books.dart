@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:Stuff_Pages/request/entities/book.dart';
 import 'package:Stuff_Pages/request/http.dart';
 import 'package:Stuff_Pages/utils/bookUtil.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../global.dart';
@@ -44,6 +43,8 @@ class _BooksState extends State<Books> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.black,
         title: Text('Könyvek'),
         actions: <Widget>[logoutButton()],
       ),
