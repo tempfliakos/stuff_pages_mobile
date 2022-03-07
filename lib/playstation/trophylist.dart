@@ -129,6 +129,9 @@ class _ShowTrophyState extends State<ShowTrophy> {
             background:
                 Container(color: item.earned ? Colors.red : Colors.green),
           ),
+          onTap: () {
+            launchURL(game.title + " " + item.title);
+          },
           onLongPress: () {
             Fluttertoast.showToast(
                 msg: item.title + " ( " + item.description + " )",

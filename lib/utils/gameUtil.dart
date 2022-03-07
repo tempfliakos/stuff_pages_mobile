@@ -5,8 +5,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 String pictureLink(String link) {
-    return !link.startsWith("http") ? "https:" + link : link;
+  return !link.startsWith("http") ? "https:" + link : link;
 }
+
 Widget img(Game game) {
   if (game.picture != null && game.picture != "null") {
     return new ConstrainedBox(
@@ -87,9 +88,5 @@ Widget addGameText(game) {
 
 launchURL(destination) async {
   var url = 'https://www.youtube.com/results?search_query=' + destination;
-  if (await canLaunch(url)) {
-    await launch(url);
-  } else {
-    throw 'Could not launch $url';
-  }
+  if (!await launch(url)) throw 'Could not launch $url';
 }
