@@ -101,7 +101,7 @@ class _XboxListState extends State<XboxList> {
         child: Icon(Icons.add, size: 40),
         backgroundColor: Colors.green,
       ),
-      bottomNavigationBar: MyNavigator(),
+      bottomNavigationBar: MyNavigator(2),
       backgroundColor: Colors.grey,
     );
   }

@@ -95,7 +95,7 @@ class _ShowTrophyState extends State<ShowTrophy> {
           children: <Widget>[Expanded(child: _trophyList())],
         ),
       ),
-      bottomNavigationBar: MyNavigator(),
+      bottomNavigationBar: MyNavigator(3),
       backgroundColor: Colors.grey,
     );
   }

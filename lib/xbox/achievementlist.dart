@@ -96,7 +96,7 @@ class _ShowAchievementState extends State<ShowAchievement> {
           children: <Widget>[Expanded(child: _achievementList())],
         ),
       ),
-      bottomNavigationBar: MyNavigator(),
+      bottomNavigationBar: MyNavigator(2),
       backgroundColor: Colors.grey,
     );
   }

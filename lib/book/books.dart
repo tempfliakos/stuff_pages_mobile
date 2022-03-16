@@ -64,7 +64,7 @@ class _BooksState extends State<Books> {
         child: Icon(Icons.add, size: 40),
         backgroundColor: Colors.green,
       ),
-      bottomNavigationBar: MyNavigator(),
+      bottomNavigationBar: MyNavigator(1),
       backgroundColor: Colors.grey,
     );
   }

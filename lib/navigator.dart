@@ -4,8 +4,13 @@ import 'package:flutter/material.dart';
 import 'global.dart';
 
 class MyNavigator extends StatefulWidget {
+  int index;
+  MyNavigator(int i) {
+    index = i;
+  }
+
   @override
-  _MyNavigatorState createState() => _MyNavigatorState();
+  _MyNavigatorState createState() => _MyNavigatorState(index);
 }
 
 class _MyNavigatorState extends State<MyNavigator> {
@@ -18,9 +23,14 @@ class _MyNavigatorState extends State<MyNavigator> {
     '/wish'
   ];
 
+  int index;
+
+  _MyNavigatorState(int index) {
+    this.index = index;
+  }
+
   void _onItemTapped(int index) {
     setState(() {
-      selectedIndex = index;
       Navigator.pushReplacementNamed(context, pages[index]);
     });
   }
@@ -60,7 +70,7 @@ class _MyNavigatorState extends State<MyNavigator> {
           label: 'Wishlist',
         ),
       ],
-      currentIndex: selectedIndex,
+      currentIndex: index,
       selectedItemColor: Colors.white,
       onTap: _onItemTapped,
       backgroundColor: Colors.grey[600],

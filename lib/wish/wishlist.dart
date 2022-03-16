@@ -75,7 +75,7 @@ class _WishListState extends State<WishList> {
             child: Icon(Icons.add, size: 40),
             backgroundColor: Colors.green,
           ),
-          bottomNavigationBar: MyNavigator(),
+          bottomNavigationBar: MyNavigator(5),
           backgroundColor: Colors.grey,
         ));
   }

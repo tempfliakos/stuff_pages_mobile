@@ -102,7 +102,7 @@ class _PsListState extends State<PsList> {
         child: Icon(Icons.add, size: 40),
         backgroundColor: Colors.green,
       ),
-      bottomNavigationBar: MyNavigator(),
+      bottomNavigationBar: MyNavigator(3),
       backgroundColor: Colors.grey,
     );
   }

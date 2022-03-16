@@ -54,7 +54,7 @@ class _OptionsState extends State<Options> {
           children: [getDropdowns()],
         ),
       ),
-      bottomNavigationBar: MyNavigator(),
+      bottomNavigationBar: MyNavigator(0),
       backgroundColor: Colors.grey,
     );
   }
