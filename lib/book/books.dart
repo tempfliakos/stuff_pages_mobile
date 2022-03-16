@@ -46,7 +46,7 @@ class _BooksState extends State<Books> {
         automaticallyImplyLeading: false,
         backgroundColor: Colors.black,
         title: Text('Könyvek'),
-        actions: <Widget>[logoutButton()],
+        actions: <Widget>[optionsButton(), logoutButton()],
       ),
       body: Center(
         child: Column(
@@ -115,7 +115,21 @@ class _BooksState extends State<Books> {
         onPressed: () {
           setState(() {
             userStorage.deleteItem('user');
+            userStorage.deleteItem('options');
             Navigator.pushReplacementNamed(context, '/');
+          });
+        });
+  }
+
+  Widget optionsButton() {
+    return IconButton(
+        icon: Icon(
+          Icons.settings,
+          color: Colors.grey,
+        ),
+        onPressed: () {
+          setState(() {
+            Navigator.pushReplacementNamed(context, '/options');
           });
         });
   }

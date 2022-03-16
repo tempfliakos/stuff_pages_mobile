@@ -59,8 +59,8 @@ class _AddBookState extends State<AddBook> {
   }
 
   void findBooks(text) {
-    if(text.length > 2) {
-      Api.getFromApi("books",text.toString()).then((res) {
+    if (text.length > 2) {
+      Api.getFromApi("books", text.toString()).then((res) {
         if (res != null) {
           List<dynamic> result = json.decode(res.body);
           setState(() {
@@ -88,7 +88,11 @@ class _AddBookState extends State<AddBook> {
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[SizedBox(child:bookText(addBooks[index]),width: MediaQuery.of(context).size.width * 0.50)],
+                children: <Widget>[
+                  SizedBox(
+                      child: bookText(addBooks[index]),
+                      width: MediaQuery.of(context).size.width * 0.50)
+                ],
               ),
               Column(children: <Widget>[addButton(addBooks[index])])
             ],
@@ -103,24 +107,21 @@ class _AddBookState extends State<AddBook> {
           Icons.check_circle,
           color: Colors.green,
         ),
-        onPressed: () {
-
-        },
+        onPressed: () {},
       );
     } else {
       return IconButton(
-        icon: Icon(
-          Icons.check_circle_outline,
-          color: Colors.black,
-        ),
-        onPressed:  () {
-          setState(() {
-            final body = book.toJson();
-            books.add(book);
-            Api.post('books', body);
+          icon: Icon(
+            Icons.check_circle_outline,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            setState(() {
+              final body = book.toJson();
+              books.add(book);
+              Api.post('books', body);
+            });
           });
-        }
-      );
     }
   }
 }

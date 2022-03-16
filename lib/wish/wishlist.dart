@@ -45,7 +45,7 @@ class _WishListState extends State<WishList> {
               automaticallyImplyLeading: false,
               backgroundColor: Colors.black,
               title: Text("Wishlist"),
-              actions: <Widget>[logoutButton()],
+              actions: <Widget>[optionsButton(), logoutButton()],
               bottom: const TabBar(
                 tabs: [
                   Tab(
@@ -106,20 +106,22 @@ class _WishListState extends State<WishList> {
   }
 
   Widget getGame(game) {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
-      Column(
-        children: <Widget>[img(game)],
-      ),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          SizedBox(
-              child: Text(game.title),
-              width: MediaQuery.of(context).size.width * 0.50)
-        ],
-      ),
-      Column(children: [deleteButton(game)])
-    ]);
+          Column(
+            children: <Widget>[img(game)],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(
+                  child: Text(game.title),
+                  width: MediaQuery.of(context).size.width * 0.50)
+            ],
+          ),
+          Column(children: [deleteButton(game)])
+        ]);
   }
 
   Widget deleteButton(game) {
@@ -145,7 +147,21 @@ class _WishListState extends State<WishList> {
         onPressed: () {
           setState(() {
             userStorage.deleteItem('user');
+            userStorage.deleteItem('options');
             Navigator.pushReplacementNamed(context, '/');
+          });
+        });
+  }
+
+  Widget optionsButton() {
+    return IconButton(
+        icon: Icon(
+          Icons.settings,
+          color: Colors.grey,
+        ),
+        onPressed: () {
+          setState(() {
+            Navigator.pushReplacementNamed(context, '/options');
           });
         });
   }

@@ -87,7 +87,7 @@ class _SwitchListState extends State<SwitchList> {
           automaticallyImplyLeading: false,
           backgroundColor: Colors.black,
           title: Text("Switch játékok listája"),
-          actions: <Widget>[logoutButton()]),
+          actions: <Widget>[optionsButton(), logoutButton()]),
       body: Center(
         child: Column(
           children: <Widget>[filterTitleField(), Expanded(child: _gameList())],
@@ -126,16 +126,15 @@ class _SwitchListState extends State<SwitchList> {
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         ListTile(
-          leading: ConstrainedBox(
-              constraints: BoxConstraints(
-                minWidth: 44,
-                minHeight: 44,
-                maxWidth: 200,
-                maxHeight: 200,
-              ),
-              child: img(game)),
-          title: Text(game.title)
-        ),
+            leading: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minWidth: 44,
+                  minHeight: 44,
+                  maxWidth: 200,
+                  maxHeight: 200,
+                ),
+                child: img(game)),
+            title: Text(game.title)),
       ],
     );
   }
@@ -149,7 +148,21 @@ class _SwitchListState extends State<SwitchList> {
         onPressed: () {
           setState(() {
             userStorage.deleteItem('user');
+            userStorage.deleteItem('options');
             Navigator.pushReplacementNamed(context, '/');
+          });
+        });
+  }
+
+  Widget optionsButton() {
+    return IconButton(
+        icon: Icon(
+          Icons.settings,
+          color: Colors.grey,
+        ),
+        onPressed: () {
+          setState(() {
+            Navigator.pushReplacementNamed(context, '/options');
           });
         });
   }

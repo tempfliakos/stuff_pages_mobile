@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:Stuff_Pages/utils/optionsUtil.dart';
 import 'package:flutter/material.dart';
 
 import 'global.dart';
@@ -22,7 +23,9 @@ class _LoginState extends State<Login> {
   _getLoggedIn() {
     userStorage.ready.then((value) {
       if (userStorage.getItem('user') != null) {
-        Navigator.pushReplacementNamed(context, '/movies');
+        Map<String, Object> options = getOptions();
+        Navigator.pushReplacementNamed(
+            context, options['defaultPage'].toString());
       }
     });
   }
@@ -69,7 +72,8 @@ class _LoginState extends State<Login> {
     final body = {'email': _email.text, 'password': _pwd.text};
     final result = await Api.post('auth/login', body);
     userStorage.setItem('user', jsonDecode(result.body)['accessToken']);
-    Navigator.pushReplacementNamed(context, '/movies');
+    Map<String, Object> options = getOptions();
+    Navigator.pushReplacementNamed(context, options['defaultPage'].toString());
   }
 
   @override

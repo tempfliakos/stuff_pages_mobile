@@ -88,7 +88,7 @@ class _PsListState extends State<PsList> {
           automaticallyImplyLeading: false,
           backgroundColor: Colors.black,
           title: Text("Playstation játékok listája"),
-          actions: <Widget>[logoutButton()]),
+          actions: <Widget>[optionsButton(), logoutButton()]),
       body: Center(
         child: Column(
           children: <Widget>[filterTitleField(), Expanded(child: _gameList())],
@@ -96,8 +96,8 @@ class _PsListState extends State<PsList> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await Navigator.push(
-              context, MaterialPageRoute(builder: (context) => AddPsGame(_games)));
+          await Navigator.push(context,
+              MaterialPageRoute(builder: (context) => AddPsGame(_games)));
         },
         child: Icon(Icons.add, size: 40),
         backgroundColor: Colors.green,
@@ -148,7 +148,7 @@ class _PsListState extends State<PsList> {
   }
 
   calculatePercentage(game) {
-    if(game.sum == 0) {
+    if (game.sum == 0) {
       return "0/0";
     }
     return game.earned.toString() + "/" + game.sum.toString();
@@ -163,7 +163,21 @@ class _PsListState extends State<PsList> {
         onPressed: () {
           setState(() {
             userStorage.deleteItem('user');
+            userStorage.deleteItem('options');
             Navigator.pushReplacementNamed(context, '/');
+          });
+        });
+  }
+
+  Widget optionsButton() {
+    return IconButton(
+        icon: Icon(
+          Icons.settings,
+          color: Colors.grey,
+        ),
+        onPressed: () {
+          setState(() {
+            Navigator.pushReplacementNamed(context, '/options');
           });
         });
   }

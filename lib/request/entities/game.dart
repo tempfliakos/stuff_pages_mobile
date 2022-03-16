@@ -8,14 +8,15 @@ class Game {
   int sum;
   bool wish;
 
-  Game({this.id,
-    this.gameId,
-    this.console,
-    this.title,
-    this.picture,
-    this.earned,
-    this.sum,
-    this.wish});
+  Game(
+      {this.id,
+      this.gameId,
+      this.console,
+      this.title,
+      this.picture,
+      this.earned,
+      this.sum,
+      this.wish});
 
   factory Game.fromJson(Map json) {
     return Game(

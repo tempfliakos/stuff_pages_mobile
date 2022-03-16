@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:Stuff_Pages/request/http.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:Stuff_Pages/utils/optionsUtil.dart';
 import 'package:flutter/material.dart';
 
 import '../global.dart';
@@ -24,6 +24,7 @@ class _MoviesState extends State<Movies> {
   var owned;
   var futureMovie;
   var liza;
+  var options;
 
   _getMovies() {
     filterMovies.clear();
@@ -33,6 +34,12 @@ class _MoviesState extends State<Movies> {
         _movies = list.map((e) => Movie.fromJson(e)).toList();
         _movies.sort((a, b) => a.title.compareTo(b.title));
         filterMovies.addAll(_movies);
+        options = getOptions();
+        seen = options['defaultSeen'];
+        owned = options['defaultOwn'];
+        futureMovie = options['defaultFuture'];
+        liza = options['defaultLiza'];
+        filter();
       });
     });
   }
@@ -146,8 +153,7 @@ class _MoviesState extends State<Movies> {
           Padding(padding: EdgeInsets.all(5.0)),
           Text("Liza filmek",
               style: TextStyle(
-                color:
-                    liza != null && liza ? Colors.yellow : Colors.grey[400],
+                color: liza != null && liza ? Colors.yellow : Colors.grey[400],
               ))
         ],
       ),
@@ -214,7 +220,7 @@ class _MoviesState extends State<Movies> {
       appBar: AppBar(
         backgroundColor: Colors.black,
         title: Text('Filmek'),
-        actions: <Widget>[logoutButton()],
+        actions: <Widget>[optionsButton(), logoutButton()],
       ),
       body: Center(
         child: Column(
@@ -400,7 +406,21 @@ class _MoviesState extends State<Movies> {
         onPressed: () {
           setState(() {
             userStorage.deleteItem('user');
+            userStorage.deleteItem('options');
             Navigator.pushReplacementNamed(context, '/');
+          });
+        });
+  }
+
+  Widget optionsButton() {
+    return IconButton(
+        icon: Icon(
+          Icons.settings,
+          color: Colors.grey,
+        ),
+        onPressed: () {
+          setState(() {
+            Navigator.pushReplacementNamed(context, '/options');
           });
         });
   }

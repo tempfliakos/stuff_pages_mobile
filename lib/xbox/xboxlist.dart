@@ -87,7 +87,7 @@ class _XboxListState extends State<XboxList> {
           automaticallyImplyLeading: false,
           backgroundColor: Colors.black,
           title: Text("Xbox játékok listája"),
-          actions: <Widget>[logoutButton()]),
+          actions: <Widget>[optionsButton(), logoutButton()]),
       body: Center(
         child: Column(
           children: <Widget>[filterTitleField(), Expanded(child: _gameList())],
@@ -162,7 +162,21 @@ class _XboxListState extends State<XboxList> {
         onPressed: () {
           setState(() {
             userStorage.deleteItem('user');
+            userStorage.deleteItem('options');
             Navigator.pushReplacementNamed(context, '/');
+          });
+        });
+  }
+
+  Widget optionsButton() {
+    return IconButton(
+        icon: Icon(
+          Icons.settings,
+          color: Colors.grey,
+        ),
+        onPressed: () {
+          setState(() {
+            Navigator.pushReplacementNamed(context, '/options');
           });
         });
   }

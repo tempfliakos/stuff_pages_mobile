@@ -112,9 +112,7 @@ class _AddWishGameState extends State<AddWishGame> {
               Column(children: <Widget>[
                 addButton(addGames[index], 'Playstation'),
               ]),
-              Column(children: <Widget>[
-                addButton(addGames[index], 'Switch')
-              ])
+              Column(children: <Widget>[addButton(addGames[index], 'Switch')])
             ],
           );
         });

@@ -20,7 +20,8 @@ class Api {
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer ${userStorage.getItem('user')}'
-        }, body: jsonEncode(body));
+        },
+        body: jsonEncode(body));
   }
 
   static Future getFromApi(String endpoint, String data) {
@@ -55,7 +56,8 @@ class Api {
             headers: {
               'Content-Type': 'application/json; charset=UTF-8',
               'Authorization': 'Bearer ${userStorage.getItem('user')}'
-            }, body: jsonEncode(body))
+            },
+            body: jsonEncode(body))
         .catchError((onError) {
       print(onError);
     });
