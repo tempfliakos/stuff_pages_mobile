@@ -119,7 +119,6 @@ class _AddWishGameState extends State<AddWishGame> {
   }
 
   Widget addButton(game, console) {
-    game.console = console;
     bool alreadyAdded = games.map((e) => e.title).toList().contains(game.title);
     if (alreadyAdded) {
       return IconButton(
@@ -131,6 +130,7 @@ class _AddWishGameState extends State<AddWishGame> {
           icon: getIcon(console, alreadyAdded),
           onPressed: () {
             setState(() {
+              game.console = console;
               final body = game.toJson();
               games.add(game);
               Api.post('games', body);
