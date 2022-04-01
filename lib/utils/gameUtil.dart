@@ -90,3 +90,10 @@ launchURL(destination) async {
   var url = 'https://www.youtube.com/results?search_query=' + destination;
   if (!await launch(url)) throw 'Could not launch $url';
 }
+
+calculatePercentage(game) {
+  if (game.sum == 0) {
+    return "0/0";
+  }
+  return game.earned.toString() + "/" + game.sum.toString();
+}

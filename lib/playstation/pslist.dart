@@ -16,8 +16,8 @@ class PsList extends StatefulWidget {
 }
 
 class _PsListState extends State<PsList> {
-  List _games = [];
-  List filterGames = [];
+  List<Game> _games = [];
+  List<Game> filterGames = [];
   var titleFilter = "";
 
   _getPsGames() {
@@ -25,12 +25,17 @@ class _PsListState extends State<PsList> {
     Api.get("games/console=Playstation").then((res) {
       setState(() {
         Iterable list = json.decode(res.body);
-        _games = list
+        List<Game> games = list
             .map((e) => Game.fromJson(e))
             .where((a) =>
                 a.console.toUpperCase().contains('Playstation'.toUpperCase()))
             .toList();
-        _games.sort((a, b) => a.title.compareTo(b.title));
+        List<Game> starred = games.where((g) => g.star).toList();
+        List<Game> notStarred = games.where((g) => !g.star).toList();
+        starred.sort((a, b) => a.title.compareTo(b.title));
+        notStarred.sort((a, b) => a.title.compareTo(b.title));
+        _games.addAll(starred);
+        _games.addAll(notStarred);
         filterGames.addAll(_games);
       });
     });
@@ -73,11 +78,9 @@ class _PsListState extends State<PsList> {
 
   filterByTitle() {
     if (titleFilter.isNotEmpty) {
-      _games.forEach((game) {
-        if (!game.title.toUpperCase().contains(titleFilter.toUpperCase())) {
-          filterGames.remove(game);
-        }
-      });
+      filterGames = _games.where((g) => g.title.toLowerCase().contains(titleFilter.toLowerCase())).toList();
+    } else {
+      filterGames.addAll(_games);
     }
   }
 
@@ -142,16 +145,24 @@ class _PsListState extends State<PsList> {
               child: img(game)),
           title: Text(game.title),
           subtitle: Text(calculatePercentage(game)),
+          trailing: starButton(game),
         ),
       ],
     );
   }
 
-  calculatePercentage(game) {
-    if (game.sum == 0) {
-      return "0/0";
-    }
-    return game.earned.toString() + "/" + game.sum.toString();
+  Widget starButton(Game game) {
+    return IconButton(
+        icon: Icon(
+          game.star ? Icons.star : Icons.star_border,
+          color: Colors.amber,
+        ),
+        onPressed: () {
+          setState(() {
+            game.star = !game.star;
+            Api.put("games/", game, game.id);
+          });
+        });
   }
 
   Widget logoutButton() {

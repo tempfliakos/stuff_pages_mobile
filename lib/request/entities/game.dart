@@ -7,6 +7,7 @@ class Game {
   int earned;
   int sum;
   bool wish;
+  bool star;
 
   Game(
       {this.id,
@@ -16,7 +17,8 @@ class Game {
       this.picture,
       this.earned,
       this.sum,
-      this.wish});
+      this.wish,
+      this.star});
 
   factory Game.fromJson(Map json) {
     return Game(
@@ -27,18 +29,21 @@ class Game {
         picture: json['picture'],
         earned: json['earned'],
         sum: json['sum'],
-        wish: json['wish']);
+        wish: json['wish'],
+        star: json['star']);
   }
 
   factory Game.addFromJson(Map json) {
     return Game(
-        gameId: json['game_id'].toString(),
-        console: json['console'],
-        title: json['title'],
-        picture: json['picture'],
-        earned: json['earned'],
-        sum: json['sum'],
-        wish: json['wish']);
+      gameId: json['game_id'].toString(),
+      console: json['console'],
+      title: json['title'],
+      picture: json['picture'],
+      earned: json['earned'],
+      sum: json['sum'],
+      wish: json['wish'],
+      star: json['star'],
+    );
   }
 
   Map toJson() {
@@ -48,7 +53,8 @@ class Game {
       'console': console,
       'title': title,
       'picture': picture,
-      'wish': wish
+      'wish': wish,
+      'star': star
     };
   }
 }
