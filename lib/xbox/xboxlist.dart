@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:Stuff_Pages/request/entities/game.dart';
 import 'package:Stuff_Pages/request/http.dart';
 import 'package:Stuff_Pages/utils/gameUtil.dart';
+import 'package:bmprogresshud/progresshud.dart';
 import 'package:flutter/material.dart';
 
 import '../global.dart';
@@ -16,26 +17,19 @@ class XboxList extends StatefulWidget {
 }
 
 class _XboxListState extends State<XboxList> {
+  ScrollController controller;
   List<Game> _games = [];
-  List<Game> filterGames = [];
-  var titleFilter = "";
+  String titleFilter = "";
+  int pageNumber = 1;
 
   _getXboxGames() {
-    filterGames.clear();
-    Api.get("games/console=Xbox").then((res) {
+    Api.get("games/console=Xbox&page=$pageNumber&title=$titleFilter")
+        .then((res) {
       setState(() {
         Iterable list = json.decode(res.body);
-        List<Game> games = list
-            .map((e) => Game.fromJson(e))
-            .where((a) => a.console.toUpperCase().contains('XBOX'))
-            .toList();
-        List<Game> starred = games.where((g) => g.star).toList();
-        List<Game> notStarred = games.where((g) => !g.star).toList();
-        starred.sort((a, b) => a.title.compareTo(b.title));
-        notStarred.sort((a, b) => a.title.compareTo(b.title));
-        _games.addAll(starred);
-        _games.addAll(notStarred);
-        filterGames.addAll(_games);
+        List<Game> games = list.map((e) => Game.fromJson(e)).toList();
+        _games.addAll(createFinalGameList(games));
+        ProgressHud.dismiss();
       });
     });
   }
@@ -43,9 +37,11 @@ class _XboxListState extends State<XboxList> {
   initState() {
     super.initState();
     _getXboxGames();
+    controller = ScrollController()..addListener(_scrollListener);
   }
 
   dispose() {
+    controller.removeListener(_scrollListener);
     super.dispose();
   }
 
@@ -58,7 +54,6 @@ class _XboxListState extends State<XboxList> {
             border: OutlineInputBorder(),
             labelText: 'Játék címe...'),
         onChanged: (text) {
-          print(text);
           titleFilter = text;
           filter();
         },
@@ -69,17 +64,9 @@ class _XboxListState extends State<XboxList> {
   }
 
   void filter() {
-    filterGames.clear();
-    filterByTitle();
-    setState(() {});
-  }
-
-  filterByTitle() {
-    if (titleFilter.isNotEmpty) {
-      filterGames = _games.where((g) => g.title.toLowerCase().contains(titleFilter.toLowerCase())).toList();
-    } else {
-      filterGames.addAll(_games);
-    }
+    pageNumber = 1;
+    _games = [];
+    _getXboxGames();
   }
 
   @override
@@ -90,9 +77,14 @@ class _XboxListState extends State<XboxList> {
           backgroundColor: Colors.black,
           title: Text("Xbox játékok listája"),
           actions: <Widget>[optionsButton(), logoutButton()]),
-      body: Center(
-        child: Column(
-          children: <Widget>[filterTitleField(), Expanded(child: _gameList())],
+      body: Scrollbar(
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              filterTitleField(),
+              Expanded(child: _gameList())
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -110,9 +102,10 @@ class _XboxListState extends State<XboxList> {
 
   Widget _gameList() {
     return ListView.builder(
-      itemCount: filterGames.length,
+      controller: controller,
+      itemCount: _games.length,
       itemBuilder: (context, index) {
-        final item = filterGames[index];
+        final item = _games[index];
         return InkWell(
           child: Card(
             child: getGame(item),
@@ -189,5 +182,13 @@ class _XboxListState extends State<XboxList> {
             Navigator.pushReplacementNamed(context, '/options');
           });
         });
+  }
+
+  void _scrollListener() {
+    if (controller.position.extentAfter == 0) {
+      ProgressHud.showLoading();
+      pageNumber++;
+      _getXboxGames();
+    }
   }
 }

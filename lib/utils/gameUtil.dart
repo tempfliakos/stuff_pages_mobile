@@ -97,3 +97,14 @@ calculatePercentage(game) {
   }
   return game.earned.toString() + "/" + game.sum.toString();
 }
+
+List<Game> createFinalGameList(List<Game> games) {
+  List<Game> result = [];
+  List<Game> starred = games.where((g) => g.star).toList();
+  List<Game> notStarred = games.where((g) => !g.star).toList();
+  starred.sort((a, b) => a.title.compareTo(b.title));
+  notStarred.sort((a, b) => a.title.compareTo(b.title));
+  result.addAll(starred);
+  result.addAll(notStarred);
+  return result;
+}
