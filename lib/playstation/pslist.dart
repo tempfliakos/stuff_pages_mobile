@@ -8,6 +8,7 @@ import 'package:Stuff_Pages/utils/gameUtil.dart';
 import 'package:bmprogresshud/progresshud.dart';
 import 'package:flutter/material.dart';
 
+import '../enums/gamesEnum.dart';
 import '../global.dart';
 import '../navigator.dart';
 
@@ -21,14 +22,21 @@ class _PsListState extends State<PsList> {
   List<Game> _games = [];
   String titleFilter = "";
   int pageNumber = 1;
+  int maxPageNumber;
 
   _getPsGames() {
     Api.get("games/console=Playstation&page=$pageNumber&title=$titleFilter")
         .then((res) {
       setState(() {
-        Iterable list = json.decode(res.body);
-        List<Game> games = list.map((e) => Game.fromJson(e)).toList();
-        _games.addAll(createFinalGameList(games));
+        try {
+          Map<String, dynamic> data = json.decode(res.body);
+          Iterable list = data[GamesEnum.games.name];
+          maxPageNumber = (data[GamesEnum.count.name] / list.length).ceil();
+          List<Game> games = list.map((e) => Game.fromJson(e)).toList();
+          List<String> _gamesIds = games.map((e) => e.gameId).toList();
+          _games = _games.where((g) => !_gamesIds.contains(g.gameId)).toList();
+          _games.addAll(createFinalGameList(games));
+        } catch (e) {}
         ProgressHud.dismiss();
       });
     });
@@ -185,7 +193,7 @@ class _PsListState extends State<PsList> {
   }
 
   void _scrollListener() {
-    if (controller.position.extentAfter == 0) {
+    if (maxPageNumber >= pageNumber && controller.position.extentAfter == 0) {
       ProgressHud.showLoading();
       pageNumber++;
       _getPsGames();

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:Stuff_Pages/enums/gamesEnum.dart';
 import 'package:Stuff_Pages/request/entities/game.dart';
 import 'package:Stuff_Pages/request/http.dart';
 import 'package:Stuff_Pages/utils/gameUtil.dart';
@@ -21,14 +22,21 @@ class _XboxListState extends State<XboxList> {
   List<Game> _games = [];
   String titleFilter = "";
   int pageNumber = 1;
+  int maxPageNumber;
 
   _getXboxGames() {
     Api.get("games/console=Xbox&page=$pageNumber&title=$titleFilter")
         .then((res) {
       setState(() {
-        Iterable list = json.decode(res.body);
-        List<Game> games = list.map((e) => Game.fromJson(e)).toList();
-        _games.addAll(createFinalGameList(games));
+        try {
+          Map<String, dynamic> data = json.decode(res.body);
+          Iterable list = data[GamesEnum.games.name];
+          maxPageNumber = (data[GamesEnum.count.name] / list.length).ceil();
+          List<Game> games = list.map((e) => Game.fromJson(e)).toList();
+          List<String> _gamesIds = games.map((e) => e.gameId).toList();
+          _games = _games.where((g) => !_gamesIds.contains(g.gameId)).toList();
+          _games.addAll(createFinalGameList(games));
+        } catch (e) {}
         ProgressHud.dismiss();
       });
     });
@@ -185,7 +193,7 @@ class _XboxListState extends State<XboxList> {
   }
 
   void _scrollListener() {
-    if (controller.position.extentAfter == 0) {
+    if (maxPageNumber >= pageNumber && controller.position.extentAfter == 0) {
       ProgressHud.showLoading();
       pageNumber++;
       _getXboxGames();

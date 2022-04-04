@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ProgressHud(
         isGlobalHud: true,
+        maximumDismissDuration: Duration(seconds: 2),
         child: MaterialApp(
           title: 'Stuff Pages Mobile',
           initialRoute: '/',
