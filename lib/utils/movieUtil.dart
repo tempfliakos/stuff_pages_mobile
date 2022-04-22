@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../request/entities/movie.dart';
+
 Widget filmText(movie) {
   return Text(
     movie.title,
@@ -14,14 +16,20 @@ Widget filmText(movie) {
   );
 }
 
-Widget img(movie) {
+Widget img(Movie movie) {
   if (movie.backdropPath != null && movie.backdropPath != "null") {
-    return Image.network(
-      'https://image.tmdb.org/t/p/w500/' + movie.backdropPath,
-      scale: 4,
-      filterQuality: FilterQuality.high,
+    return ClipRRect(
+      child: Image.network(
+        'https://image.tmdb.org/t/p/w500/' + movie.backdropPath,
+        scale: 4,
+        filterQuality: FilterQuality.high,
+      ),
+      borderRadius: BorderRadius.circular(0.0),
     );
   } else {
-    return Image.asset('assets/images/default-movie-back.jpg', scale: 2.32);
+    return ClipRRect(
+      child: Image.asset('assets/images/default-movie-back.jpg', scale: 2.32),
+      borderRadius: BorderRadius.circular(0.0),
+    );
   }
 }

@@ -5,6 +5,7 @@ import 'package:Stuff_Pages/request/entities/game.dart';
 import 'package:Stuff_Pages/request/http.dart';
 import 'package:Stuff_Pages/utils/gameUtil.dart';
 import 'package:bmprogresshud/progresshud.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../global.dart';
@@ -20,6 +21,7 @@ class XboxList extends StatefulWidget {
 class _XboxListState extends State<XboxList> {
   ScrollController controller;
   List<Game> _games = [];
+  List<Game> _starred = [];
   String titleFilter = "";
   int pageNumber = 1;
   int maxPageNumber;
@@ -36,7 +38,23 @@ class _XboxListState extends State<XboxList> {
           List<String> _gamesIds = games.map((e) => e.gameId).toList();
           _games = _games.where((g) => !_gamesIds.contains(g.gameId)).toList();
           _games.addAll(createFinalGameList(games));
-        } catch (e) {}
+        } catch (e) {
+          print(e);
+        }
+        ProgressHud.dismiss();
+      });
+    });
+  }
+
+  _getStarGames() {
+    Api.get("games/star/console=Xbox").then((res) {
+      setState(() {
+        try {
+          List<dynamic> data = json.decode(res.body);
+          _starred = data.map((e) => Game.starFromJson(e)).toList();
+        } catch (e) {
+          print(e);
+        }
         ProgressHud.dismiss();
       });
     });
@@ -45,6 +63,7 @@ class _XboxListState extends State<XboxList> {
   initState() {
     super.initState();
     _getXboxGames();
+    _getStarGames();
     controller = ScrollController()..addListener(_scrollListener);
   }
 
@@ -89,6 +108,10 @@ class _XboxListState extends State<XboxList> {
         child: Center(
           child: Column(
             children: <Widget>[
+              Container(
+                  child: _starList(),
+                  alignment: Alignment.centerLeft,
+                  margin: EdgeInsets.all(20.0)),
               filterTitleField(),
               Expanded(child: _gameList())
             ],
@@ -119,13 +142,26 @@ class _XboxListState extends State<XboxList> {
             child: getGame(item),
             color: Colors.grey,
           ),
-          onTap: () async {
-            await Navigator.push(context,
-                MaterialPageRoute(builder: (context) => ShowAchievement(item)));
-            _getXboxGames();
-          },
+          onTap: () => openAchievements(item),
         );
       },
+    );
+  }
+
+  Widget _starList() {
+    List<Widget> highlights = [];
+    for (Game starred in _starred) {
+      highlights.add(new GestureDetector(
+        onTap: () => openAchievements(starred),
+        child: highlightImg(starred),
+      ));
+    }
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: highlights,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+      ),
     );
   }
 
@@ -141,7 +177,7 @@ class _XboxListState extends State<XboxList> {
                 maxWidth: 200,
                 maxHeight: 200,
               ),
-              child: xboxImg(game)),
+              child: img(game)),
           title: Text(game.title),
           subtitle: Text(calculatePercentage(game)),
           trailing: starButton(game),
@@ -160,6 +196,11 @@ class _XboxListState extends State<XboxList> {
           setState(() {
             game.star = !game.star;
             Api.put("games/", game, game.id);
+            if (game.star) {
+              _starred.add(game);
+            } else {
+              _starred.removeWhere((g) => g.id == game.id);
+            }
           });
         });
   }
@@ -198,5 +239,11 @@ class _XboxListState extends State<XboxList> {
       pageNumber++;
       _getXboxGames();
     }
+  }
+
+  openAchievements(Game game) async {
+    await Navigator.push(context,
+        MaterialPageRoute(builder: (context) => ShowAchievement(game)));
+    _getXboxGames();
   }
 }

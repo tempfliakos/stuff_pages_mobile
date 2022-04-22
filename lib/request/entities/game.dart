@@ -20,6 +20,14 @@ class Game {
       this.wish,
       this.star});
 
+  Game.highlight(
+      {this.id,
+        this.gameId,
+        this.console,
+        this.title,
+        this.picture,
+        });
+
   factory Game.fromJson(Map json) {
     return Game(
         id: json['id'],
@@ -31,6 +39,15 @@ class Game {
         sum: json['sum'],
         wish: json['wish'],
         star: json['star']);
+  }
+
+  factory Game.starFromJson(Map json) {
+    return Game.highlight(
+        id: json['id'],
+        gameId: json['game_id'],
+        console: json['console'],
+        title: json['title'],
+        picture: json['picture']);
   }
 
   factory Game.addFromJson(Map json) {

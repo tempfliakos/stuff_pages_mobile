@@ -20,6 +20,7 @@ class PsList extends StatefulWidget {
 class _PsListState extends State<PsList> {
   ScrollController controller;
   List<Game> _games = [];
+  List<Game> _starred = [];
   String titleFilter = "";
   int pageNumber = 1;
   int maxPageNumber;
@@ -36,7 +37,23 @@ class _PsListState extends State<PsList> {
           List<String> _gamesIds = games.map((e) => e.gameId).toList();
           _games = _games.where((g) => !_gamesIds.contains(g.gameId)).toList();
           _games.addAll(createFinalGameList(games));
-        } catch (e) {}
+        } catch (e) {
+          print(e);
+        }
+        ProgressHud.dismiss();
+      });
+    });
+  }
+
+  _getStarGames() {
+    Api.get("games/star/console=Playstation").then((res) {
+      setState(() {
+        try {
+          List<dynamic> data = json.decode(res.body);
+          _starred = data.map((e) => Game.starFromJson(e)).toList();
+        } catch (e) {
+          print(e);
+        }
         ProgressHud.dismiss();
       });
     });
@@ -45,6 +62,7 @@ class _PsListState extends State<PsList> {
   initState() {
     super.initState();
     _getPsGames();
+    _getStarGames();
     controller = ScrollController()..addListener(_scrollListener);
   }
 
@@ -89,6 +107,10 @@ class _PsListState extends State<PsList> {
         child: Center(
           child: Column(
             children: <Widget>[
+              Container(
+                  child: _starList(),
+                  alignment: Alignment.centerLeft,
+                  margin: EdgeInsets.all(20.0)),
               filterTitleField(),
               Expanded(child: _gameList())
             ],
@@ -119,13 +141,26 @@ class _PsListState extends State<PsList> {
             child: getGame(item),
             color: Colors.grey,
           ),
-          onTap: () async {
-            await Navigator.push(context,
-                MaterialPageRoute(builder: (context) => ShowTrophy(item)));
-            _getPsGames();
-          },
+          onTap: () => openTrophies(item),
         );
       },
+    );
+  }
+
+  Widget _starList() {
+    List<Widget> highlights = [];
+    for (Game starred in _starred) {
+      highlights.add(new GestureDetector(
+        onTap: () => openTrophies(starred),
+        child: highlightImg(starred),
+      ));
+    }
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: highlights,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+      ),
     );
   }
 
@@ -160,6 +195,11 @@ class _PsListState extends State<PsList> {
           setState(() {
             game.star = !game.star;
             Api.put("games/", game, game.id);
+            if (game.star) {
+              _starred.add(game);
+            } else {
+              _starred.removeWhere((g) => g.id == game.id);
+            }
           });
         });
   }
@@ -198,5 +238,11 @@ class _PsListState extends State<PsList> {
       pageNumber++;
       _getPsGames();
     }
+  }
+
+  openTrophies(Game game) async {
+    await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => ShowTrophy(game)));
+    _getPsGames();
   }
 }

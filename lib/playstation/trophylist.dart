@@ -59,7 +59,7 @@ class _ShowTrophyState extends State<ShowTrophy> {
     setState(() {});
   }
 
-  _getAchievements() {
+  _getTrophies() {
     filteredAchievments.clear();
     final endpoint = "achievements/game=" + game.gameId;
     Api.get(endpoint).then((res) {
@@ -68,7 +68,7 @@ class _ShowTrophyState extends State<ShowTrophy> {
         _achievements = list.map((e) => Achievement.fromJson(e)).toList();
         _achievements.sort((a, b) => a.title.compareTo(b.title));
         filteredAchievments.addAll(_achievements);
-        donefilter = (game.earned / game.sum * 100) == 100;
+        donefilter = game.earned != null && (game.earned / game.sum * 100) == 100;
         filter();
       });
     });
@@ -76,7 +76,7 @@ class _ShowTrophyState extends State<ShowTrophy> {
 
   initState() {
     super.initState();
-    _getAchievements();
+    _getTrophies();
   }
 
   dispose() {

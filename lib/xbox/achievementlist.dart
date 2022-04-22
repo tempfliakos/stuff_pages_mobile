@@ -69,7 +69,7 @@ class _ShowAchievementState extends State<ShowAchievement> {
         _achievements = list.map((e) => Achievement.fromJson(e)).toList();
         _achievements.sort((a, b) => a.title.compareTo(b.title));
         filteredAchievments.addAll(_achievements);
-        donefilter = (game.earned / game.sum * 100) == 100;
+        donefilter = game.earned != null && (game.earned / game.sum * 100) == 100;
         filter();
       });
     });
