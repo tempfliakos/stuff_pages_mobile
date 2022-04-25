@@ -91,23 +91,12 @@ class _AddXboxGameState extends State<AddXboxGame> {
     return ListView.builder(
         itemCount: addGames.length,
         itemBuilder: (context, index) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              InkWell(
-                child: img(addGames[index]),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                      child: addGameText(addGames[index]),
-                      width: MediaQuery.of(context).size.width * 0.50)
-                ],
-              ),
-              Column(children: <Widget>[addButton(addGames[index])])
-            ],
-          );
+          final item = addGames[index];
+          return InkWell(
+              child: Card(
+                child: getGame(item, addButton(item)),
+                color: cardBackgroundColor,
+              ));
         });
   }
 
@@ -124,7 +113,7 @@ class _AddXboxGameState extends State<AddXboxGame> {
       return IconButton(
           icon: Icon(
             Icons.check_circle_outline,
-            color: cardBackgroundColor,
+            color: addableColor,
           ),
           onPressed: () {
             setState(() {

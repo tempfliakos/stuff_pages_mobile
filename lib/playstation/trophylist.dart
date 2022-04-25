@@ -42,8 +42,8 @@ class _ShowTrophyState extends State<ShowTrophy> {
           filter();
         });
       },
-      activeTrackColor: seenColor,
-      activeColor: seenColor,
+      activeTrackColor: addedColor,
+      activeColor: addedColor,
       inactiveTrackColor: cardBackgroundColor,
     );
   }

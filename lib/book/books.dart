@@ -46,7 +46,7 @@ class _BooksState extends State<Books> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: backgroundColor,
-        title: Text('Filmek', style: TextStyle(color: fontColor)),
+        title: Text('Könyvek', style: TextStyle(color: fontColor)),
         actions: <Widget>[optionsButton(), logoutButton()],
       ),
       body: Center(
@@ -87,32 +87,11 @@ class _BooksState extends State<Books> {
             background: Container(color: deleteColor),
             child: InkWell(
               child: Card(
-                child: getBook(item),
+                child: getBook(item, deleteButton(item)),
                 color: cardBackgroundColor,
               ),
             ));
       },
-    );
-  }
-
-  Widget getBook(Book book) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        ListTile(
-          leading: ConstrainedBox(
-              constraints: BoxConstraints(
-                minWidth: 44,
-                minHeight: 44,
-                maxWidth: 400,
-                maxHeight: 400,
-              ),
-              child: img(book)),
-          title: Text(book.title, style: TextStyle(color: fontColor)),
-          subtitle: Text(book.author, style: TextStyle(color: fontColor)),
-          trailing: deleteButton(book),
-        ),
-      ],
     );
   }
 
@@ -154,7 +133,7 @@ class _BooksState extends State<Books> {
     return IconButton(
         icon: Icon(
           Icons.settings,
-          color: cardBackgroundColor,
+          color: addableColor,
         ),
         onPressed: () {
           setState(() {

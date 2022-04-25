@@ -81,23 +81,12 @@ class _AddMovieState extends State<AddMovie> {
     return ListView.builder(
         itemCount: addMovies.length,
         itemBuilder: (context, index) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              InkWell(
-                child: img(addMovies[index]),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                      child: filmText(addMovies[index]),
-                      width: MediaQuery.of(context).size.width * 0.50)
-                ],
-              ),
-              Column(children: <Widget>[addButton(addMovies[index])])
-            ],
-          );
+          final item = addMovies[index];
+          return InkWell(
+              child: Card(
+            child: getMovie(item, addButton(item)),
+            color: cardBackgroundColor,
+          ));
         });
   }
 

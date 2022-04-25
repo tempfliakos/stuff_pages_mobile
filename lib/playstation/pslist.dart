@@ -210,7 +210,7 @@ class _PsListState extends State<PsList> {
     return IconButton(
         icon: Icon(
           Icons.settings,
-          color: cardBackgroundColor,
+          color: addableColor,
         ),
         onPressed: () {
           setState(() {

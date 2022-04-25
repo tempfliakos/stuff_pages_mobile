@@ -44,8 +44,8 @@ class _ShowAchievementState extends State<ShowAchievement> {
           filter();
         });
       },
-      activeTrackColor: seenColor,
-      activeColor: seenColor,
+      activeTrackColor: addedColor,
+      activeColor: addedColor,
       inactiveTrackColor: cardBackgroundColor,
     );
   }

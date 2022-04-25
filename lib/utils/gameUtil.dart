@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'colorUtil.dart';
+
 String pictureLink(String link) {
   return !link.startsWith("http") ? "https:" + link : link;
 }
@@ -21,7 +23,8 @@ Widget getGame(Game game, Widget trailing) {
               maxHeight: 200,
             ),
             child: img(game)),
-        title: Text(game.title),
+        title: Text(game.title, style: TextStyle(color: fontColor)),
+        subtitle: calculatePercentageText(game),
         trailing: trailing,
       ),
     ],
@@ -88,38 +91,24 @@ Widget highlightImg(game) {
   );
 }
 
-Widget addGameText(game) {
-  return Text(
-    game.title,
-    textAlign: TextAlign.start,
-    overflow: TextOverflow.ellipsis,
-    textWidthBasis: TextWidthBasis.parent,
-    maxLines: 10,
-    style: TextStyle(
-      fontSize: 16,
-    ),
-  );
-}
-
 launchURL(destination) async {
   var url = 'https://www.youtube.com/results?search_query=' + destination;
   if (!await launch(url)) throw 'Could not launch $url';
 }
 
-calculatePercentage(game) {
-  if (game.sum == 0) {
-    return "0/0";
+Text calculatePercentageText(Game game) {
+  if (game.sum != null && game.sum != 0) {
+    return Text(calculatePercentage(game), style: TextStyle(color: fontColor));
   }
-  return game.earned.toString() + "/" + game.sum.toString();
+  return null;
+}
+
+calculatePercentage(Game game) {
+  double percentage = game.earned / game.sum * 100;
+  return game.earned.toString() + "/" + game.sum.toString() + " (" + percentage.round().toString() + "%)";
 }
 
 List<Game> createFinalGameList(List<Game> games) {
-  List<Game> result = [];
-  List<Game> starred = games.where((g) => g.star).toList();
-  List<Game> notStarred = games.where((g) => !g.star).toList();
-  starred.sort((a, b) => a.title.compareTo(b.title));
-  notStarred.sort((a, b) => a.title.compareTo(b.title));
-  result.addAll(starred);
-  result.addAll(notStarred);
-  return result;
+  games.sort((a, b) => a.title.compareTo(b.title));
+  return games;
 }

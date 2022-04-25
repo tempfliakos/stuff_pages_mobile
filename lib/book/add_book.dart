@@ -80,23 +80,12 @@ class _AddBookState extends State<AddBook> {
     return ListView.builder(
         itemCount: addBooks.length,
         itemBuilder: (context, index) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              InkWell(
-                child: img(addBooks[index]),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                      child: bookText(addBooks[index]),
-                      width: MediaQuery.of(context).size.width * 0.50)
-                ],
-              ),
-              Column(children: <Widget>[addButton(addBooks[index])])
-            ],
-          );
+          final item = addBooks[index];
+          return InkWell(
+              child: Card(
+            child: getBook(item, addButton(item)),
+            color: cardBackgroundColor,
+          ));
         });
   }
 
@@ -105,7 +94,7 @@ class _AddBookState extends State<AddBook> {
       return IconButton(
         icon: Icon(
           Icons.check_circle,
-          color: addableColor,
+          color: addedColor,
         ),
         onPressed: () {},
       );
@@ -113,7 +102,7 @@ class _AddBookState extends State<AddBook> {
       return IconButton(
           icon: Icon(
             Icons.check_circle_outline,
-            color: addedColor,
+            color: addableColor,
           ),
           onPressed: () {
             setState(() {

@@ -211,7 +211,7 @@ class _XboxListState extends State<XboxList> {
     return IconButton(
         icon: Icon(
           Icons.settings,
-          color: cardBackgroundColor,
+          color: addableColor,
         ),
         onPressed: () {
           setState(() {

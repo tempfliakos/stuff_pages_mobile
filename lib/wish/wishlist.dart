@@ -48,6 +48,7 @@ class _WishListState extends State<WishList> {
               title: Text("Wishlist"),
               actions: <Widget>[optionsButton(), logoutButton()],
               bottom: const TabBar(
+                indicatorColor: futureColor,
                 tabs: [
                   Tab(
                       icon: ImageIcon(
@@ -144,7 +145,7 @@ class _WishListState extends State<WishList> {
     return IconButton(
         icon: Icon(
           Icons.settings,
-          color: cardBackgroundColor,
+          color: addableColor,
         ),
         onPressed: () {
           setState(() {

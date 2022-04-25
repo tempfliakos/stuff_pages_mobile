@@ -135,7 +135,7 @@ class _SwitchListState extends State<SwitchList> {
     return IconButton(
         icon: Icon(
           Icons.settings,
-          color: cardBackgroundColor,
+          color: addableColor,
         ),
         onPressed: () {
           setState(() {

@@ -79,12 +79,12 @@ class _MoviesState extends State<Movies> {
           children: [
             Icon(
               Icons.remove_red_eye,
-              color: seen != null && seen ? seenColor : addableColor,
+              color: seen != null && seen ? addedColor : fontColor,
             ),
             Padding(padding: EdgeInsets.all(5.0)),
             Text("Megnézett filmek",
                 style: TextStyle(
-                    color: seen != null && seen ? seenColor : addableColor))
+                    color: seen != null && seen ? addedColor : fontColor))
           ],
         ),
         onPressed: () {
@@ -100,12 +100,12 @@ class _MoviesState extends State<Movies> {
           children: [
             Icon(
               Icons.file_download,
-              color: owned != null && owned ? deleteColor : addableColor,
+              color: owned != null && owned ? deleteColor : fontColor,
             ),
             Padding(padding: EdgeInsets.all(5.0)),
             Text("Beszerzett filmek",
                 style: TextStyle(
-                    color: owned != null && owned ? deleteColor : addableColor))
+                    color: owned != null && owned ? deleteColor : fontColor))
           ],
         ),
         onPressed: () {
@@ -122,14 +122,14 @@ class _MoviesState extends State<Movies> {
           Icon(
             Icons.access_time,
             color:
-            futureMovie != null && futureMovie ? futureColor : addableColor,
+            futureMovie != null && futureMovie ? futureColor : fontColor,
           ),
           Padding(padding: EdgeInsets.all(5.0)),
           Text("Jövőbeni filmek",
               style: TextStyle(
                   color: futureMovie != null && futureMovie
                       ? futureColor
-                      : addableColor))
+                      : fontColor))
         ],
       ),
       onPressed: () {
@@ -146,12 +146,12 @@ class _MoviesState extends State<Movies> {
         children: [
           Icon(
             Icons.star,
-            color: liza != null && liza ? futureColor : addableColor,
+            color: liza != null && liza ? futureColor : fontColor,
           ),
           Padding(padding: EdgeInsets.all(5.0)),
           Text("Liza filmek",
               style: TextStyle(
-                color: liza != null && liza ? futureColor : addableColor,
+                color: liza != null && liza ? futureColor : fontColor,
               ))
         ],
       ),
@@ -169,7 +169,7 @@ class _MoviesState extends State<Movies> {
         children: [
           Icon(
             Icons.repeat,
-            color: addableColor,
+            color: fontColor,
           ),
           Padding(padding: EdgeInsets.all(5.0)),
           Text("Szűrők alaphalyzetbe", style: TextStyle(color: fontColor))
@@ -278,48 +278,13 @@ class _MoviesState extends State<Movies> {
             ),
             child: InkWell(
               child: Card(
-                child: getMovie(item),
+                child: getMovie(item, seenButton(item)),
                 color: cardBackgroundColor,
               ),
             )
         );
       },
     );
-  }
-
-  Widget getMovie(Movie movie) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        ListTile(
-          leading: ConstrainedBox(
-              constraints: BoxConstraints(
-                minWidth: 44,
-                minHeight: 44,
-                maxWidth: 400,
-                maxHeight: 400,
-              ),
-              child: img(movie)),
-          title: Text(movie.title, style: TextStyle(color: fontColor)),
-          subtitle: getGenres(movie),
-          trailing: seenButton(movie),
-        ),
-      ],
-    );
-  }
-
-  Text getGenres(Movie movie) {
-    if(movie != null && movie.genres.isNotEmpty) {
-      String result = "";
-      String separator = "";
-      for(var genre in movie.genres) {
-        result += separator;
-        result += genre;
-        separator = ", ";
-      }
-      return Text(result, style: TextStyle(color: fontColor));
-    }
-    return null;
   }
 
   List<Widget> getButtons(Movie movie) {
@@ -330,7 +295,7 @@ class _MoviesState extends State<Movies> {
     return IconButton(
         icon: Icon(
           Icons.remove_red_eye,
-          color: movie.seen ? seenColor : addableColor,
+          color: movie.seen ? addedColor : addableColor,
         ),
         onPressed: () {
           setState(() {
@@ -436,7 +401,7 @@ class _MoviesState extends State<Movies> {
     return IconButton(
         icon: Icon(
           Icons.settings,
-          color: cardBackgroundColor,
+          color: addableColor,
         ),
         onPressed: () {
           setState(() {

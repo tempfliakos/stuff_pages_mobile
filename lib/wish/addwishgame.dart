@@ -93,33 +93,27 @@ class _AddWishGameState extends State<AddWishGame> {
     return ListView.builder(
         itemCount: addGames.length,
         itemBuilder: (context, index) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              InkWell(
-                child: img(addGames[index]),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                      child: addGameText(addGames[index]),
-                      width: MediaQuery.of(context).size.width * 0.50)
-                ],
-              ),
-              Column(children: <Widget>[
-                addButton(addGames[index], 'Xbox'),
-              ]),
-              Column(children: <Widget>[
-                addButton(addGames[index], 'Playstation'),
-              ]),
-              Column(children: <Widget>[addButton(addGames[index], 'Switch')])
-            ],
-          );
+          final item = addGames[index];
+          return InkWell(
+              child: Card(
+            child: getGame(item, addButtons(item)),
+            color: cardBackgroundColor,
+          ));
         });
   }
 
-  Widget addButton(game, console) {
+  Widget addButtons(Game game) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        addButton(game, 'Xbox'),
+        addButton(game, 'Playstation'),
+        addButton(game, 'Switch')
+      ],
+    );
+  }
+
+  Widget addButton(Game game, console) {
     bool alreadyAdded = games.map((e) => e.title).toList().contains(game.title);
     if (alreadyAdded) {
       return IconButton(
@@ -144,17 +138,17 @@ class _AddWishGameState extends State<AddWishGame> {
     if (console == 'Xbox') {
       return ImageIcon(
         AssetImage("assets/images/xbox_logo.png"),
-        color: alreadyAdded ? addedColor : cardBackgroundColor,
+        color: alreadyAdded ? addedColor : addableColor,
       );
     } else if (console == 'Playstation') {
       return ImageIcon(
         AssetImage("assets/images/ps_logo.png"),
-        color: alreadyAdded ? addedColor : cardBackgroundColor,
+        color: alreadyAdded ? addedColor : addableColor,
       );
     }
     return ImageIcon(
       AssetImage("assets/images/switch_logo.png"),
-      color: alreadyAdded ? addedColor : cardBackgroundColor,
+      color: alreadyAdded ? addedColor : addableColor,
     );
   }
 }
