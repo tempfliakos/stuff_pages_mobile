@@ -105,7 +105,12 @@ Text calculatePercentageText(Game game) {
 
 calculatePercentage(Game game) {
   double percentage = game.earned / game.sum * 100;
-  return game.earned.toString() + "/" + game.sum.toString() + " (" + percentage.round().toString() + "%)";
+  return game.earned.toString() +
+      "/" +
+      game.sum.toString() +
+      " (" +
+      percentage.round().toString() +
+      "%)";
 }
 
 List<Game> createFinalGameList(List<Game> games) {

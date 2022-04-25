@@ -35,7 +35,7 @@ class _PsListState extends State<PsList> {
           Map<String, dynamic> data = json.decode(res.body);
           Iterable list = data[GamesEnum.games.name];
           maxPageNumber = (data[GamesEnum.count.name] / list.length).ceil();
-          List<Game> games = list.map((e) => Game.fromJson(e)).toList();
+          List<Game> games = list.map((e) => Game.playstationFromJson(e)).toList();
           List<String> _gamesIds = games.map((e) => e.gameId).toList();
           _games = _games.where((g) => !_gamesIds.contains(g.gameId)).toList();
           _games.addAll(createFinalGameList(games));
