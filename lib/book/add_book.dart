@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:Stuff_Pages/request/entities/book.dart';
 import 'package:Stuff_Pages/utils/bookUtil.dart';
 import 'package:Stuff_Pages/utils/colorUtil.dart';
+import 'package:bmprogresshud/progresshud.dart';
 import 'package:flutter/material.dart';
 
+import '../global.dart';
 import '../request/http.dart';
 
 class AddBook extends StatefulWidget {
@@ -32,12 +34,11 @@ class _AddBookState extends State<AddBook> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: backgroundColor,
-        title: Text("Könyvek hozzáadása", style: TextStyle(color: fontColor)),
+        title: searchBar("Könyv hozzáadása...", findBooks),
       ),
       body: Center(
         child: Column(
           children: <Widget>[
-            findBookField(),
             Expanded(child: _bookList()),
           ],
         ),
@@ -46,20 +47,9 @@ class _AddBookState extends State<AddBook> {
     );
   }
 
-  Widget findBookField() {
-    return TextField(
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        labelText: 'Könyv hozzáadása...',
-      ),
-      onChanged: (text) {
-        findBooks(text);
-      },
-    );
-  }
-
   void findBooks(text) {
     if (text.length > 2) {
+      ProgressHud.showLoading();
       Api.getFromApi("books", text.toString()).then((res) {
         if (res != null) {
           List<dynamic> result = json.decode(res.body);
@@ -68,6 +58,7 @@ class _AddBookState extends State<AddBook> {
             result.forEach((book) {
               addBooks.add(Book.addFromJson(book));
             });
+            ProgressHud.dismiss();
           });
         }
       });

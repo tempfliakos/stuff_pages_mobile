@@ -4,7 +4,10 @@ import 'package:Stuff_Pages/request/entities/game.dart';
 import 'package:Stuff_Pages/request/http.dart';
 import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:Stuff_Pages/utils/gameUtil.dart';
+import 'package:bmprogresshud/progresshud.dart';
 import 'package:flutter/material.dart';
+
+import '../global.dart';
 
 class AddXboxGame extends StatefulWidget {
   List<Game> addGames = [];
@@ -32,12 +35,12 @@ class _AddXboxGameState extends State<AddXboxGame> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: backgroundColor,
-        title: Text("Játékok hozzáadása", style: TextStyle(color: fontColor)),
+        title: searchBar("Játék hozzáadása...", searchField, false),
+        actions: [searchIcon()],
       ),
       body: Center(
         child: Column(
           children: <Widget>[
-            findGameField(),
             Expanded(child: _gameList()),
           ],
         ),
@@ -46,31 +49,22 @@ class _AddXboxGameState extends State<AddXboxGame> {
     );
   }
 
-  Widget findGameField() {
-    return Column(
-      children: [
-        TextField(
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            labelText: 'Játék keresése...',
-          ),
-          onChanged: (text) {
-            queryString = text;
-          },
+  void searchField(String text) {
+    queryString = text;
+  }
+
+  IconButton searchIcon() {
+    return IconButton(
+        icon: Icon(
+          Icons.search,
+          color: fontColor,
         ),
-        TextButton(
-            child: Text("Keresés", style: TextStyle(color: fontColor)),
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(addedColor)),
-            onPressed: () {
-              findGames();
-            })
-      ],
-    );
+        onPressed: () => findGames());
   }
 
   void findGames() {
     if (queryString.length > 2) {
+      ProgressHud.showLoading();
       Api.getFromApi("xbox", queryString.toString()).then((res) {
         if (res != null) {
           List<dynamic> result = json.decode(res.body);
@@ -81,6 +75,7 @@ class _AddXboxGameState extends State<AddXboxGame> {
             });
           });
         }
+        ProgressHud.dismiss();
       });
     } else {
       addGames.clear();
@@ -94,14 +89,14 @@ class _AddXboxGameState extends State<AddXboxGame> {
           final item = addGames[index];
           return InkWell(
               child: Card(
-                child: getGame(item, addButton(item)),
-                color: cardBackgroundColor,
-              ));
+            child: getGame(item, addButton(item)),
+            color: cardBackgroundColor,
+          ));
         });
   }
 
-  Widget addButton(game) {
-    if (games.map((e) => e.title).toList().contains(game.title)) {
+  Widget addButton(Game game) {
+    if (games.map((e) => e.gameId).toList().contains(game.gameId)) {
       return IconButton(
         icon: Icon(
           Icons.check_circle,

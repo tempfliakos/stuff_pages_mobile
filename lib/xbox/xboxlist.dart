@@ -26,6 +26,7 @@ class _XboxListState extends State<XboxList> {
   String titleFilter = "";
   int pageNumber = 1;
   int maxPageNumber;
+  bool filterMode = false;
 
   _getXboxGames() {
     Api.get("games/console=Xbox&page=$pageNumber&title=$titleFilter")
@@ -73,22 +74,9 @@ class _XboxListState extends State<XboxList> {
     super.dispose();
   }
 
-  Widget filterTitleField() {
-    return Theme(
-      data: Theme.of(context).copyWith(splashColor: backgroundColor),
-      child: TextField(
-        decoration: InputDecoration(
-            fillColor: cardBackgroundColor,
-            border: OutlineInputBorder(),
-            labelText: 'Játék címe...'),
-        onChanged: (text) {
-          titleFilter = text;
-          filter();
-        },
-        cursorColor: cardBackgroundColor,
-        autofocus: false,
-      ),
-    );
+  void titleField(String text) {
+    titleFilter = text;
+    filter();
   }
 
   void filter() {
@@ -103,16 +91,16 @@ class _XboxListState extends State<XboxList> {
       appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: backgroundColor,
-          title: Text("Xbox játékok listája", style: TextStyle(color: fontColor)),
-          actions: <Widget>[optionsButton(), logoutButton()]),
+          title: titleWidget(),
+          actions: <Widget>[
+            filterButton(doFilterChange),
+            optionsButton(doOptions),
+            logoutButton(doLogout)
+          ]),
       body: Scrollbar(
         child: Center(
           child: Column(
-            children: <Widget>[
-              getStarList(),
-              filterTitleField(),
-              Expanded(child: _gameList())
-            ],
+            children: <Widget>[getStarList(), Expanded(child: _gameList())],
           ),
         ),
       ),
@@ -127,6 +115,14 @@ class _XboxListState extends State<XboxList> {
       bottomNavigationBar: MyNavigator(2),
       backgroundColor: backgroundColor,
     );
+  }
+
+  Widget titleWidget() {
+    if (!filterMode) {
+      return Text('Xbox játékok listája', style: TextStyle(color: fontColor));
+    } else {
+      return searchBar("Játék címe", titleField);
+    }
   }
 
   Widget _gameList() {
@@ -192,34 +188,6 @@ class _XboxListState extends State<XboxList> {
         });
   }
 
-  Widget logoutButton() {
-    return IconButton(
-        icon: Icon(
-          Icons.power_settings_new,
-          color: deleteColor,
-        ),
-        onPressed: () {
-          setState(() {
-            userStorage.deleteItem('user');
-            userStorage.deleteItem('options');
-            Navigator.pushReplacementNamed(context, '/');
-          });
-        });
-  }
-
-  Widget optionsButton() {
-    return IconButton(
-        icon: Icon(
-          Icons.settings,
-          color: addableColor,
-        ),
-        onPressed: () {
-          setState(() {
-            Navigator.pushReplacementNamed(context, '/options');
-          });
-        });
-  }
-
   void _scrollListener() {
     if (maxPageNumber >= pageNumber && controller.position.extentAfter == 0) {
       ProgressHud.showLoading();
@@ -232,5 +200,24 @@ class _XboxListState extends State<XboxList> {
     await Navigator.push(context,
         MaterialPageRoute(builder: (context) => ShowAchievement(game)));
     _getXboxGames();
+  }
+
+  void doFilterChange() {
+    setState(() {
+      filterMode = !filterMode;
+    });
+  }
+
+  void doLogout() {
+    setState(() {
+      resetStorage();
+      Navigator.pushReplacementNamed(context, '/');
+    });
+  }
+
+  void doOptions() {
+    setState(() {
+      Navigator.pushReplacementNamed(context, '/options');
+    });
   }
 }

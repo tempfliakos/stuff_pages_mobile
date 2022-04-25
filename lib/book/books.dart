@@ -16,8 +16,10 @@ class Books extends StatefulWidget {
 }
 
 class _BooksState extends State<Books> {
-  List _books = [];
-  List filterBooks = [];
+  List<Book> _books = [];
+  List<Book> filterBooks = [];
+  String titleFilter = "";
+  bool filterMode = false;
 
   _getBooks() {
     filterBooks.clear();
@@ -40,14 +42,34 @@ class _BooksState extends State<Books> {
     super.dispose();
   }
 
+  void titleField(String text) {
+    titleFilter = text;
+    filter();
+  }
+
+  void filter() {
+    filterBooks.clear();
+    doFilter();
+    setState(() {});
+  }
+
+  void doFilter() {
+    filterBooks = _books.where(
+        (book) => book.title.toLowerCase().contains(titleFilter.toLowerCase())).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: backgroundColor,
-        title: Text('Könyvek', style: TextStyle(color: fontColor)),
-        actions: <Widget>[optionsButton(), logoutButton()],
+        title: titleWidget(),
+        actions: <Widget>[
+          filterButton(doFilterChange),
+          optionsButton(doOptions),
+          logoutButton(doLogout)
+        ],
       ),
       body: Center(
         child: Column(
@@ -68,6 +90,14 @@ class _BooksState extends State<Books> {
       bottomNavigationBar: MyNavigator(1),
       backgroundColor: backgroundColor,
     );
+  }
+
+  Widget titleWidget() {
+    if (!filterMode) {
+      return Text('Könyvek', style: TextStyle(color: fontColor));
+    } else {
+      return searchBar("Könyv címe", titleField);
+    }
   }
 
   Widget _bookList() {
@@ -107,38 +137,29 @@ class _BooksState extends State<Books> {
           });
         });
   }
-  
+
   void deleteBook(Book book) {
     Api.deleteWithParam("books/", book.bookId);
     _books.remove(book);
     filterBooks.remove(book);
   }
 
-  Widget logoutButton() {
-    return IconButton(
-        icon: Icon(
-          Icons.power_settings_new,
-          color: deleteColor,
-        ),
-        onPressed: () {
-          setState(() {
-            userStorage.deleteItem('user');
-            userStorage.deleteItem('options');
-            Navigator.pushReplacementNamed(context, '/');
-          });
-        });
+  void doFilterChange() {
+    setState(() {
+      filterMode = !filterMode;
+    });
   }
 
-  Widget optionsButton() {
-    return IconButton(
-        icon: Icon(
-          Icons.settings,
-          color: addableColor,
-        ),
-        onPressed: () {
-          setState(() {
-            Navigator.pushReplacementNamed(context, '/options');
-          });
-        });
+  void doLogout() {
+    setState(() {
+      resetStorage();
+      Navigator.pushReplacementNamed(context, '/');
+    });
+  }
+
+  void doOptions() {
+    setState(() {
+      Navigator.pushReplacementNamed(context, '/options');
+    });
   }
 }

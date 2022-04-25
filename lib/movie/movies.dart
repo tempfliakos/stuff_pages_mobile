@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:Stuff_Pages/request/http.dart';
 import 'package:Stuff_Pages/utils/colorUtil.dart';
@@ -18,14 +19,15 @@ class Movies extends StatefulWidget {
 }
 
 class _MoviesState extends State<Movies> {
-  List _movies = [];
-  List filterMovies = [];
-  var titleFilter = "";
+  List<Movie> _movies = [];
+  List<Movie> filterMovies = [];
+  String titleFilter = "";
   var seen;
   var owned;
   var futureMovie;
   var liza;
-  var options;
+  Map<String, Object> options;
+  bool filterMode = false;
 
   _getMovies() {
     filterMovies.clear();
@@ -54,22 +56,9 @@ class _MoviesState extends State<Movies> {
     super.dispose();
   }
 
-  Widget filterTitleField() {
-    return Theme(
-      data: Theme.of(context).copyWith(splashColor: cardBackgroundColor),
-      child: TextField(
-        decoration: InputDecoration(
-            fillColor: cardBackgroundColor,
-            border: OutlineInputBorder(),
-            labelText: 'Film címe...'),
-        onChanged: (text) {
-          titleFilter = text;
-          filter();
-        },
-        cursorColor: cardBackgroundColor,
-        autofocus: false,
-      ),
-    );
+  void titleField(String text) {
+    titleFilter = text;
+    filter();
   }
 
   Widget filterNotSeen() {
@@ -121,8 +110,7 @@ class _MoviesState extends State<Movies> {
         children: [
           Icon(
             Icons.access_time,
-            color:
-            futureMovie != null && futureMovie ? futureColor : fontColor,
+            color: futureMovie != null && futureMovie ? futureColor : fontColor,
           ),
           Padding(padding: EdgeInsets.all(5.0)),
           Text("Jövőbeni filmek",
@@ -191,9 +179,9 @@ class _MoviesState extends State<Movies> {
     setState(() {});
   }
 
-  doFilter() {
+  void doFilter() {
     _movies.forEach((movie) {
-      if (movie.title.toUpperCase().startsWith(titleFilter.toUpperCase())) {
+      if (movie.title.toLowerCase().contains(titleFilter.toLowerCase())) {
         if (seen != null ||
             owned != null ||
             futureMovie != null ||
@@ -216,14 +204,17 @@ class _MoviesState extends State<Movies> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: backgroundColor,
-        title: Text('Filmek', style: TextStyle(color: fontColor)),
-        actions: <Widget>[optionsButton(), logoutButton()],
+        title: titleWidget(),
+        actions: <Widget>[
+          filterButton(doFilterChange),
+          optionsButton(doOptions),
+          logoutButton(doLogout)
+        ],
         iconTheme: IconThemeData(color: fontColor),
       ),
       body: Center(
         child: Column(
           children: <Widget>[
-            filterTitleField(),
             Expanded(child: _movieList()),
           ],
         ),
@@ -257,6 +248,14 @@ class _MoviesState extends State<Movies> {
     );
   }
 
+  Widget titleWidget() {
+    if (!filterMode) {
+      return Text('Filmek', style: TextStyle(color: fontColor));
+    } else {
+      return searchBar("Film címe", titleField);
+    }
+  }
+
   Widget _movieList() {
     return ListView.builder(
       itemCount: filterMovies.length,
@@ -281,8 +280,7 @@ class _MoviesState extends State<Movies> {
                 child: getMovie(item, seenButton(item)),
                 color: cardBackgroundColor,
               ),
-            )
-        );
+            ));
       },
     );
   }
@@ -382,31 +380,22 @@ class _MoviesState extends State<Movies> {
     return date.isBefore(DateTime.now());
   }
 
-  Widget logoutButton() {
-    return IconButton(
-        icon: Icon(
-          Icons.power_settings_new,
-          color: deleteColor,
-        ),
-        onPressed: () {
-          setState(() {
-            userStorage.deleteItem('user');
-            userStorage.deleteItem('options');
-            Navigator.pushReplacementNamed(context, '/');
-          });
-        });
+  void doFilterChange() {
+    setState(() {
+      filterMode = !filterMode;
+    });
   }
 
-  Widget optionsButton() {
-    return IconButton(
-        icon: Icon(
-          Icons.settings,
-          color: addableColor,
-        ),
-        onPressed: () {
-          setState(() {
-            Navigator.pushReplacementNamed(context, '/options');
-          });
-        });
+  void doLogout() {
+    setState(() {
+      resetStorage();
+      Navigator.pushReplacementNamed(context, '/');
+    });
+  }
+
+  void doOptions() {
+    setState(() {
+      Navigator.pushReplacementNamed(context, '/options');
+    });
   }
 }

@@ -26,8 +26,8 @@ class _ShowTrophyState extends State<ShowTrophy> {
   bool donefilter = false;
   List<Achievement> _achievements = [];
   List<Achievement> filteredAchievments = [];
-  final secretTitle = "Hidden Trophy";
-  final secretDescription = "";
+  final String secretTitle = "Hidden Trophy";
+  final String secretDescription = "";
 
   _ShowTrophyState(Game game) {
     this.game = game;

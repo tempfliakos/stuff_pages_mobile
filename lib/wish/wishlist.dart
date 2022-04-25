@@ -46,7 +46,7 @@ class _WishListState extends State<WishList> {
               automaticallyImplyLeading: false,
               backgroundColor: backgroundColor,
               title: Text("Wishlist", style: TextStyle(color: fontColor)),
-              actions: <Widget>[optionsButton(), logoutButton()],
+              actions: <Widget>[optionsButton(doOptions), logoutButton(doLogout)],
               bottom: const TabBar(
                 indicatorColor: futureColor,
                 tabs: [
@@ -126,31 +126,16 @@ class _WishListState extends State<WishList> {
         });
   }
 
-  Widget logoutButton() {
-    return IconButton(
-        icon: Icon(
-          Icons.power_settings_new,
-          color: deleteColor,
-        ),
-        onPressed: () {
-          setState(() {
-            userStorage.deleteItem('user');
-            userStorage.deleteItem('options');
-            Navigator.pushReplacementNamed(context, '/');
-          });
-        });
+  void doLogout() {
+    setState(() {
+      resetStorage();
+      Navigator.pushReplacementNamed(context, '/');
+    });
   }
 
-  Widget optionsButton() {
-    return IconButton(
-        icon: Icon(
-          Icons.settings,
-          color: addableColor,
-        ),
-        onPressed: () {
-          setState(() {
-            Navigator.pushReplacementNamed(context, '/options');
-          });
-        });
+  void doOptions() {
+    setState(() {
+      Navigator.pushReplacementNamed(context, '/options');
+    });
   }
 }

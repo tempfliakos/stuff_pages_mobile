@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:Stuff_Pages/global.dart';
 import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:Stuff_Pages/utils/movieUtil.dart';
+import 'package:bmprogresshud/progresshud.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -33,12 +35,11 @@ class _AddMovieState extends State<AddMovie> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: backgroundColor,
-        title: Text("Filmek hozzáadása", style: TextStyle(color: fontColor)),
+        title: searchBar("Film hozzáadása...", findMovies),
       ),
       body: Center(
         child: Column(
           children: <Widget>[
-            findMovieField(),
             Expanded(child: _movieList()),
           ],
         ),
@@ -47,20 +48,9 @@ class _AddMovieState extends State<AddMovie> {
     );
   }
 
-  Widget findMovieField() {
-    return TextField(
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        labelText: 'Film hozzáadása...',
-      ),
-      onChanged: (text) {
-        findMovies(text);
-      },
-    );
-  }
-
   void findMovies(text) {
     if (text.length > 2) {
+      ProgressHud.showLoading();
       Api.getFromApi("movies", text.toString()).then((res) {
         if (res != null) {
           List<dynamic> result = json.decode(res.body);
@@ -71,6 +61,7 @@ class _AddMovieState extends State<AddMovie> {
             });
           });
         }
+        ProgressHud.dismiss();
       });
     } else {
       addMovies.clear();
