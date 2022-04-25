@@ -2,14 +2,14 @@ import 'dart:convert';
 
 import 'package:Stuff_Pages/request/entities/book.dart';
 import 'package:Stuff_Pages/utils/bookUtil.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:flutter/material.dart';
 
 import '../request/http.dart';
 
 class AddBook extends StatefulWidget {
-  var addBooks = [];
-  var books = [];
+  List<Book> addBooks = [];
+  List<Book> books = [];
 
   AddBook(List<Book> books) {
     this.books = books;
@@ -20,8 +20,8 @@ class AddBook extends StatefulWidget {
 }
 
 class _AddBookState extends State<AddBook> {
-  var addBooks = [];
-  var books = [];
+  List<Book> addBooks = [];
+  List<Book> books = [];
 
   _AddBookState(List<Book> books) {
     this.books = books;
@@ -31,7 +31,7 @@ class _AddBookState extends State<AddBook> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: backgroundColor,
         title: Text("Könyvek hozzáadása"),
       ),
       body: Center(
@@ -42,7 +42,7 @@ class _AddBookState extends State<AddBook> {
           ],
         ),
       ),
-      backgroundColor: Colors.grey,
+      backgroundColor: backgroundColor,
     );
   }
 
@@ -105,7 +105,7 @@ class _AddBookState extends State<AddBook> {
       return IconButton(
         icon: Icon(
           Icons.check_circle,
-          color: Colors.green,
+          color: addableColor,
         ),
         onPressed: () {},
       );
@@ -113,7 +113,7 @@ class _AddBookState extends State<AddBook> {
       return IconButton(
           icon: Icon(
             Icons.check_circle_outline,
-            color: Colors.black,
+            color: addedColor,
           ),
           onPressed: () {
             setState(() {

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:Stuff_Pages/request/entities/book.dart';
 import 'package:Stuff_Pages/request/http.dart';
 import 'package:Stuff_Pages/utils/bookUtil.dart';
+import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:flutter/material.dart';
 
 import '../global.dart';
@@ -44,8 +45,8 @@ class _BooksState extends State<Books> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.black,
-        title: Text('Könyvek'),
+        backgroundColor: backgroundColor,
+        title: Text('Filmek', style: TextStyle(color: fontColor)),
         actions: <Widget>[optionsButton(), logoutButton()],
       ),
       body: Center(
@@ -62,10 +63,10 @@ class _BooksState extends State<Books> {
           _getBooks();
         },
         child: Icon(Icons.add, size: 40),
-        backgroundColor: Colors.green,
+        backgroundColor: addedColor,
       ),
       bottomNavigationBar: MyNavigator(1),
-      backgroundColor: Colors.grey,
+      backgroundColor: backgroundColor,
     );
   }
 
@@ -80,37 +81,65 @@ class _BooksState extends State<Books> {
               ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(item.title + ' törölve')));
               setState(() {
-                Api.deleteWithParam("books/", item.bookId);
-                _books.remove(item);
-                filterBooks.remove(item);
+                deleteBook(item);
               });
             },
-            background: Container(color: Colors.red),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Column(
-                  children: <Widget>[img(item)],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    SizedBox(
-                        child: bookText(item),
-                        width: MediaQuery.of(context).size.width * 0.75)
-                  ],
-                ),
-              ],
+            background: Container(color: deleteColor),
+            child: InkWell(
+              child: Card(
+                child: getBook(item),
+                color: cardBackgroundColor,
+              ),
             ));
       },
     );
+  }
+
+  Widget getBook(Book book) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        ListTile(
+          leading: ConstrainedBox(
+              constraints: BoxConstraints(
+                minWidth: 44,
+                minHeight: 44,
+                maxWidth: 400,
+                maxHeight: 400,
+              ),
+              child: img(book)),
+          title: Text(book.title, style: TextStyle(color: fontColor)),
+          subtitle: Text(book.author, style: TextStyle(color: fontColor)),
+          trailing: deleteButton(book),
+        ),
+      ],
+    );
+  }
+
+  Widget deleteButton(book) {
+    return IconButton(
+        icon: Icon(
+          Icons.delete,
+          color: deleteColor,
+        ),
+        onPressed: () {
+          setState(() {
+            deleteBook(book);
+          });
+        });
+  }
+  
+  void deleteBook(Book book) {
+    Api.deleteWithParam("books/", book.bookId);
+    _books.remove(book);
+    filterBooks.remove(book);
   }
 
   Widget logoutButton() {
     return IconButton(
         icon: Icon(
           Icons.power_settings_new,
-          color: Colors.red,
+          color: deleteColor,
         ),
         onPressed: () {
           setState(() {
@@ -125,7 +154,7 @@ class _BooksState extends State<Books> {
     return IconButton(
         icon: Icon(
           Icons.settings,
-          color: Colors.grey,
+          color: cardBackgroundColor,
         ),
         onPressed: () {
           setState(() {

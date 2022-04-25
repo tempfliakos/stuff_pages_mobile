@@ -1,3 +1,4 @@
+import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +12,7 @@ Widget filmText(movie) {
     textWidthBasis: TextWidthBasis.parent,
     maxLines: 10,
     style: TextStyle(
+      color: fontColor,
       fontSize: 16,
     ),
   );

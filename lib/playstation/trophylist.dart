@@ -3,15 +3,15 @@ import 'dart:convert';
 import 'package:Stuff_Pages/request/entities/achievement.dart';
 import 'package:Stuff_Pages/request/entities/game.dart';
 import 'package:Stuff_Pages/request/http.dart';
+import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:Stuff_Pages/utils/gameUtil.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../navigator.dart';
 
 class ShowTrophy extends StatefulWidget {
-  var game;
+  Game game;
 
   ShowTrophy(Game game) {
     this.game = game;
@@ -22,10 +22,10 @@ class ShowTrophy extends StatefulWidget {
 }
 
 class _ShowTrophyState extends State<ShowTrophy> {
-  var game;
-  var donefilter = false;
-  List _achievements = [];
-  List filteredAchievments = [];
+  Game game;
+  bool donefilter = false;
+  List<Achievement> _achievements = [];
+  List<Achievement> filteredAchievments = [];
   final secretTitle = "Hidden Trophy";
   final secretDescription = "";
 
@@ -42,9 +42,9 @@ class _ShowTrophyState extends State<ShowTrophy> {
           filter();
         });
       },
-      activeTrackColor: Colors.blue,
-      activeColor: Colors.blue,
-      inactiveTrackColor: Colors.grey,
+      activeTrackColor: seenColor,
+      activeColor: seenColor,
+      inactiveTrackColor: cardBackgroundColor,
     );
   }
 
@@ -87,7 +87,7 @@ class _ShowTrophyState extends State<ShowTrophy> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Colors.black,
+          backgroundColor: backgroundColor,
           title: Text(game.title),
           actions: <Widget>[doneFilter()]),
       body: Center(
@@ -96,7 +96,7 @@ class _ShowTrophyState extends State<ShowTrophy> {
         ),
       ),
       bottomNavigationBar: MyNavigator(3),
-      backgroundColor: Colors.grey,
+      backgroundColor: backgroundColor,
     );
   }
 
@@ -110,7 +110,7 @@ class _ShowTrophyState extends State<ShowTrophy> {
             key: UniqueKey(),
             child: Card(
               child: getTrophy(item),
-              color: Colors.grey,
+              color: cardBackgroundColor,
             ),
             onDismissed: (direction) {
               Fluttertoast.showToast(
@@ -118,7 +118,7 @@ class _ShowTrophyState extends State<ShowTrophy> {
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.BOTTOM,
                   timeInSecForIosWeb: 3,
-                  backgroundColor: item.earned ? Colors.red : Colors.green,
+                  backgroundColor: item.earned ? deleteColor : addedColor,
                   fontSize: 16.0);
               setState(() {
                 item.earned = !item.earned;
@@ -127,7 +127,7 @@ class _ShowTrophyState extends State<ShowTrophy> {
               });
             },
             background:
-                Container(color: item.earned ? Colors.red : Colors.green),
+                Container(color: item.earned ? deleteColor : addedColor),
           ),
           onTap: () {
             launchURL(game.title + " " + item.title);
@@ -138,7 +138,7 @@ class _ShowTrophyState extends State<ShowTrophy> {
                 toastLength: Toast.LENGTH_SHORT,
                 gravity: ToastGravity.BOTTOM,
                 timeInSecForIosWeb: 3,
-                backgroundColor: Colors.grey,
+                backgroundColor: cardBackgroundColor,
                 fontSize: 16.0);
           },
         );

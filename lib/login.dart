@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:Stuff_Pages/utils/optionsUtil.dart';
 import 'package:flutter/material.dart';
 
@@ -59,9 +60,9 @@ class _LoginState extends State<Login> {
 
   Widget loginButton(BuildContext context) {
     return TextButton(
-      child: Text("Bejelentkezés", style: TextStyle(color: Colors.white)),
+      child: Text("Bejelentkezés", style: TextStyle(color: fontColor)),
       style:
-          ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.green)),
+          ButtonStyle(backgroundColor: MaterialStateProperty.all(addedColor)),
       onPressed: () {
         _login();
       },
@@ -81,7 +82,7 @@ class _LoginState extends State<Login> {
     return Scaffold(
       appBar: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: Colors.black,
+          backgroundColor: backgroundColor,
           title: Text('Bejelentkezés')),
       body: Center(
         child: Column(
@@ -92,7 +93,7 @@ class _LoginState extends State<Login> {
           ],
         ),
       ),
-      backgroundColor: Colors.grey,
+      backgroundColor: backgroundColor,
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:Stuff_Pages/global.dart';
+import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:Stuff_Pages/utils/optionsUtil.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +47,7 @@ class _OptionsState extends State<Options> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.black,
+        backgroundColor: backgroundColor,
         title: Text('Beállítások'),
       ),
       body: Center(
@@ -55,7 +56,7 @@ class _OptionsState extends State<Options> {
         ),
       ),
       bottomNavigationBar: MyNavigator(0),
-      backgroundColor: Colors.grey,
+      backgroundColor: backgroundColor,
     );
   }
 

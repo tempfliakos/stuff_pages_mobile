@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:Stuff_Pages/request/entities/achievement.dart';
 import 'package:Stuff_Pages/request/entities/game.dart';
 import 'package:Stuff_Pages/request/http.dart';
+import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:Stuff_Pages/utils/gameUtil.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../navigator.dart';
 
 class ShowAchievement extends StatefulWidget {
-  var game;
+  Game game;
 
   ShowAchievement(Game game) {
     this.game = game;
@@ -22,12 +23,12 @@ class ShowAchievement extends StatefulWidget {
 }
 
 class _ShowAchievementState extends State<ShowAchievement> {
-  var game;
-  var donefilter = false;
-  List _achievements = [];
-  List filteredAchievments = [];
-  final secretTitle = "Secret achievement";
-  final secretDescription =
+  Game game;
+  bool donefilter = false;
+  List<Achievement> _achievements = [];
+  List<Achievement> filteredAchievments = [];
+  final String secretTitle = "Secret achievement";
+  final String secretDescription =
       "This achievement is secret. The more you play, the more likely you are to unlock it!";
 
   _ShowAchievementState(Game game) {
@@ -43,9 +44,9 @@ class _ShowAchievementState extends State<ShowAchievement> {
           filter();
         });
       },
-      activeTrackColor: Colors.blue,
-      activeColor: Colors.blue,
-      inactiveTrackColor: Colors.grey,
+      activeTrackColor: seenColor,
+      activeColor: seenColor,
+      inactiveTrackColor: cardBackgroundColor,
     );
   }
 
@@ -88,7 +89,7 @@ class _ShowAchievementState extends State<ShowAchievement> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Colors.black,
+          backgroundColor: backgroundColor,
           title: Text(game.title),
           actions: <Widget>[refreshButton(), doneFilter()]),
       body: Center(
@@ -97,7 +98,7 @@ class _ShowAchievementState extends State<ShowAchievement> {
         ),
       ),
       bottomNavigationBar: MyNavigator(2),
-      backgroundColor: Colors.grey,
+      backgroundColor: backgroundColor,
     );
   }
 
@@ -111,7 +112,7 @@ class _ShowAchievementState extends State<ShowAchievement> {
             key: UniqueKey(),
             child: Card(
               child: getAchievement(item),
-              color: Colors.grey,
+              color: cardBackgroundColor,
             ),
             onDismissed: (direction) {
               Fluttertoast.showToast(
@@ -119,7 +120,7 @@ class _ShowAchievementState extends State<ShowAchievement> {
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.BOTTOM,
                   timeInSecForIosWeb: 3,
-                  backgroundColor: item.earned ? Colors.red : Colors.green,
+                  backgroundColor: item.earned ? deleteColor : addedColor,
                   fontSize: 16.0);
               setState(() {
                 item.earned = !item.earned;
@@ -128,7 +129,7 @@ class _ShowAchievementState extends State<ShowAchievement> {
               });
             },
             background:
-                Container(color: item.earned ? Colors.red : Colors.green),
+                Container(color: item.earned ? deleteColor : addedColor),
           ),
           onTap: () {
             launchURL(game.title + " " + item.title);
@@ -139,7 +140,7 @@ class _ShowAchievementState extends State<ShowAchievement> {
                 toastLength: Toast.LENGTH_SHORT,
                 gravity: ToastGravity.BOTTOM,
                 timeInSecForIosWeb: 3,
-                backgroundColor: Colors.grey,
+                backgroundColor: cardBackgroundColor,
                 fontSize: 16.0);
           },
         );
@@ -179,7 +180,7 @@ class _ShowAchievementState extends State<ShowAchievement> {
     return IconButton(
         icon: Icon(
           Icons.refresh,
-          color: Colors.yellow,
+          color: futureColor,
         ),
         onPressed: () {
           setState(() {

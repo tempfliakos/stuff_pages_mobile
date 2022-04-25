@@ -4,6 +4,7 @@ import 'package:Stuff_Pages/playstation/addpsgame.dart';
 import 'package:Stuff_Pages/playstation/trophylist.dart';
 import 'package:Stuff_Pages/request/entities/game.dart';
 import 'package:Stuff_Pages/request/http.dart';
+import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:Stuff_Pages/utils/gameUtil.dart';
 import 'package:bmprogresshud/progresshud.dart';
 import 'package:flutter/material.dart';
@@ -73,17 +74,17 @@ class _PsListState extends State<PsList> {
 
   Widget filterTitleField() {
     return Theme(
-      data: Theme.of(context).copyWith(splashColor: Colors.black),
+      data: Theme.of(context).copyWith(splashColor: cardBackgroundColor),
       child: TextField(
         decoration: InputDecoration(
-            fillColor: Colors.white,
+            fillColor: cardBackgroundColor,
             border: OutlineInputBorder(),
             labelText: 'Játék címe...'),
         onChanged: (text) {
           titleFilter = text;
           filter();
         },
-        cursorColor: Colors.white,
+        cursorColor: cardBackgroundColor,
         autofocus: false,
       ),
     );
@@ -100,17 +101,14 @@ class _PsListState extends State<PsList> {
     return Scaffold(
       appBar: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: Colors.black,
+          backgroundColor: backgroundColor,
           title: Text("Playstation játékok listája"),
           actions: <Widget>[optionsButton(), logoutButton()]),
       body: Scrollbar(
         child: Center(
           child: Column(
             children: <Widget>[
-              Container(
-                  child: _starList(),
-                  alignment: Alignment.centerLeft,
-                  margin: EdgeInsets.all(20.0)),
+              getStarList(),
               filterTitleField(),
               Expanded(child: _gameList())
             ],
@@ -123,10 +121,10 @@ class _PsListState extends State<PsList> {
               MaterialPageRoute(builder: (context) => AddPsGame(_games)));
         },
         child: Icon(Icons.add, size: 40),
-        backgroundColor: Colors.green,
+        backgroundColor: addedColor,
       ),
       bottomNavigationBar: MyNavigator(3),
-      backgroundColor: Colors.grey,
+      backgroundColor: backgroundColor,
     );
   }
 
@@ -139,12 +137,22 @@ class _PsListState extends State<PsList> {
         return InkWell(
           child: Card(
             child: getGame(item),
-            color: Colors.grey,
+            color: cardBackgroundColor,
           ),
           onTap: () => openTrophies(item),
         );
       },
     );
+  }
+
+  Widget getStarList() {
+    if (_starred.isNotEmpty) {
+      return Container(
+          child: _starList(),
+          alignment: Alignment.centerLeft,
+          margin: EdgeInsets.all(20.0));
+    }
+    return Text("");
   }
 
   Widget _starList() {
@@ -164,7 +172,7 @@ class _PsListState extends State<PsList> {
     );
   }
 
-  Widget getGame(game) {
+  Widget getGame(Game game) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
@@ -189,7 +197,7 @@ class _PsListState extends State<PsList> {
     return IconButton(
         icon: Icon(
           game.star ? Icons.star : Icons.star_border,
-          color: Colors.amber,
+          color: futureColor,
         ),
         onPressed: () {
           setState(() {
@@ -208,7 +216,7 @@ class _PsListState extends State<PsList> {
     return IconButton(
         icon: Icon(
           Icons.power_settings_new,
-          color: Colors.red,
+          color: deleteColor,
         ),
         onPressed: () {
           setState(() {
@@ -223,7 +231,7 @@ class _PsListState extends State<PsList> {
     return IconButton(
         icon: Icon(
           Icons.settings,
-          color: Colors.grey,
+          color: cardBackgroundColor,
         ),
         onPressed: () {
           setState(() {

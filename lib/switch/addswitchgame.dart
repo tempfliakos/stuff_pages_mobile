@@ -2,13 +2,13 @@ import 'dart:convert';
 
 import 'package:Stuff_Pages/request/entities/game.dart';
 import 'package:Stuff_Pages/request/http.dart';
+import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:Stuff_Pages/utils/gameUtil.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AddSwitchGame extends StatefulWidget {
-  var addGames = [];
-  var games = [];
+  List<Game> addGames = [];
+  List<Game> games = [];
 
   AddSwitchGame(List<Game> games) {
     this.games = games;
@@ -19,9 +19,9 @@ class AddSwitchGame extends StatefulWidget {
 }
 
 class _AddSwitchGameState extends State<AddSwitchGame> {
-  var addGames = [];
-  var games = [];
-  var queryString = "";
+  List<Game> addGames = [];
+  List<Game> games = [];
+  String queryString = "";
 
   _AddSwitchGameState(List<Game> games) {
     this.games = games;
@@ -31,7 +31,7 @@ class _AddSwitchGameState extends State<AddSwitchGame> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: backgroundColor,
         title: Text("Játékok hozzáadása"),
       ),
       body: Center(
@@ -42,7 +42,7 @@ class _AddSwitchGameState extends State<AddSwitchGame> {
           ],
         ),
       ),
-      backgroundColor: Colors.grey,
+      backgroundColor: backgroundColor,
     );
   }
 
@@ -59,9 +59,9 @@ class _AddSwitchGameState extends State<AddSwitchGame> {
           },
         ),
         TextButton(
-            child: Text("Keresés", style: TextStyle(color: Colors.white)),
+            child: Text("Keresés", style: TextStyle(color: fontColor)),
             style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.green)),
+                backgroundColor: MaterialStateProperty.all(addedColor)),
             onPressed: () {
               findGames();
             })
@@ -116,7 +116,7 @@ class _AddSwitchGameState extends State<AddSwitchGame> {
       return IconButton(
         icon: Icon(
           Icons.check_circle,
-          color: Colors.green,
+          color: addedColor,
         ),
         onPressed: () {},
       );
@@ -124,7 +124,7 @@ class _AddSwitchGameState extends State<AddSwitchGame> {
       return IconButton(
           icon: Icon(
             Icons.check_circle_outline,
-            color: Colors.black,
+            color: addableColor,
           ),
           onPressed: () {
             setState(() {

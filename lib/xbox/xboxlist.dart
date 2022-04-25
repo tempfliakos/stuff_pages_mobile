@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:Stuff_Pages/enums/gamesEnum.dart';
 import 'package:Stuff_Pages/request/entities/game.dart';
 import 'package:Stuff_Pages/request/http.dart';
+import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:Stuff_Pages/utils/gameUtil.dart';
 import 'package:bmprogresshud/progresshud.dart';
 import 'package:flutter/cupertino.dart';
@@ -74,17 +75,17 @@ class _XboxListState extends State<XboxList> {
 
   Widget filterTitleField() {
     return Theme(
-      data: Theme.of(context).copyWith(splashColor: Colors.black),
+      data: Theme.of(context).copyWith(splashColor: backgroundColor),
       child: TextField(
         decoration: InputDecoration(
-            fillColor: Colors.white,
+            fillColor: cardBackgroundColor,
             border: OutlineInputBorder(),
             labelText: 'Játék címe...'),
         onChanged: (text) {
           titleFilter = text;
           filter();
         },
-        cursorColor: Colors.white,
+        cursorColor: cardBackgroundColor,
         autofocus: false,
       ),
     );
@@ -101,17 +102,14 @@ class _XboxListState extends State<XboxList> {
     return Scaffold(
       appBar: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: Colors.black,
+          backgroundColor: backgroundColor,
           title: Text("Xbox játékok listája"),
           actions: <Widget>[optionsButton(), logoutButton()]),
       body: Scrollbar(
         child: Center(
           child: Column(
             children: <Widget>[
-              Container(
-                  child: _starList(),
-                  alignment: Alignment.centerLeft,
-                  margin: EdgeInsets.all(20.0)),
+              getStarList(),
               filterTitleField(),
               Expanded(child: _gameList())
             ],
@@ -124,10 +122,10 @@ class _XboxListState extends State<XboxList> {
               MaterialPageRoute(builder: (context) => AddXboxGame(_games)));
         },
         child: Icon(Icons.add, size: 40),
-        backgroundColor: Colors.green,
+        backgroundColor: addedColor,
       ),
       bottomNavigationBar: MyNavigator(2),
-      backgroundColor: Colors.grey,
+      backgroundColor: backgroundColor,
     );
   }
 
@@ -140,12 +138,22 @@ class _XboxListState extends State<XboxList> {
         return InkWell(
           child: Card(
             child: getGame(item),
-            color: Colors.grey,
+            color: cardBackgroundColor,
           ),
           onTap: () => openAchievements(item),
         );
       },
     );
+  }
+
+  Widget getStarList() {
+    if (_starred.isNotEmpty) {
+      return Container(
+          child: _starList(),
+          alignment: Alignment.centerLeft,
+          margin: EdgeInsets.all(20.0));
+    }
+    return Text("");
   }
 
   Widget _starList() {
@@ -190,7 +198,7 @@ class _XboxListState extends State<XboxList> {
     return IconButton(
         icon: Icon(
           game.star ? Icons.star : Icons.star_border,
-          color: Colors.amber,
+          color: futureColor,
         ),
         onPressed: () {
           setState(() {
@@ -209,7 +217,7 @@ class _XboxListState extends State<XboxList> {
     return IconButton(
         icon: Icon(
           Icons.power_settings_new,
-          color: Colors.red,
+          color: deleteColor,
         ),
         onPressed: () {
           setState(() {
@@ -224,7 +232,7 @@ class _XboxListState extends State<XboxList> {
     return IconButton(
         icon: Icon(
           Icons.settings,
-          color: Colors.grey,
+          color: cardBackgroundColor,
         ),
         onPressed: () {
           setState(() {

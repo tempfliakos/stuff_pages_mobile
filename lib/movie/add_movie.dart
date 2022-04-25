@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:Stuff_Pages/utils/movieUtil.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +9,8 @@ import '../request/entities/movie.dart';
 import '../request/http.dart';
 
 class AddMovie extends StatefulWidget {
-  var addMovies = [];
-  var movies = [];
+  List<Movie> addMovies = [];
+  List<Movie> movies = [];
 
   AddMovie(List<Movie> movies) {
     this.movies = movies;
@@ -20,8 +21,8 @@ class AddMovie extends StatefulWidget {
 }
 
 class _AddMovieState extends State<AddMovie> {
-  var addMovies = [];
-  var movies = [];
+  List<Movie> addMovies = [];
+  List<Movie> movies = [];
 
   _AddMovieState(List<Movie> movies) {
     this.movies = movies;
@@ -31,7 +32,7 @@ class _AddMovieState extends State<AddMovie> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: backgroundColor,
         title: Text("Filmek hozzáadása"),
       ),
       body: Center(
@@ -42,7 +43,7 @@ class _AddMovieState extends State<AddMovie> {
           ],
         ),
       ),
-      backgroundColor: Colors.grey,
+      backgroundColor: backgroundColor,
     );
   }
 
@@ -105,7 +106,7 @@ class _AddMovieState extends State<AddMovie> {
       return IconButton(
         icon: Icon(
           Icons.check_circle,
-          color: Colors.green,
+          color: addedColor,
         ),
         onPressed: () {},
       );
@@ -113,7 +114,7 @@ class _AddMovieState extends State<AddMovie> {
       return IconButton(
           icon: Icon(
             Icons.check_circle_outline,
-            color: Colors.black,
+            color: addableColor,
           ),
           onPressed: () {
             setState(() {

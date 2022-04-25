@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:Stuff_Pages/request/entities/game.dart';
 import 'package:Stuff_Pages/request/http.dart';
+import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:Stuff_Pages/utils/gameUtil.dart';
 import 'package:flutter/material.dart';
 
@@ -43,7 +44,7 @@ class _WishListState extends State<WishList> {
         child: Scaffold(
           appBar: AppBar(
               automaticallyImplyLeading: false,
-              backgroundColor: Colors.black,
+              backgroundColor: backgroundColor,
               title: Text("Wishlist"),
               actions: <Widget>[optionsButton(), logoutButton()],
               bottom: const TabBar(
@@ -73,10 +74,10 @@ class _WishListState extends State<WishList> {
                   MaterialPageRoute(builder: (context) => AddWishGame(_games)));
             },
             child: Icon(Icons.add, size: 40),
-            backgroundColor: Colors.green,
+            backgroundColor: addedColor,
           ),
           bottomNavigationBar: MyNavigator(5),
-          backgroundColor: Colors.grey,
+          backgroundColor: backgroundColor,
         ));
   }
 
@@ -100,35 +101,41 @@ class _WishListState extends State<WishList> {
       itemCount: filterByConsole(console).length,
       itemBuilder: (context, index) {
         final item = filterByConsole(console)[index];
-        return getGame(item);
+        return InkWell(
+          child: Card(
+            child: getGame(item),
+            color: cardBackgroundColor,
+          )
+        );
       },
     );
   }
 
-  Widget getGame(game) {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Column(
-            children: <Widget>[img(game)],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              SizedBox(
-                  child: Text(game.title),
-                  width: MediaQuery.of(context).size.width * 0.50)
-            ],
-          ),
-          Column(children: [deleteButton(game)])
-        ]);
+  Widget getGame(Game game) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        ListTile(
+          leading: ConstrainedBox(
+              constraints: BoxConstraints(
+                minWidth: 44,
+                minHeight: 44,
+                maxWidth: 200,
+                maxHeight: 200,
+              ),
+              child: img(game)),
+          title: Text(game.title),
+          trailing: deleteButton(game),
+        ),
+      ],
+    );
   }
 
   Widget deleteButton(game) {
     return IconButton(
         icon: Icon(
           Icons.delete,
-          color: Colors.red,
+          color: deleteColor,
         ),
         onPressed: () {
           setState(() {
@@ -142,7 +149,7 @@ class _WishListState extends State<WishList> {
     return IconButton(
         icon: Icon(
           Icons.power_settings_new,
-          color: Colors.red,
+          color: deleteColor,
         ),
         onPressed: () {
           setState(() {
@@ -157,7 +164,7 @@ class _WishListState extends State<WishList> {
     return IconButton(
         icon: Icon(
           Icons.settings,
-          color: Colors.grey,
+          color: cardBackgroundColor,
         ),
         onPressed: () {
           setState(() {

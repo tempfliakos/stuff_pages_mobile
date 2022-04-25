@@ -2,13 +2,14 @@ import 'dart:convert';
 
 import 'package:Stuff_Pages/request/entities/game.dart';
 import 'package:Stuff_Pages/request/http.dart';
+import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:Stuff_Pages/utils/gameUtil.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AddWishGame extends StatefulWidget {
-  var addGames = [];
-  var games = [];
+  List<Game> addGames = [];
+  List<Game> games = [];
 
   AddWishGame(List<Game> games) {
     this.games = games;
@@ -19,9 +20,9 @@ class AddWishGame extends StatefulWidget {
 }
 
 class _AddWishGameState extends State<AddWishGame> {
-  var addGames = [];
-  var games = [];
-  var queryString = "";
+  List<Game> addGames = [];
+  List<Game> games = [];
+  String queryString = "";
 
   _AddWishGameState(List<Game> games) {
     this.games = games;
@@ -31,7 +32,7 @@ class _AddWishGameState extends State<AddWishGame> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: backgroundColor,
         title: Text("Játékok hozzáadása"),
       ),
       body: Center(
@@ -42,7 +43,7 @@ class _AddWishGameState extends State<AddWishGame> {
           ],
         ),
       ),
-      backgroundColor: Colors.grey,
+      backgroundColor: backgroundColor,
     );
   }
 
@@ -59,9 +60,9 @@ class _AddWishGameState extends State<AddWishGame> {
           },
         ),
         TextButton(
-            child: Text("Keresés", style: TextStyle(color: Colors.white)),
+            child: Text("Keresés", style: TextStyle(color: fontColor)),
             style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.green)),
+                backgroundColor: MaterialStateProperty.all(addedColor)),
             onPressed: () {
               findGames();
             })
@@ -143,17 +144,17 @@ class _AddWishGameState extends State<AddWishGame> {
     if (console == 'Xbox') {
       return ImageIcon(
         AssetImage("assets/images/xbox_logo.png"),
-        color: alreadyAdded ? Colors.green : Colors.black,
+        color: alreadyAdded ? addedColor : cardBackgroundColor,
       );
     } else if (console == 'Playstation') {
       return ImageIcon(
         AssetImage("assets/images/ps_logo.png"),
-        color: alreadyAdded ? Colors.green : Colors.black,
+        color: alreadyAdded ? addedColor : cardBackgroundColor,
       );
     }
     return ImageIcon(
       AssetImage("assets/images/switch_logo.png"),
-      color: alreadyAdded ? Colors.green : Colors.black,
+      color: alreadyAdded ? addedColor : cardBackgroundColor,
     );
   }
 }
