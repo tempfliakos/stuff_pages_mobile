@@ -32,7 +32,7 @@ class _AddBookState extends State<AddBook> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: backgroundColor,
-        title: Text("Könyvek hozzáadása"),
+        title: Text("Könyvek hozzáadása", style: TextStyle(color: fontColor)),
       ),
       body: Center(
         child: Column(

@@ -102,7 +102,7 @@ class _PsListState extends State<PsList> {
       appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: backgroundColor,
-          title: Text("Playstation játékok listája"),
+          title: Text("Playstation játékok listája", style: TextStyle(color: fontColor)),
           actions: <Widget>[optionsButton(), logoutButton()]),
       body: Scrollbar(
         child: Center(

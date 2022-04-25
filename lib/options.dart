@@ -48,7 +48,7 @@ class _OptionsState extends State<Options> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: backgroundColor,
-        title: Text('Beállítások'),
+        title: Text('Beállítások', style: TextStyle(color: fontColor)),
       ),
       body: Center(
         child: Column(
@@ -78,7 +78,7 @@ class _OptionsState extends State<Options> {
       TableCell(
           verticalAlignment: TableCellVerticalAlignment.middle,
           child: Container(
-            child: Text(optionsName[option]),
+            child: Text(optionsName[option], style: TextStyle(color: fontColor)),
           )),
       TableCell(
           verticalAlignment: TableCellVerticalAlignment.middle,
@@ -137,7 +137,7 @@ class _OptionsState extends State<Options> {
       }
       result.add(DropdownMenuItem(
         value: option,
-        child: Text(text),
+        child: Text(text, style: TextStyle(color: fontColor)),
       ));
     }
     return result;

@@ -32,7 +32,7 @@ class _AddSwitchGameState extends State<AddSwitchGame> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: backgroundColor,
-        title: Text("Játékok hozzáadása"),
+        title: Text("Játékok hozzáadása", style: TextStyle(color: fontColor)),
       ),
       body: Center(
         child: Column(

@@ -80,7 +80,7 @@ class _SwitchListState extends State<SwitchList> {
       appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: backgroundColor,
-          title: Text("Switch játékok listája"),
+          title: Text("Switch játékok listája", style: TextStyle(color: fontColor)),
           actions: <Widget>[optionsButton(), logoutButton()]),
       body: Center(
         child: Column(

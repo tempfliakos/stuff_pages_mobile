@@ -103,7 +103,7 @@ class _XboxListState extends State<XboxList> {
       appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: backgroundColor,
-          title: Text("Xbox játékok listája"),
+          title: Text("Xbox játékok listája", style: TextStyle(color: fontColor)),
           actions: <Widget>[optionsButton(), logoutButton()]),
       body: Scrollbar(
         child: Center(

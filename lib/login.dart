@@ -83,7 +83,7 @@ class _LoginState extends State<Login> {
       appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: backgroundColor,
-          title: Text('Bejelentkezés')),
+          title: Text('Bejelentkezés', style: TextStyle(color: fontColor))),
       body: Center(
         child: Column(
           children: <Widget>[

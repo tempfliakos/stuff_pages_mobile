@@ -33,7 +33,7 @@ class _AddMovieState extends State<AddMovie> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: backgroundColor,
-        title: Text("Filmek hozzáadása"),
+        title: Text("Filmek hozzáadása", style: TextStyle(color: fontColor)),
       ),
       body: Center(
         child: Column(

@@ -45,7 +45,7 @@ class _WishListState extends State<WishList> {
           appBar: AppBar(
               automaticallyImplyLeading: false,
               backgroundColor: backgroundColor,
-              title: Text("Wishlist"),
+              title: Text("Wishlist", style: TextStyle(color: fontColor)),
               actions: <Widget>[optionsButton(), logoutButton()],
               bottom: const TabBar(
                 indicatorColor: futureColor,
