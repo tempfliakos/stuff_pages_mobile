@@ -103,31 +103,11 @@ class _WishListState extends State<WishList> {
         final item = filterByConsole(console)[index];
         return InkWell(
           child: Card(
-            child: getGame(item),
+            child: getGame(item, deleteButton(item)),
             color: cardBackgroundColor,
           )
         );
       },
-    );
-  }
-
-  Widget getGame(Game game) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        ListTile(
-          leading: ConstrainedBox(
-              constraints: BoxConstraints(
-                minWidth: 44,
-                minHeight: 44,
-                maxWidth: 200,
-                maxHeight: 200,
-              ),
-              child: img(game)),
-          title: Text(game.title),
-          trailing: deleteButton(game),
-        ),
-      ],
     );
   }
 

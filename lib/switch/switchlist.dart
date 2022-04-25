@@ -108,29 +108,11 @@ class _SwitchListState extends State<SwitchList> {
         final item = _games[index];
         return InkWell(
           child: Card(
-            child: getGame(item),
+            child: getGame(item, null),
             color: cardBackgroundColor,
           ),
         );
       },
-    );
-  }
-
-  Widget getGame(game) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        ListTile(
-            leading: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minWidth: 44,
-                  minHeight: 44,
-                  maxWidth: 200,
-                  maxHeight: 200,
-                ),
-                child: img(game)),
-            title: Text(game.title)),
-      ],
     );
   }
 

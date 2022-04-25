@@ -136,7 +136,7 @@ class _PsListState extends State<PsList> {
         final item = _games[index];
         return InkWell(
           child: Card(
-            child: getGame(item),
+            child: getGame(item, starButton(item)),
             color: cardBackgroundColor,
           ),
           onTap: () => openTrophies(item),
@@ -169,27 +169,6 @@ class _PsListState extends State<PsList> {
         children: highlights,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
       ),
-    );
-  }
-
-  Widget getGame(Game game) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        ListTile(
-          leading: ConstrainedBox(
-              constraints: BoxConstraints(
-                minWidth: 44,
-                minHeight: 44,
-                maxWidth: 200,
-                maxHeight: 200,
-              ),
-              child: img(game)),
-          title: Text(game.title),
-          subtitle: Text(calculatePercentage(game)),
-          trailing: starButton(game),
-        ),
-      ],
     );
   }
 

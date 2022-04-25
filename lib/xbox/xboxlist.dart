@@ -137,7 +137,7 @@ class _XboxListState extends State<XboxList> {
         final item = _games[index];
         return InkWell(
           child: Card(
-            child: getGame(item),
+            child: getGame(item, starButton(item)),
             color: cardBackgroundColor,
           ),
           onTap: () => openAchievements(item),
@@ -170,27 +170,6 @@ class _XboxListState extends State<XboxList> {
         children: highlights,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
       ),
-    );
-  }
-
-  Widget getGame(game) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        ListTile(
-          leading: ConstrainedBox(
-              constraints: BoxConstraints(
-                minWidth: 44,
-                minHeight: 44,
-                maxWidth: 200,
-                maxHeight: 200,
-              ),
-              child: img(game)),
-          title: Text(game.title),
-          subtitle: Text(calculatePercentage(game)),
-          trailing: starButton(game),
-        ),
-      ],
     );
   }
 
@@ -249,7 +228,7 @@ class _XboxListState extends State<XboxList> {
     }
   }
 
-  openAchievements(Game game) async {
+  void openAchievements(Game game) async {
     await Navigator.push(context,
         MaterialPageRoute(builder: (context) => ShowAchievement(game)));
     _getXboxGames();

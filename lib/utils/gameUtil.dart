@@ -8,6 +8,26 @@ String pictureLink(String link) {
   return !link.startsWith("http") ? "https:" + link : link;
 }
 
+Widget getGame(Game game, Widget trailing) {
+  return Column(
+    mainAxisSize: MainAxisSize.min,
+    children: <Widget>[
+      ListTile(
+        leading: ConstrainedBox(
+            constraints: BoxConstraints(
+              minWidth: 44,
+              minHeight: 44,
+              maxWidth: 200,
+              maxHeight: 200,
+            ),
+            child: img(game)),
+        title: Text(game.title),
+        trailing: trailing,
+      ),
+    ],
+  );
+}
+
 Widget img(Game game, [maxHeight = 100.0, maxWidth = 100.0]) {
   if (game.picture != null && game.picture != "null") {
     return ClipRRect(
