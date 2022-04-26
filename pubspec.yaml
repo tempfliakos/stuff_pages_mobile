@@ -36,6 +36,7 @@ dependencies:
   flutter_slidable: ^1.0.0
   fluttertoast: ^8.0.8
   bmprogresshud: 1.0.1
+  email_validator: ^2.0.1
 
 dev_dependencies:
   flutter_test:
