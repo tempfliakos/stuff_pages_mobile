@@ -10,15 +10,8 @@ import 'package:flutter/material.dart';
 import '../global.dart';
 
 class AddSwitchGame extends StatefulWidget {
-  List<Game> addGames = [];
-  List<Game> games = [];
-
-  AddSwitchGame(List<Game> games) {
-    this.games = games;
-  }
-
   @override
-  _AddSwitchGameState createState() => _AddSwitchGameState(games);
+  _AddSwitchGameState createState() => _AddSwitchGameState();
 }
 
 class _AddSwitchGameState extends State<AddSwitchGame> {
@@ -26,8 +19,13 @@ class _AddSwitchGameState extends State<AddSwitchGame> {
   List<Game> games = [];
   String queryString = "";
 
-  _AddSwitchGameState(List<Game> games) {
-    this.games = games;
+  _AddSwitchGameState() {
+    Api.get("games/ids/console=Switch").then((res) {
+      setState(() {
+        Iterable list = json.decode(res.body);
+        games = list.map((e) => Game.addScreen(e)).toList();
+      });
+    });
   }
 
   @override

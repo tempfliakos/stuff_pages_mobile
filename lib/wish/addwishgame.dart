@@ -11,15 +11,8 @@ import 'package:flutter/material.dart';
 import '../global.dart';
 
 class AddWishGame extends StatefulWidget {
-  List<Game> addGames = [];
-  List<Game> games = [];
-
-  AddWishGame(List<Game> games) {
-    this.games = games;
-  }
-
   @override
-  _AddWishGameState createState() => _AddWishGameState(games);
+  _AddWishGameState createState() => _AddWishGameState();
 }
 
 class _AddWishGameState extends State<AddWishGame> {
@@ -27,8 +20,13 @@ class _AddWishGameState extends State<AddWishGame> {
   List<Game> games = [];
   String queryString = "";
 
-  _AddWishGameState(List<Game> games) {
-    this.games = games;
+  _AddWishGameState() {
+    Api.get("games/wishlist/ids").then((res) {
+      setState(() {
+        Iterable list = json.decode(res.body);
+        games = list.map((e) => Game.addScreen(e)).toList();
+      });
+    });
   }
 
   @override
@@ -109,7 +107,8 @@ class _AddWishGameState extends State<AddWishGame> {
   }
 
   Widget addButton(Game game, console) {
-    bool alreadyAdded = games.map((e) => e.gameId).toList().contains(game.gameId);
+    bool alreadyAdded =
+        games.map((e) => e.gameId).toList().contains(game.gameId);
     if (alreadyAdded) {
       return IconButton(
         icon: getIcon(console, alreadyAdded),

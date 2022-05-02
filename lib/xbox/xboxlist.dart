@@ -107,7 +107,7 @@ class _XboxListState extends State<XboxList> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           await Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AddXboxGame(_games)));
+              MaterialPageRoute(builder: (context) => AddXboxGame()));
         },
         child: Icon(Icons.add, size: 40),
         backgroundColor: addedColor,

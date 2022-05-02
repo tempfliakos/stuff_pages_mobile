@@ -10,15 +10,8 @@ import 'package:flutter/material.dart';
 import '../global.dart';
 
 class AddPsGame extends StatefulWidget {
-  List<Game> addGames = [];
-  List<Game> games = [];
-
-  AddPsGame(List<Game> games) {
-    this.games = games;
-  }
-
   @override
-  _AddPsGameState createState() => _AddPsGameState(games);
+  _AddPsGameState createState() => _AddPsGameState();
 }
 
 class _AddPsGameState extends State<AddPsGame> {
@@ -26,8 +19,14 @@ class _AddPsGameState extends State<AddPsGame> {
   List<Game> games = [];
   String queryString = "";
 
-  _AddPsGameState(List<Game> games) {
-    this.games = games;
+  _AddPsGameState() {
+    Api.get("games/ids/console=Playstation")
+        .then((res) {
+      setState(() {
+        Iterable list = json.decode(res.body);
+        games = list.map((e) => Game.addScreen(e)).toList();
+      });
+    });
   }
 
   @override

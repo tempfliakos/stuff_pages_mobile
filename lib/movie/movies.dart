@@ -237,7 +237,7 @@ class _MoviesState extends State<Movies> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           await Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AddMovie(_movies)));
+              MaterialPageRoute(builder: (context) => AddMovie()));
           _getMovies();
         },
         child: Icon(Icons.add, size: 40),

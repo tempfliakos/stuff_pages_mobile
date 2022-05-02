@@ -82,7 +82,7 @@ class _SwitchListState extends State<SwitchList> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           await Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AddSwitchGame(_games)));
+              MaterialPageRoute(builder: (context) => AddSwitchGame()));
         },
         child: Icon(Icons.add, size: 40),
         backgroundColor: addedColor,

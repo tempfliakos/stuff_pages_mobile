@@ -19,7 +19,7 @@ class _WishListState extends State<WishList> {
   List<Game> _games = [];
 
   _getWishGames() {
-    Api.get("games/wishlist/xbox").then((res) {
+    Api.get("games/wishlist").then((res) {
       setState(() {
         Iterable list = json.decode(res.body);
         _games = list.map((e) => Game.fromJson(e)).toList();
@@ -72,7 +72,7 @@ class _WishListState extends State<WishList> {
           floatingActionButton: FloatingActionButton(
             onPressed: () async {
               await Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => AddWishGame(_games)));
+                  MaterialPageRoute(builder: (context) => AddWishGame()));
             },
             child: Icon(Icons.add, size: 40),
             backgroundColor: addedColor,

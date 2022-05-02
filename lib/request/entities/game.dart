@@ -103,6 +103,10 @@ class Game {
     );
   }
 
+  factory Game.addScreen(Map json) {
+    return Game(gameId: json['game_id']);
+  }
+
   Map toJson() {
     return {
       'id': id,

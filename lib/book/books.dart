@@ -81,7 +81,7 @@ class _BooksState extends State<Books> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           await Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AddBook(_books)));
+              MaterialPageRoute(builder: (context) => AddBook()));
           _getBooks();
         },
         child: Icon(Icons.add, size: 40),

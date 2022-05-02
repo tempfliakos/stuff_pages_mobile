@@ -11,23 +11,21 @@ import '../request/entities/movie.dart';
 import '../request/http.dart';
 
 class AddMovie extends StatefulWidget {
-  List<Movie> addMovies = [];
-  List<Movie> movies = [];
-
-  AddMovie(List<Movie> movies) {
-    this.movies = movies;
-  }
-
   @override
-  _AddMovieState createState() => _AddMovieState(movies);
+  _AddMovieState createState() => _AddMovieState();
 }
 
 class _AddMovieState extends State<AddMovie> {
   List<Movie> addMovies = [];
   List<Movie> movies = [];
 
-  _AddMovieState(List<Movie> movies) {
-    this.movies = movies;
+  _AddMovieState() {
+    Api.get("movies/ids").then((res) {
+      setState(() {
+        Iterable list = json.decode(res.body);
+        movies = list.map((e) => Movie.addScreen(e)).toList();
+      });
+    });
   }
 
   @override
@@ -82,7 +80,7 @@ class _AddMovieState extends State<AddMovie> {
   }
 
   Widget addButton(movie) {
-    if (movies.map((e) => e.title).toList().contains(movie.title)) {
+    if (movies.map((e) => e.movieId).toList().contains(movie.id)) {
       return IconButton(
         icon: Icon(
           Icons.check_circle,
@@ -99,7 +97,7 @@ class _AddMovieState extends State<AddMovie> {
           onPressed: () {
             setState(() {
               final body = movie.toJson();
-              movies.add(movie);
+              movies.add(Movie(movieId: body['id']));
               Api.post('movies', body);
             });
           });

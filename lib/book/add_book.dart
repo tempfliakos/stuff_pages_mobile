@@ -10,23 +10,21 @@ import '../global.dart';
 import '../request/http.dart';
 
 class AddBook extends StatefulWidget {
-  List<Book> addBooks = [];
-  List<Book> books = [];
-
-  AddBook(List<Book> books) {
-    this.books = books;
-  }
-
   @override
-  _AddBookState createState() => _AddBookState(books);
+  _AddBookState createState() => _AddBookState();
 }
 
 class _AddBookState extends State<AddBook> {
   List<Book> addBooks = [];
   List<Book> books = [];
 
-  _AddBookState(List<Book> books) {
-    this.books = books;
+  _AddBookState() {
+    Api.get("books/ids").then((res) {
+      setState(() {
+        Iterable list = json.decode(res.body);
+        books = list.map((e) => Book.addScreen(e)).toList();
+      });
+    });
   }
 
   @override
