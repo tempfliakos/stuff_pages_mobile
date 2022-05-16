@@ -84,7 +84,7 @@ Widget trophyImg(Achievement achievement) {
 Widget highlightImg(game) {
   return Container(
     child: ClipRRect(
-      child: img(game, 50, 50),
+      child: img(game, 50.0, 50.0),
       borderRadius: BorderRadius.circular(8.0),
     ),
     padding: EdgeInsets.only(right: 10.0),

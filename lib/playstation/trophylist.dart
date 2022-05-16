@@ -138,7 +138,7 @@ class _ShowTrophyState extends State<ShowTrophy> {
   }
 
   Widget getTrophy(Achievement trophy) {
-    final secret = trophy.secret;
+    final secret = trophy.secret && !trophy.show;
     final earned = trophy.earned;
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -165,10 +165,10 @@ class _ShowTrophyState extends State<ShowTrophy> {
     );
   }
 
-  Widget showButton(Achievement achievement) {
-    if (achievement.secret) {
+  Widget showButton(Achievement trophy) {
+    if (trophy.secret) {
       return IconButton(
-          icon: achievement.show
+          icon: trophy.show
               ? Icon(
             Icons.lock_open_outlined,
             color: fontColor,
@@ -179,7 +179,7 @@ class _ShowTrophyState extends State<ShowTrophy> {
           ),
           onPressed: () {
             setState(() {
-              achievement.show = !achievement.show;
+              trophy.show = !trophy.show;
             });
           });
     }
