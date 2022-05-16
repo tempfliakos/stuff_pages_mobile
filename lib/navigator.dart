@@ -1,3 +1,4 @@
+import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -71,9 +72,9 @@ class _MyNavigatorState extends State<MyNavigator> {
         ),
       ],
       currentIndex: index,
-      selectedItemColor: Colors.white,
+      selectedItemColor: futureColor,
       onTap: _onItemTapped,
-      backgroundColor: Colors.grey[600],
+      backgroundColor: backgroundColor,
       type: BottomNavigationBarType.fixed,
     );
   }

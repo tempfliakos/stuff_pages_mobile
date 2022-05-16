@@ -2,9 +2,12 @@ import 'dart:convert';
 
 import 'package:Stuff_Pages/request/entities/game.dart';
 import 'package:Stuff_Pages/request/http.dart';
+import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:Stuff_Pages/utils/gameUtil.dart';
+import 'package:bmprogresshud/progresshud.dart';
 import 'package:flutter/material.dart';
 
+import '../enums/gamesEnum.dart';
 import '../global.dart';
 import '../navigator.dart';
 import 'addswitchgame.dart';
@@ -15,22 +18,24 @@ class SwitchList extends StatefulWidget {
 }
 
 class _SwitchListState extends State<SwitchList> {
-  List _games = [];
-  List filterGames = [];
-  var titleFilter = "";
+  ScrollController controller;
+  List<Game> _games = [];
+  String titleFilter = "";
+  int pageNumber = 1;
+  int maxPageNumber;
+  bool filterMode = false;
 
   _getSwitchGames() {
-    filterGames.clear();
-    Api.get("games/console=Switch").then((res) {
+    Api.get("games/console=Switch&page=$pageNumber&title=$titleFilter")
+        .then((res) {
       setState(() {
-        Iterable list = json.decode(res.body);
-        _games = list
-            .map((e) => Game.fromJson(e))
-            .where(
-                (a) => a.console.toUpperCase().contains('Switch'.toUpperCase()))
-            .toList();
-        _games.sort((a, b) => a.title.compareTo(b.title));
-        filterGames.addAll(_games);
+        Map<String, dynamic> data = json.decode(res.body);
+        Iterable list = data[GamesEnum.games.name];
+        maxPageNumber = (data[GamesEnum.count.name] / list.length).ceil();
+        List<Game> games = list.map((e) => Game.fromJson(e)).toList();
+        List<String> _gamesIds = games.map((e) => e.gameId).toList();
+        _games = _games.where((g) => !_gamesIds.contains(g.gameId)).toList();
+        _games.addAll(createFinalGameList(games));
       });
     });
   }
@@ -38,46 +43,23 @@ class _SwitchListState extends State<SwitchList> {
   initState() {
     super.initState();
     _getSwitchGames();
+    controller = ScrollController()..addListener(_scrollListener);
   }
 
   dispose() {
+    controller.removeListener(_scrollListener);
     super.dispose();
   }
 
-  Widget filterTitleField() {
-    return Theme(
-      data: Theme.of(context).copyWith(splashColor: Colors.black),
-      child: TextField(
-        decoration: InputDecoration(
-            fillColor: Colors.white,
-            border: OutlineInputBorder(),
-            labelText: 'Játék címe...'),
-        onChanged: (text) {
-          print(text);
-          titleFilter = text;
-          filter();
-        },
-        cursorColor: Colors.white,
-        autofocus: false,
-      ),
-    );
+  void titleField(String text) {
+    titleFilter = text;
+    filter();
   }
 
   void filter() {
-    filterGames.clear();
-    filterGames.addAll(_games);
-    filterByTitle();
-    setState(() {});
-  }
-
-  filterByTitle() {
-    if (titleFilter.isNotEmpty) {
-      _games.forEach((game) {
-        if (!game.title.toUpperCase().contains(titleFilter.toUpperCase())) {
-          filterGames.remove(game);
-        }
-      });
-    }
+    pageNumber = 1;
+    _games = [];
+    _getSwitchGames();
   }
 
   @override
@@ -85,85 +67,78 @@ class _SwitchListState extends State<SwitchList> {
     return Scaffold(
       appBar: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: Colors.black,
-          title: Text("Switch játékok listája"),
-          actions: <Widget>[optionsButton(), logoutButton()]),
+          backgroundColor: backgroundColor,
+          title: titleWidget(),
+          actions: <Widget>[
+            filterButton(doFilterChange),
+            optionsButton(doOptions),
+            logoutButton(doLogout)
+          ]),
       body: Center(
         child: Column(
-          children: <Widget>[filterTitleField(), Expanded(child: _gameList())],
+          children: <Widget>[Expanded(child: _gameList())],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           await Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AddSwitchGame(_games)));
+              MaterialPageRoute(builder: (context) => AddSwitchGame()));
         },
         child: Icon(Icons.add, size: 40),
-        backgroundColor: Colors.green,
+        backgroundColor: addedColor,
       ),
       bottomNavigationBar: MyNavigator(4),
-      backgroundColor: Colors.grey,
+      backgroundColor: backgroundColor,
     );
+  }
+
+  Widget titleWidget() {
+    if (!filterMode) {
+      return Text('Switch játékok listája', style: TextStyle(color: fontColor));
+    } else {
+      return searchBar("Játék címe", titleField);
+    }
   }
 
   Widget _gameList() {
     return ListView.builder(
-      itemCount: filterGames.length,
+      controller: controller,
+      itemCount: _games.length,
       itemBuilder: (context, index) {
-        final item = filterGames[index];
+        final item = _games[index];
         return InkWell(
           child: Card(
-            child: getGame(item),
-            color: Colors.grey,
+            child: getGame(item, null),
+            color: cardBackgroundColor,
           ),
         );
       },
     );
   }
 
-  Widget getGame(game) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        ListTile(
-            leading: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minWidth: 44,
-                  minHeight: 44,
-                  maxWidth: 200,
-                  maxHeight: 200,
-                ),
-                child: img(game)),
-            title: Text(game.title)),
-      ],
-    );
+  void _scrollListener() {
+    if (maxPageNumber >= pageNumber && controller.position.extentAfter == 0) {
+      ProgressHud.showLoading();
+      pageNumber++;
+      _getSwitchGames();
+    }
+  }
+  void doFilterChange() {
+    setState(() {
+      filterMode = !filterMode;
+    });
   }
 
-  Widget logoutButton() {
-    return IconButton(
-        icon: Icon(
-          Icons.power_settings_new,
-          color: Colors.red,
-        ),
-        onPressed: () {
-          setState(() {
-            userStorage.deleteItem('user');
-            userStorage.deleteItem('options');
-            Navigator.pushReplacementNamed(context, '/');
-          });
-        });
+  void doLogout() {
+    setState(() {
+      resetStorage();
+      Navigator.pushReplacementNamed(context, '/');
+    });
   }
 
-  Widget optionsButton() {
-    return IconButton(
-        icon: Icon(
-          Icons.settings,
-          color: Colors.grey,
-        ),
-        onPressed: () {
-          setState(() {
-            Navigator.pushReplacementNamed(context, '/options');
-          });
-        });
+  void doOptions() {
+    setState(() {
+      Navigator.pushReplacementNamed(context, '/options');
+    });
   }
 }

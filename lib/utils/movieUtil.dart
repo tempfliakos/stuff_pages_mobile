@@ -1,19 +1,41 @@
-import 'package:flutter/cupertino.dart';
+import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:flutter/material.dart';
 
 import '../request/entities/movie.dart';
 
-Widget filmText(movie) {
-  return Text(
-    movie.title,
-    textAlign: TextAlign.start,
-    overflow: TextOverflow.ellipsis,
-    textWidthBasis: TextWidthBasis.parent,
-    maxLines: 10,
-    style: TextStyle(
-      fontSize: 16,
-    ),
+Widget getMovie(Movie movie, Widget trailing) {
+  return Column(
+    mainAxisSize: MainAxisSize.min,
+    children: <Widget>[
+      ListTile(
+        leading: ConstrainedBox(
+            constraints: BoxConstraints(
+              minWidth: 44,
+              minHeight: 44,
+              maxWidth: 200,
+              maxHeight: 200,
+            ),
+            child: img(movie)),
+        title: Text(movie.title, style: TextStyle(color: fontColor)),
+        subtitle: getGenres(movie),
+        trailing: trailing,
+      ),
+    ],
   );
+}
+
+Text getGenres(Movie movie) {
+  if(movie != null && movie.genres.isNotEmpty) {
+    String result = "";
+    String separator = "";
+    for(var genre in movie.genres) {
+      result += separator;
+      result += genre;
+      separator = ", ";
+    }
+    return Text(result, style: TextStyle(color: fontColor));
+  }
+  return null;
 }
 
 Widget img(Movie movie) {

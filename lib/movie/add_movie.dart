@@ -1,6 +1,9 @@
 import 'dart:convert';
 
+import 'package:Stuff_Pages/global.dart';
+import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:Stuff_Pages/utils/movieUtil.dart';
+import 'package:bmprogresshud/progresshud.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -8,58 +11,44 @@ import '../request/entities/movie.dart';
 import '../request/http.dart';
 
 class AddMovie extends StatefulWidget {
-  var addMovies = [];
-  var movies = [];
-
-  AddMovie(List<Movie> movies) {
-    this.movies = movies;
-  }
-
   @override
-  _AddMovieState createState() => _AddMovieState(movies);
+  _AddMovieState createState() => _AddMovieState();
 }
 
 class _AddMovieState extends State<AddMovie> {
-  var addMovies = [];
-  var movies = [];
+  List<Movie> addMovies = [];
+  List<Movie> movies = [];
 
-  _AddMovieState(List<Movie> movies) {
-    this.movies = movies;
+  _AddMovieState() {
+    Api.get("movies/ids").then((res) {
+      setState(() {
+        Iterable list = json.decode(res.body);
+        movies = list.map((e) => Movie.addScreen(e)).toList();
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: Text("Filmek hozzáadása"),
+        backgroundColor: backgroundColor,
+        title: searchBar("Film hozzáadása...", findMovies),
       ),
       body: Center(
         child: Column(
           children: <Widget>[
-            findMovieField(),
             Expanded(child: _movieList()),
           ],
         ),
       ),
-      backgroundColor: Colors.grey,
-    );
-  }
-
-  Widget findMovieField() {
-    return TextField(
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        labelText: 'Film hozzáadása...',
-      ),
-      onChanged: (text) {
-        findMovies(text);
-      },
+      backgroundColor: backgroundColor,
     );
   }
 
   void findMovies(text) {
     if (text.length > 2) {
+      ProgressHud.showLoading();
       Api.getFromApi("movies", text.toString()).then((res) {
         if (res != null) {
           List<dynamic> result = json.decode(res.body);
@@ -70,6 +59,7 @@ class _AddMovieState extends State<AddMovie> {
             });
           });
         }
+        ProgressHud.dismiss();
       });
     } else {
       addMovies.clear();
@@ -80,32 +70,21 @@ class _AddMovieState extends State<AddMovie> {
     return ListView.builder(
         itemCount: addMovies.length,
         itemBuilder: (context, index) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              InkWell(
-                child: img(addMovies[index]),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                      child: filmText(addMovies[index]),
-                      width: MediaQuery.of(context).size.width * 0.50)
-                ],
-              ),
-              Column(children: <Widget>[addButton(addMovies[index])])
-            ],
-          );
+          final item = addMovies[index];
+          return InkWell(
+              child: Card(
+            child: getMovie(item, addButton(item)),
+            color: cardBackgroundColor,
+          ));
         });
   }
 
   Widget addButton(movie) {
-    if (movies.map((e) => e.title).toList().contains(movie.title)) {
+    if (movies.map((e) => e.movieId).toList().contains(movie.id)) {
       return IconButton(
         icon: Icon(
           Icons.check_circle,
-          color: Colors.green,
+          color: addedColor,
         ),
         onPressed: () {},
       );
@@ -113,12 +92,12 @@ class _AddMovieState extends State<AddMovie> {
       return IconButton(
           icon: Icon(
             Icons.check_circle_outline,
-            color: Colors.black,
+            color: addableColor,
           ),
           onPressed: () {
             setState(() {
               final body = movie.toJson();
-              movies.add(movie);
+              movies.add(Movie(movieId: body['id']));
               Api.post('movies', body);
             });
           });

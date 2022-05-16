@@ -1,41 +1,23 @@
-import 'dart:convert';
-
-import 'package:Stuff_Pages/register.dart';
+import 'package:Stuff_Pages/request/http.dart';
 import 'package:Stuff_Pages/utils/colorUtil.dart';
-import 'package:Stuff_Pages/utils/optionsUtil.dart';
-import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:flutter/material.dart';
 
-import 'global.dart';
-import 'request/http.dart';
+import 'login.dart';
 
-class Login extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({Key key}) : super(key: key);
+
   @override
-  _LoginState createState() => _LoginState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginState extends State<Login> {
-  initState() {
-    super.initState();
-    _getLoggedIn();
-  }
-
-  _getLoggedIn() {
-    userStorage.ready.then((value) {
-      if (userStorage.getItem('user') != null) {
-        Map<String, Object> options = getOptions();
-        Navigator.pushReplacementNamed(
-            context, options['defaultPage'].toString());
-      }
-    });
-  }
-
-  dispose() {
-    super.dispose();
-  }
+class _RegisterPageState extends State<RegisterPage> {
+  final _formKey = GlobalKey<FormState>();
 
   TextEditingController emailEditingController = TextEditingController();
   TextEditingController passwordEditingController = TextEditingController();
+  TextEditingController rePasswordEditingController = TextEditingController();
 
   Widget emailField() {
     return TextFormField(
@@ -55,10 +37,10 @@ class _LoginState extends State<Login> {
 
   Widget passwordField() {
     return TextFormField(
-      controller: passwordEditingController,
+        controller: passwordEditingController,
       validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Jelszó megadása';
+        if (value == null || value.isEmpty || rePasswordEditingController.text != value) {
+          return 'A 2 jelszó nem egyezik';
         }
         return null;
       },
@@ -74,11 +56,32 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Widget loginButton() {
+  Widget rePasswordField() {
+    return TextFormField(
+        controller: rePasswordEditingController,
+      validator: (value) {
+        if (value == null || value.isEmpty || passwordEditingController.text != value) {
+          return 'A 2 jelszó nem egyezik';
+        }
+        return null;
+      },
+      maxLines: 1,
+      obscureText: true,
+      decoration: InputDecoration(
+        prefixIcon: const Icon(Icons.lock),
+        hintText: 'Jelszó megadása újra',
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+    );
+  }
+
+  Widget registerButton() {
     return ElevatedButton(
       onPressed: () {
         if (_formKey.currentState.validate()) {
-          _login();
+          _register();
         }
       },
       style: ElevatedButton.styleFrom(
@@ -86,7 +89,7 @@ class _LoginState extends State<Login> {
         padding: const EdgeInsets.fromLTRB(40, 15, 40, 15),
       ),
       child: const Text(
-        'Bejelentkezés',
+        'Regisztráció',
         style: TextStyle(
           fontWeight: FontWeight.bold,
         ),
@@ -94,14 +97,10 @@ class _LoginState extends State<Login> {
     );
   }
 
-  final _formKey = GlobalKey<FormState>();
-
-  _login() async {
+  _register() async {
     final body = {'email': emailEditingController.text, 'password': passwordEditingController.text};
-    final result = await Api.post('auth/login', body);
-    userStorage.setItem('user', jsonDecode(result.body)['accessToken']);
-    Map<String, Object> options = getOptions();
-    Navigator.pushReplacementNamed(context, options['defaultPage'].toString());
+    final result = await Api.post('auth/register', body);
+    Navigator.pushReplacementNamed(context, '/');
   }
 
   @override
@@ -115,7 +114,7 @@ class _LoginState extends State<Login> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'Bejelentkezés',
+              'Regisztráció',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 40,
@@ -136,24 +135,28 @@ class _LoginState extends State<Login> {
                   const SizedBox(
                     height: 20,
                   ),
-                  loginButton(),
+                  rePasswordField(),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  registerButton(),
                   const SizedBox(
                     height: 20,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text('Még nem regisztráltál?'),
+                      const Text('Már regisztrálva?'),
                       TextButton(
                         onPressed: () {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => RegisterPage(),
+                              builder: (context) => Login(),
                             ),
                           );
                         },
-                        child: const Text('Profil létrehozása'),
+                        child: const Text('Bejelentkezés'),
                       ),
                     ],
                   ),

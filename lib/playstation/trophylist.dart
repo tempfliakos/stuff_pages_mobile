@@ -3,15 +3,15 @@ import 'dart:convert';
 import 'package:Stuff_Pages/request/entities/achievement.dart';
 import 'package:Stuff_Pages/request/entities/game.dart';
 import 'package:Stuff_Pages/request/http.dart';
+import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:Stuff_Pages/utils/gameUtil.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../navigator.dart';
 
 class ShowTrophy extends StatefulWidget {
-  var game;
+  Game game;
 
   ShowTrophy(Game game) {
     this.game = game;
@@ -22,12 +22,12 @@ class ShowTrophy extends StatefulWidget {
 }
 
 class _ShowTrophyState extends State<ShowTrophy> {
-  var game;
-  var donefilter = false;
-  List _achievements = [];
-  List filteredAchievments = [];
-  final secretTitle = "Hidden Trophy";
-  final secretDescription = "";
+  Game game;
+  bool donefilter = false;
+  List<Achievement> _achievements = [];
+  List<Achievement> filteredAchievments = [];
+  final String secretTitle = "Hidden Trophy";
+  final String secretDescription = "";
 
   _ShowTrophyState(Game game) {
     this.game = game;
@@ -42,9 +42,9 @@ class _ShowTrophyState extends State<ShowTrophy> {
           filter();
         });
       },
-      activeTrackColor: Colors.blue,
-      activeColor: Colors.blue,
-      inactiveTrackColor: Colors.grey,
+      activeTrackColor: addedColor,
+      activeColor: addedColor,
+      inactiveTrackColor: cardBackgroundColor,
     );
   }
 
@@ -87,8 +87,8 @@ class _ShowTrophyState extends State<ShowTrophy> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Colors.black,
-          title: Text(game.title),
+          backgroundColor: backgroundColor,
+          title: Text(game.title, style: TextStyle(color: fontColor)),
           actions: <Widget>[doneFilter()]),
       body: Center(
         child: Column(
@@ -96,7 +96,7 @@ class _ShowTrophyState extends State<ShowTrophy> {
         ),
       ),
       bottomNavigationBar: MyNavigator(3),
-      backgroundColor: Colors.grey,
+      backgroundColor: backgroundColor,
     );
   }
 
@@ -110,7 +110,7 @@ class _ShowTrophyState extends State<ShowTrophy> {
             key: UniqueKey(),
             child: Card(
               child: getTrophy(item),
-              color: Colors.grey,
+              color: cardBackgroundColor,
             ),
             onDismissed: (direction) {
               Fluttertoast.showToast(
@@ -118,7 +118,7 @@ class _ShowTrophyState extends State<ShowTrophy> {
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.BOTTOM,
                   timeInSecForIosWeb: 3,
-                  backgroundColor: item.earned ? Colors.red : Colors.green,
+                  backgroundColor: item.earned ? deleteColor : addedColor,
                   fontSize: 16.0);
               setState(() {
                 item.earned = !item.earned;
@@ -127,19 +127,10 @@ class _ShowTrophyState extends State<ShowTrophy> {
               });
             },
             background:
-                Container(color: item.earned ? Colors.red : Colors.green),
+                Container(color: item.earned ? deleteColor : addedColor),
           ),
           onTap: () {
             launchURL(game.title + " " + item.title);
-          },
-          onLongPress: () {
-            Fluttertoast.showToast(
-                msg: item.title + " ( " + item.description + " )",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 3,
-                backgroundColor: Colors.grey,
-                fontSize: 16.0);
           },
         );
       },
@@ -147,7 +138,7 @@ class _ShowTrophyState extends State<ShowTrophy> {
   }
 
   Widget getTrophy(Achievement trophy) {
-    final secret = trophy.secret;
+    final secret = trophy.secret && !trophy.show;
     final earned = trophy.earned;
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -161,15 +152,37 @@ class _ShowTrophyState extends State<ShowTrophy> {
                 maxHeight: 200,
               ),
               child: trophyImg(trophy)),
-          title: secret && !earned ? Text(secretTitle) : Text(trophy.title),
+          title: secret && !earned ? Text(secretTitle, style: TextStyle(color: fontColor)) : Text(trophy.title, style: TextStyle(color: fontColor)),
           subtitle: secret && !earned
-              ? Text(secretDescription)
-              : Text(trophy.description),
+              ? Text(secretDescription, style: TextStyle(color: fontColor))
+              : Text(trophy.description, style: TextStyle(color: fontColor)),
+          trailing: showButton(trophy),
           onTap: () {
             launchURL(game.title + " " + trophy.title);
           },
         ),
       ],
     );
+  }
+
+  Widget showButton(Achievement trophy) {
+    if (trophy.secret) {
+      return IconButton(
+          icon: trophy.show
+              ? Icon(
+            Icons.lock_open_outlined,
+            color: fontColor,
+          )
+              : Icon(
+            Icons.lock_outlined,
+            color: fontColor,
+          ),
+          onPressed: () {
+            setState(() {
+              trophy.show = !trophy.show;
+            });
+          });
+    }
+    return null;
   }
 }

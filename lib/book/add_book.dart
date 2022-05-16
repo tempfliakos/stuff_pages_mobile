@@ -2,64 +2,52 @@ import 'dart:convert';
 
 import 'package:Stuff_Pages/request/entities/book.dart';
 import 'package:Stuff_Pages/utils/bookUtil.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:Stuff_Pages/utils/colorUtil.dart';
+import 'package:bmprogresshud/progresshud.dart';
 import 'package:flutter/material.dart';
 
+import '../global.dart';
 import '../request/http.dart';
 
 class AddBook extends StatefulWidget {
-  var addBooks = [];
-  var books = [];
-
-  AddBook(List<Book> books) {
-    this.books = books;
-  }
-
   @override
-  _AddBookState createState() => _AddBookState(books);
+  _AddBookState createState() => _AddBookState();
 }
 
 class _AddBookState extends State<AddBook> {
-  var addBooks = [];
-  var books = [];
+  List<Book> addBooks = [];
+  List<Book> books = [];
 
-  _AddBookState(List<Book> books) {
-    this.books = books;
+  _AddBookState() {
+    Api.get("books/ids").then((res) {
+      setState(() {
+        Iterable list = json.decode(res.body);
+        books = list.map((e) => Book.addScreen(e)).toList();
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: Text("Könyvek hozzáadása"),
+        backgroundColor: backgroundColor,
+        title: searchBar("Könyv hozzáadása...", findBooks),
       ),
       body: Center(
         child: Column(
           children: <Widget>[
-            findBookField(),
             Expanded(child: _bookList()),
           ],
         ),
       ),
-      backgroundColor: Colors.grey,
-    );
-  }
-
-  Widget findBookField() {
-    return TextField(
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        labelText: 'Könyv hozzáadása...',
-      ),
-      onChanged: (text) {
-        findBooks(text);
-      },
+      backgroundColor: backgroundColor,
     );
   }
 
   void findBooks(text) {
     if (text.length > 2) {
+      ProgressHud.showLoading();
       Api.getFromApi("books", text.toString()).then((res) {
         if (res != null) {
           List<dynamic> result = json.decode(res.body);
@@ -68,6 +56,7 @@ class _AddBookState extends State<AddBook> {
             result.forEach((book) {
               addBooks.add(Book.addFromJson(book));
             });
+            ProgressHud.dismiss();
           });
         }
       });
@@ -80,23 +69,12 @@ class _AddBookState extends State<AddBook> {
     return ListView.builder(
         itemCount: addBooks.length,
         itemBuilder: (context, index) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              InkWell(
-                child: img(addBooks[index]),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                      child: bookText(addBooks[index]),
-                      width: MediaQuery.of(context).size.width * 0.50)
-                ],
-              ),
-              Column(children: <Widget>[addButton(addBooks[index])])
-            ],
-          );
+          final item = addBooks[index];
+          return InkWell(
+              child: Card(
+            child: getBook(item, addButton(item)),
+            color: cardBackgroundColor,
+          ));
         });
   }
 
@@ -105,7 +83,7 @@ class _AddBookState extends State<AddBook> {
       return IconButton(
         icon: Icon(
           Icons.check_circle,
-          color: Colors.green,
+          color: addedColor,
         ),
         onPressed: () {},
       );
@@ -113,7 +91,7 @@ class _AddBookState extends State<AddBook> {
       return IconButton(
           icon: Icon(
             Icons.check_circle_outline,
-            color: Colors.black,
+            color: addableColor,
           ),
           onPressed: () {
             setState(() {

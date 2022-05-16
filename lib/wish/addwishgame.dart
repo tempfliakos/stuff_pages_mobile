@@ -2,75 +2,68 @@ import 'dart:convert';
 
 import 'package:Stuff_Pages/request/entities/game.dart';
 import 'package:Stuff_Pages/request/http.dart';
+import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:Stuff_Pages/utils/gameUtil.dart';
+import 'package:bmprogresshud/progresshud.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../global.dart';
+
 class AddWishGame extends StatefulWidget {
-  var addGames = [];
-  var games = [];
-
-  AddWishGame(List<Game> games) {
-    this.games = games;
-  }
-
   @override
-  _AddWishGameState createState() => _AddWishGameState(games);
+  _AddWishGameState createState() => _AddWishGameState();
 }
 
 class _AddWishGameState extends State<AddWishGame> {
-  var addGames = [];
-  var games = [];
-  var queryString = "";
+  List<Game> addGames = [];
+  List<Game> games = [];
+  String queryString = "";
 
-  _AddWishGameState(List<Game> games) {
-    this.games = games;
+  _AddWishGameState() {
+    Api.get("games/wishlist/ids").then((res) {
+      setState(() {
+        Iterable list = json.decode(res.body);
+        games = list.map((e) => Game.addScreen(e)).toList();
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: Text("Játékok hozzáadása"),
+        backgroundColor: backgroundColor,
+        title: searchBar("Játék hozzáadása...", searchField, false),
+        actions: [searchIcon()],
       ),
       body: Center(
         child: Column(
           children: <Widget>[
-            findGameField(),
             Expanded(child: _gameList()),
           ],
         ),
       ),
-      backgroundColor: Colors.grey,
+      backgroundColor: backgroundColor,
     );
   }
 
-  Widget findGameField() {
-    return Column(
-      children: [
-        TextField(
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            labelText: 'Játék keresése...',
-          ),
-          onChanged: (text) {
-            queryString = text;
-          },
+  void searchField(String text) {
+    queryString = text;
+  }
+
+  IconButton searchIcon() {
+    return IconButton(
+        icon: Icon(
+          Icons.search,
+          color: fontColor,
         ),
-        TextButton(
-            child: Text("Keresés", style: TextStyle(color: Colors.white)),
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.green)),
-            onPressed: () {
-              findGames();
-            })
-      ],
-    );
+        onPressed: () => findGames());
   }
 
   void findGames() {
     if (queryString.length > 2) {
+      ProgressHud.showLoading();
       Api.getFromApi("wish", queryString.toString()).then((res) {
         if (res != null) {
           List<dynamic> result = json.decode(res.body);
@@ -82,6 +75,7 @@ class _AddWishGameState extends State<AddWishGame> {
             });
           });
         }
+        ProgressHud.dismiss();
       });
     } else {
       addGames.clear();
@@ -92,34 +86,29 @@ class _AddWishGameState extends State<AddWishGame> {
     return ListView.builder(
         itemCount: addGames.length,
         itemBuilder: (context, index) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              InkWell(
-                child: img(addGames[index]),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                      child: addGameText(addGames[index]),
-                      width: MediaQuery.of(context).size.width * 0.50)
-                ],
-              ),
-              Column(children: <Widget>[
-                addButton(addGames[index], 'Xbox'),
-              ]),
-              Column(children: <Widget>[
-                addButton(addGames[index], 'Playstation'),
-              ]),
-              Column(children: <Widget>[addButton(addGames[index], 'Switch')])
-            ],
-          );
+          final item = addGames[index];
+          return InkWell(
+              child: Card(
+            child: getGame(item, addButtons(item)),
+            color: cardBackgroundColor,
+          ));
         });
   }
 
-  Widget addButton(game, console) {
-    bool alreadyAdded = games.map((e) => e.title).toList().contains(game.title);
+  Widget addButtons(Game game) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        addButton(game, 'Xbox'),
+        addButton(game, 'Playstation'),
+        addButton(game, 'Switch')
+      ],
+    );
+  }
+
+  Widget addButton(Game game, console) {
+    bool alreadyAdded =
+        games.map((e) => e.gameId).toList().contains(game.gameId);
     if (alreadyAdded) {
       return IconButton(
         icon: getIcon(console, alreadyAdded),
@@ -143,17 +132,17 @@ class _AddWishGameState extends State<AddWishGame> {
     if (console == 'Xbox') {
       return ImageIcon(
         AssetImage("assets/images/xbox_logo.png"),
-        color: alreadyAdded ? Colors.green : Colors.black,
+        color: alreadyAdded ? addedColor : addableColor,
       );
     } else if (console == 'Playstation') {
       return ImageIcon(
         AssetImage("assets/images/ps_logo.png"),
-        color: alreadyAdded ? Colors.green : Colors.black,
+        color: alreadyAdded ? addedColor : addableColor,
       );
     }
     return ImageIcon(
       AssetImage("assets/images/switch_logo.png"),
-      color: alreadyAdded ? Colors.green : Colors.black,
+      color: alreadyAdded ? addedColor : addableColor,
     );
   }
 }

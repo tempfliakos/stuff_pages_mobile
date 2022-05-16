@@ -1,4 +1,5 @@
 import 'package:Stuff_Pages/global.dart';
+import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:Stuff_Pages/utils/optionsUtil.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -46,8 +47,8 @@ class _OptionsState extends State<Options> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.black,
-        title: Text('Beállítások'),
+        backgroundColor: backgroundColor,
+        title: Text('Beállítások', style: TextStyle(color: fontColor)),
       ),
       body: Center(
         child: Column(
@@ -55,7 +56,7 @@ class _OptionsState extends State<Options> {
         ),
       ),
       bottomNavigationBar: MyNavigator(0),
-      backgroundColor: Colors.grey,
+      backgroundColor: backgroundColor,
     );
   }
 
@@ -77,7 +78,7 @@ class _OptionsState extends State<Options> {
       TableCell(
           verticalAlignment: TableCellVerticalAlignment.middle,
           child: Container(
-            child: Text(optionsName[option]),
+            child: Text(optionsName[option], style: TextStyle(color: fontColor)),
           )),
       TableCell(
           verticalAlignment: TableCellVerticalAlignment.middle,
@@ -136,7 +137,7 @@ class _OptionsState extends State<Options> {
       }
       result.add(DropdownMenuItem(
         value: option,
-        child: Text(text),
+        child: Text(text, style: TextStyle(color: fontColor)),
       ));
     }
     return result;

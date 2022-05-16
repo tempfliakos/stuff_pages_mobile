@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:Stuff_Pages/request/entities/game.dart';
 import 'package:Stuff_Pages/request/http.dart';
+import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:Stuff_Pages/utils/gameUtil.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +19,7 @@ class _WishListState extends State<WishList> {
   List<Game> _games = [];
 
   _getWishGames() {
-    Api.get("games/wishlist/xbox").then((res) {
+    Api.get("games/wishlist").then((res) {
       setState(() {
         Iterable list = json.decode(res.body);
         _games = list.map((e) => Game.fromJson(e)).toList();
@@ -43,10 +44,11 @@ class _WishListState extends State<WishList> {
         child: Scaffold(
           appBar: AppBar(
               automaticallyImplyLeading: false,
-              backgroundColor: Colors.black,
-              title: Text("Wishlist"),
-              actions: <Widget>[optionsButton(), logoutButton()],
+              backgroundColor: backgroundColor,
+              title: Text("Wishlist", style: TextStyle(color: fontColor)),
+              actions: <Widget>[optionsButton(doOptions), logoutButton(doLogout)],
               bottom: const TabBar(
+                indicatorColor: futureColor,
                 tabs: [
                   Tab(
                       icon: ImageIcon(
@@ -70,13 +72,13 @@ class _WishListState extends State<WishList> {
           floatingActionButton: FloatingActionButton(
             onPressed: () async {
               await Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => AddWishGame(_games)));
+                  MaterialPageRoute(builder: (context) => AddWishGame()));
             },
             child: Icon(Icons.add, size: 40),
-            backgroundColor: Colors.green,
+            backgroundColor: addedColor,
           ),
           bottomNavigationBar: MyNavigator(5),
-          backgroundColor: Colors.grey,
+          backgroundColor: backgroundColor,
         ));
   }
 
@@ -100,35 +102,21 @@ class _WishListState extends State<WishList> {
       itemCount: filterByConsole(console).length,
       itemBuilder: (context, index) {
         final item = filterByConsole(console)[index];
-        return getGame(item);
+        return InkWell(
+          child: Card(
+            child: getGame(item, deleteButton(item)),
+            color: cardBackgroundColor,
+          )
+        );
       },
     );
-  }
-
-  Widget getGame(game) {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Column(
-            children: <Widget>[img(game)],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              SizedBox(
-                  child: Text(game.title),
-                  width: MediaQuery.of(context).size.width * 0.50)
-            ],
-          ),
-          Column(children: [deleteButton(game)])
-        ]);
   }
 
   Widget deleteButton(game) {
     return IconButton(
         icon: Icon(
           Icons.delete,
-          color: Colors.red,
+          color: deleteColor,
         ),
         onPressed: () {
           setState(() {
@@ -138,31 +126,16 @@ class _WishListState extends State<WishList> {
         });
   }
 
-  Widget logoutButton() {
-    return IconButton(
-        icon: Icon(
-          Icons.power_settings_new,
-          color: Colors.red,
-        ),
-        onPressed: () {
-          setState(() {
-            userStorage.deleteItem('user');
-            userStorage.deleteItem('options');
-            Navigator.pushReplacementNamed(context, '/');
-          });
-        });
+  void doLogout() {
+    setState(() {
+      resetStorage();
+      Navigator.pushReplacementNamed(context, '/');
+    });
   }
 
-  Widget optionsButton() {
-    return IconButton(
-        icon: Icon(
-          Icons.settings,
-          color: Colors.grey,
-        ),
-        onPressed: () {
-          setState(() {
-            Navigator.pushReplacementNamed(context, '/options');
-          });
-        });
+  void doOptions() {
+    setState(() {
+      Navigator.pushReplacementNamed(context, '/options');
+    });
   }
 }

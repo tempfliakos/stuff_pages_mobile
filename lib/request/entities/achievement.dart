@@ -8,6 +8,7 @@ class Achievement {
   String picture;
   String value;
   bool earned;
+  bool show;
 
   Achievement(
       {this.id,
@@ -16,6 +17,7 @@ class Achievement {
       this.title,
       this.description,
       this.secret,
+      this.show,
       this.picture,
       this.value,
       this.earned});
@@ -28,6 +30,7 @@ class Achievement {
         title: json['title'],
         description: json['description'],
         secret: json['secret'],
+        show: !json['secret'],
         picture: json['picture'],
         value: json['value'],
         earned: json['earned']);

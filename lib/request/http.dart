@@ -43,7 +43,6 @@ class Api {
 
   static Future deleteWithParam(String endpoint, param) async {
     Uri uri = Uri.parse(URL + endpoint + param);
-    print(uri);
     return http.delete(uri, headers: {
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Bearer ${userStorage.getItem('user')}'

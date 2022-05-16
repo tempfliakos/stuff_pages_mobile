@@ -2,6 +2,7 @@ import 'package:Stuff_Pages/book/books.dart';
 import 'package:Stuff_Pages/options.dart';
 import 'package:Stuff_Pages/playstation/pslist.dart';
 import 'package:Stuff_Pages/switch/switchlist.dart';
+import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:Stuff_Pages/wish/wishlist.dart';
 import 'package:bmprogresshud/progresshud.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,8 @@ class MyApp extends StatelessWidget {
             '/wish': (context) => WishList(),
           },
           theme: ThemeData(
-            primaryColor: Colors.black,
+            brightness: Brightness.dark,
+            primaryColor: backgroundColor,
           ),
         ));
   }

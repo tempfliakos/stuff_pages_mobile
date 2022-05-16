@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:Stuff_Pages/request/entities/book.dart';
 import 'package:Stuff_Pages/request/http.dart';
 import 'package:Stuff_Pages/utils/bookUtil.dart';
+import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:flutter/material.dart';
 
 import '../global.dart';
@@ -15,8 +16,10 @@ class Books extends StatefulWidget {
 }
 
 class _BooksState extends State<Books> {
-  List _books = [];
-  List filterBooks = [];
+  List<Book> _books = [];
+  List<Book> filterBooks = [];
+  String titleFilter = "";
+  bool filterMode = false;
 
   _getBooks() {
     filterBooks.clear();
@@ -39,14 +42,34 @@ class _BooksState extends State<Books> {
     super.dispose();
   }
 
+  void titleField(String text) {
+    titleFilter = text;
+    filter();
+  }
+
+  void filter() {
+    filterBooks.clear();
+    doFilter();
+    setState(() {});
+  }
+
+  void doFilter() {
+    filterBooks = _books.where(
+        (book) => book.title.toLowerCase().contains(titleFilter.toLowerCase())).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.black,
-        title: Text('Könyvek'),
-        actions: <Widget>[optionsButton(), logoutButton()],
+        backgroundColor: backgroundColor,
+        title: titleWidget(),
+        actions: <Widget>[
+          filterButton(doFilterChange),
+          optionsButton(doOptions),
+          logoutButton(doLogout)
+        ],
       ),
       body: Center(
         child: Column(
@@ -58,15 +81,23 @@ class _BooksState extends State<Books> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           await Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AddBook(_books)));
+              MaterialPageRoute(builder: (context) => AddBook()));
           _getBooks();
         },
         child: Icon(Icons.add, size: 40),
-        backgroundColor: Colors.green,
+        backgroundColor: addedColor,
       ),
       bottomNavigationBar: MyNavigator(1),
-      backgroundColor: Colors.grey,
+      backgroundColor: backgroundColor,
     );
+  }
+
+  Widget titleWidget() {
+    if (!filterMode) {
+      return Text('Könyvek', style: TextStyle(color: fontColor));
+    } else {
+      return searchBar("Könyv címe", titleField);
+    }
   }
 
   Widget _bookList() {
@@ -80,57 +111,55 @@ class _BooksState extends State<Books> {
               ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(item.title + ' törölve')));
               setState(() {
-                Api.deleteWithParam("books/", item.bookId);
-                _books.remove(item);
-                filterBooks.remove(item);
+                deleteBook(item);
               });
             },
-            background: Container(color: Colors.red),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Column(
-                  children: <Widget>[img(item)],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    SizedBox(
-                        child: bookText(item),
-                        width: MediaQuery.of(context).size.width * 0.75)
-                  ],
-                ),
-              ],
+            background: Container(color: deleteColor),
+            child: InkWell(
+              child: Card(
+                child: getBook(item, deleteButton(item)),
+                color: cardBackgroundColor,
+              ),
             ));
       },
     );
   }
 
-  Widget logoutButton() {
+  Widget deleteButton(book) {
     return IconButton(
         icon: Icon(
-          Icons.power_settings_new,
-          color: Colors.red,
+          Icons.delete,
+          color: deleteColor,
         ),
         onPressed: () {
           setState(() {
-            userStorage.deleteItem('user');
-            userStorage.deleteItem('options');
-            Navigator.pushReplacementNamed(context, '/');
+            deleteBook(book);
           });
         });
   }
 
-  Widget optionsButton() {
-    return IconButton(
-        icon: Icon(
-          Icons.settings,
-          color: Colors.grey,
-        ),
-        onPressed: () {
-          setState(() {
-            Navigator.pushReplacementNamed(context, '/options');
-          });
-        });
+  void deleteBook(Book book) {
+    Api.deleteWithParam("books/", book.bookId);
+    _books.remove(book);
+    filterBooks.remove(book);
+  }
+
+  void doFilterChange() {
+    setState(() {
+      filterMode = !filterMode;
+    });
+  }
+
+  void doLogout() {
+    setState(() {
+      resetStorage();
+      Navigator.pushReplacementNamed(context, '/');
+    });
+  }
+
+  void doOptions() {
+    setState(() {
+      Navigator.pushReplacementNamed(context, '/options');
+    });
   }
 }

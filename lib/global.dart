@@ -1,3 +1,4 @@
+import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
 
@@ -5,16 +6,49 @@ final LocalStorage userStorage = new LocalStorage('user');
 
 var selectedIndex = 0;
 
-Widget logoutButton(context, setState) {
+Widget logoutButton(Function onPressed) {
   return IconButton(
       icon: Icon(
         Icons.power_settings_new,
-        color: Colors.red,
+        color: deleteColor,
       ),
-      onPressed: () {
-        setState(() {
-          userStorage.deleteItem('user');
-          Navigator.pushReplacementNamed(context, '/');
-        });
-      });
+      onPressed: () => onPressed());
+}
+
+Widget optionsButton(Function onPressed) {
+  return IconButton(
+      icon: Icon(
+        Icons.settings,
+        color: addableColor,
+      ),
+      onPressed: () => onPressed());
+}
+
+Widget filterButton(Function onPressed) {
+  return IconButton(
+      icon: Icon(
+        Icons.search,
+        color: addableColor,
+      ),
+      onPressed: () => onPressed());
+}
+
+TextField searchBar(String label, Function onChange, [isIcon = true]) {
+  return TextField(
+    autofocus: true,
+    decoration: getSearchBarInput(label, isIcon),
+    onChanged: (text) => onChange(text),
+  );
+}
+
+InputDecoration getSearchBarInput(String label, isIcon) {
+  if (isIcon) {
+    return InputDecoration(icon: Icon(Icons.search), labelText: label);
+  }
+  return InputDecoration(labelText: label);
+}
+
+void resetStorage() {
+  userStorage.deleteItem('user');
+  userStorage.deleteItem('options');
 }

@@ -2,6 +2,7 @@ import 'package:Stuff_Pages/utils/genres.dart';
 
 class Movie {
   String id;
+  String movieId;
   String backdropPath;
   String posterPath;
   String releaseDate;
@@ -13,6 +14,7 @@ class Movie {
 
   Movie(
       {this.id,
+      this.movieId,
       this.backdropPath,
       this.posterPath,
       this.releaseDate,
@@ -62,6 +64,10 @@ class Movie {
         owned: false,
         liza: false,
         genres: getGenres());
+  }
+
+  factory Movie.addScreen(Map json) {
+    return Movie(movieId: json['movie_id']);
   }
 
   Map toJson() {

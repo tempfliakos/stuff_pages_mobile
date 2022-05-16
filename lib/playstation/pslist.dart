@@ -4,6 +4,7 @@ import 'package:Stuff_Pages/playstation/addpsgame.dart';
 import 'package:Stuff_Pages/playstation/trophylist.dart';
 import 'package:Stuff_Pages/request/entities/game.dart';
 import 'package:Stuff_Pages/request/http.dart';
+import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:Stuff_Pages/utils/gameUtil.dart';
 import 'package:bmprogresshud/progresshud.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ class _PsListState extends State<PsList> {
   String titleFilter = "";
   int pageNumber = 1;
   int maxPageNumber;
+  bool filterMode = false;
 
   _getPsGames() {
     Api.get("games/console=Playstation&page=$pageNumber&title=$titleFilter")
@@ -33,7 +35,7 @@ class _PsListState extends State<PsList> {
           Map<String, dynamic> data = json.decode(res.body);
           Iterable list = data[GamesEnum.games.name];
           maxPageNumber = (data[GamesEnum.count.name] / list.length).ceil();
-          List<Game> games = list.map((e) => Game.fromJson(e)).toList();
+          List<Game> games = list.map((e) => Game.playstationFromJson(e)).toList();
           List<String> _gamesIds = games.map((e) => e.gameId).toList();
           _games = _games.where((g) => !_gamesIds.contains(g.gameId)).toList();
           _games.addAll(createFinalGameList(games));
@@ -71,22 +73,9 @@ class _PsListState extends State<PsList> {
     super.dispose();
   }
 
-  Widget filterTitleField() {
-    return Theme(
-      data: Theme.of(context).copyWith(splashColor: Colors.black),
-      child: TextField(
-        decoration: InputDecoration(
-            fillColor: Colors.white,
-            border: OutlineInputBorder(),
-            labelText: 'Játék címe...'),
-        onChanged: (text) {
-          titleFilter = text;
-          filter();
-        },
-        cursorColor: Colors.white,
-        autofocus: false,
-      ),
-    );
+  void titleField(String text) {
+    titleFilter = text;
+    filter();
   }
 
   void filter() {
@@ -100,34 +89,39 @@ class _PsListState extends State<PsList> {
     return Scaffold(
       appBar: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: Colors.black,
-          title: Text("Playstation játékok listája"),
-          actions: <Widget>[optionsButton(), logoutButton()]),
+          backgroundColor: backgroundColor,
+          title: titleWidget(),
+          actions: <Widget>[
+            filterButton(doFilterChange),
+            optionsButton(doOptions),
+            logoutButton(doLogout)
+          ]),
       body: Scrollbar(
         child: Center(
           child: Column(
-            children: <Widget>[
-              Container(
-                  child: _starList(),
-                  alignment: Alignment.centerLeft,
-                  margin: EdgeInsets.all(20.0)),
-              filterTitleField(),
-              Expanded(child: _gameList())
-            ],
+            children: <Widget>[getStarList(), Expanded(child: _gameList())],
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           await Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AddPsGame(_games)));
+              MaterialPageRoute(builder: (context) => AddPsGame()));
         },
         child: Icon(Icons.add, size: 40),
-        backgroundColor: Colors.green,
+        backgroundColor: addedColor,
       ),
       bottomNavigationBar: MyNavigator(3),
-      backgroundColor: Colors.grey,
+      backgroundColor: backgroundColor,
     );
+  }
+
+  Widget titleWidget() {
+    if (!filterMode) {
+      return Text('Playstation játékok listája', style: TextStyle(color: fontColor));
+    } else {
+      return searchBar("Játék címe", titleField);
+    }
   }
 
   Widget _gameList() {
@@ -138,13 +132,23 @@ class _PsListState extends State<PsList> {
         final item = _games[index];
         return InkWell(
           child: Card(
-            child: getGame(item),
-            color: Colors.grey,
+            child: getGame(item, starButton(item)),
+            color: cardBackgroundColor,
           ),
           onTap: () => openTrophies(item),
         );
       },
     );
+  }
+
+  Widget getStarList() {
+    if (_starred.isNotEmpty) {
+      return Container(
+          child: _starList(),
+          alignment: Alignment.centerLeft,
+          margin: EdgeInsets.all(20.0));
+    }
+    return Text("");
   }
 
   Widget _starList() {
@@ -164,32 +168,11 @@ class _PsListState extends State<PsList> {
     );
   }
 
-  Widget getGame(game) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        ListTile(
-          leading: ConstrainedBox(
-              constraints: BoxConstraints(
-                minWidth: 44,
-                minHeight: 44,
-                maxWidth: 200,
-                maxHeight: 200,
-              ),
-              child: img(game)),
-          title: Text(game.title),
-          subtitle: Text(calculatePercentage(game)),
-          trailing: starButton(game),
-        ),
-      ],
-    );
-  }
-
   Widget starButton(Game game) {
     return IconButton(
         icon: Icon(
           game.star ? Icons.star : Icons.star_border,
-          color: Colors.amber,
+          color: futureColor,
         ),
         onPressed: () {
           setState(() {
@@ -200,34 +183,6 @@ class _PsListState extends State<PsList> {
             } else {
               _starred.removeWhere((g) => g.id == game.id);
             }
-          });
-        });
-  }
-
-  Widget logoutButton() {
-    return IconButton(
-        icon: Icon(
-          Icons.power_settings_new,
-          color: Colors.red,
-        ),
-        onPressed: () {
-          setState(() {
-            userStorage.deleteItem('user');
-            userStorage.deleteItem('options');
-            Navigator.pushReplacementNamed(context, '/');
-          });
-        });
-  }
-
-  Widget optionsButton() {
-    return IconButton(
-        icon: Icon(
-          Icons.settings,
-          color: Colors.grey,
-        ),
-        onPressed: () {
-          setState(() {
-            Navigator.pushReplacementNamed(context, '/options');
           });
         });
   }
@@ -244,5 +199,24 @@ class _PsListState extends State<PsList> {
     await Navigator.push(
         context, MaterialPageRoute(builder: (context) => ShowTrophy(game)));
     _getPsGames();
+  }
+
+  void doFilterChange() {
+    setState(() {
+      filterMode = !filterMode;
+    });
+  }
+
+  void doLogout() {
+    setState(() {
+      resetStorage();
+      Navigator.pushReplacementNamed(context, '/');
+    });
+  }
+
+  void doOptions() {
+    setState(() {
+      Navigator.pushReplacementNamed(context, '/options');
+    });
   }
 }

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:Stuff_Pages/request/entities/achievement.dart';
 import 'package:Stuff_Pages/request/entities/game.dart';
 import 'package:Stuff_Pages/request/http.dart';
+import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:Stuff_Pages/utils/gameUtil.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../navigator.dart';
 
 class ShowAchievement extends StatefulWidget {
-  var game;
+  Game game;
 
   ShowAchievement(Game game) {
     this.game = game;
@@ -22,12 +23,12 @@ class ShowAchievement extends StatefulWidget {
 }
 
 class _ShowAchievementState extends State<ShowAchievement> {
-  var game;
-  var donefilter = false;
-  List _achievements = [];
-  List filteredAchievments = [];
-  final secretTitle = "Secret achievement";
-  final secretDescription =
+  Game game;
+  bool donefilter = false;
+  List<Achievement> _achievements = [];
+  List<Achievement> filteredAchievments = [];
+  final String secretTitle = "Secret achievement";
+  final String secretDescription =
       "This achievement is secret. The more you play, the more likely you are to unlock it!";
 
   _ShowAchievementState(Game game) {
@@ -43,9 +44,9 @@ class _ShowAchievementState extends State<ShowAchievement> {
           filter();
         });
       },
-      activeTrackColor: Colors.blue,
-      activeColor: Colors.blue,
-      inactiveTrackColor: Colors.grey,
+      activeTrackColor: addedColor,
+      activeColor: addedColor,
+      inactiveTrackColor: cardBackgroundColor,
     );
   }
 
@@ -69,7 +70,8 @@ class _ShowAchievementState extends State<ShowAchievement> {
         _achievements = list.map((e) => Achievement.fromJson(e)).toList();
         _achievements.sort((a, b) => a.title.compareTo(b.title));
         filteredAchievments.addAll(_achievements);
-        donefilter = game.earned != null && (game.earned / game.sum * 100) == 100;
+        donefilter =
+            game.earned != null && (game.earned / game.sum * 100) == 100;
         filter();
       });
     });
@@ -88,8 +90,8 @@ class _ShowAchievementState extends State<ShowAchievement> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Colors.black,
-          title: Text(game.title),
+          backgroundColor: backgroundColor,
+          title: Text(game.title, style: TextStyle(color: fontColor)),
           actions: <Widget>[refreshButton(), doneFilter()]),
       body: Center(
         child: Column(
@@ -97,7 +99,7 @@ class _ShowAchievementState extends State<ShowAchievement> {
         ),
       ),
       bottomNavigationBar: MyNavigator(2),
-      backgroundColor: Colors.grey,
+      backgroundColor: backgroundColor,
     );
   }
 
@@ -111,7 +113,7 @@ class _ShowAchievementState extends State<ShowAchievement> {
             key: UniqueKey(),
             child: Card(
               child: getAchievement(item),
-              color: Colors.grey,
+              color: cardBackgroundColor,
             ),
             onDismissed: (direction) {
               Fluttertoast.showToast(
@@ -119,7 +121,7 @@ class _ShowAchievementState extends State<ShowAchievement> {
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.BOTTOM,
                   timeInSecForIosWeb: 3,
-                  backgroundColor: item.earned ? Colors.red : Colors.green,
+                  backgroundColor: item.earned ? deleteColor : addedColor,
                   fontSize: 16.0);
               setState(() {
                 item.earned = !item.earned;
@@ -128,19 +130,10 @@ class _ShowAchievementState extends State<ShowAchievement> {
               });
             },
             background:
-                Container(color: item.earned ? Colors.red : Colors.green),
+                Container(color: item.earned ? deleteColor : addedColor),
           ),
           onTap: () {
             launchURL(game.title + " " + item.title);
-          },
-          onLongPress: () {
-            Fluttertoast.showToast(
-                msg: item.title + " ( " + item.description + " )",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 3,
-                backgroundColor: Colors.grey,
-                fontSize: 16.0);
           },
         );
       },
@@ -148,7 +141,7 @@ class _ShowAchievementState extends State<ShowAchievement> {
   }
 
   Widget getAchievement(Achievement achievement) {
-    final secret = achievement.secret;
+    final secret = achievement.secret && !achievement.show;
     final earned = achievement.earned;
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -162,11 +155,14 @@ class _ShowAchievementState extends State<ShowAchievement> {
                 maxHeight: 200,
               ),
               child: achievementImg(achievement)),
-          title:
-              secret && !earned ? Text(secretTitle) : Text(achievement.title),
+          title: secret && !earned
+              ? Text(secretTitle, style: TextStyle(color: fontColor))
+              : Text(achievement.title, style: TextStyle(color: fontColor)),
           subtitle: secret && !earned
-              ? Text(secretDescription)
-              : Text(achievement.description),
+              ? Text(secretDescription, style: TextStyle(color: fontColor))
+              : Text(achievement.description,
+                  style: TextStyle(color: fontColor)),
+          trailing: showButton(achievement),
           onTap: () {
             launchURL(game.title + " " + achievement.title);
           },
@@ -175,15 +171,36 @@ class _ShowAchievementState extends State<ShowAchievement> {
     );
   }
 
+  Widget showButton(Achievement achievement) {
+    if (achievement.secret) {
+      return IconButton(
+          icon: achievement.show
+              ? Icon(
+                  Icons.lock_open_outlined,
+                  color: fontColor,
+                )
+              : Icon(
+                  Icons.lock_outlined,
+                  color: fontColor,
+                ),
+          onPressed: () {
+            setState(() {
+              achievement.show = !achievement.show;
+            });
+          });
+    }
+    return null;
+  }
+
   Widget refreshButton() {
     return IconButton(
         icon: Icon(
           Icons.refresh,
-          color: Colors.yellow,
+          color: futureColor,
         ),
         onPressed: () {
           setState(() {
-            var endpoint = 'achievements/game=' + this.game.gameId;
+            String endpoint = 'achievements/game=' + this.game.gameId;
             Api.post(endpoint, []);
             initState();
           });

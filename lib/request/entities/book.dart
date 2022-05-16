@@ -38,6 +38,10 @@ class Book {
         title: json['title']);
   }
 
+  factory Book.addScreen(Map json) {
+    return Book(bookId: json['book_id']);
+  }
+
   Map toJson() {
     return {
       'id': id,

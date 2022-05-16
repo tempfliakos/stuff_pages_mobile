@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:Stuff_Pages/enums/gamesEnum.dart';
 import 'package:Stuff_Pages/request/entities/game.dart';
 import 'package:Stuff_Pages/request/http.dart';
+import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:Stuff_Pages/utils/gameUtil.dart';
 import 'package:bmprogresshud/progresshud.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,6 +26,7 @@ class _XboxListState extends State<XboxList> {
   String titleFilter = "";
   int pageNumber = 1;
   int maxPageNumber;
+  bool filterMode = false;
 
   _getXboxGames() {
     Api.get("games/console=Xbox&page=$pageNumber&title=$titleFilter")
@@ -72,22 +74,9 @@ class _XboxListState extends State<XboxList> {
     super.dispose();
   }
 
-  Widget filterTitleField() {
-    return Theme(
-      data: Theme.of(context).copyWith(splashColor: Colors.black),
-      child: TextField(
-        decoration: InputDecoration(
-            fillColor: Colors.white,
-            border: OutlineInputBorder(),
-            labelText: 'Játék címe...'),
-        onChanged: (text) {
-          titleFilter = text;
-          filter();
-        },
-        cursorColor: Colors.white,
-        autofocus: false,
-      ),
-    );
+  void titleField(String text) {
+    titleFilter = text;
+    filter();
   }
 
   void filter() {
@@ -101,34 +90,39 @@ class _XboxListState extends State<XboxList> {
     return Scaffold(
       appBar: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: Colors.black,
-          title: Text("Xbox játékok listája"),
-          actions: <Widget>[optionsButton(), logoutButton()]),
+          backgroundColor: backgroundColor,
+          title: titleWidget(),
+          actions: <Widget>[
+            filterButton(doFilterChange),
+            optionsButton(doOptions),
+            logoutButton(doLogout)
+          ]),
       body: Scrollbar(
         child: Center(
           child: Column(
-            children: <Widget>[
-              Container(
-                  child: _starList(),
-                  alignment: Alignment.centerLeft,
-                  margin: EdgeInsets.all(20.0)),
-              filterTitleField(),
-              Expanded(child: _gameList())
-            ],
+            children: <Widget>[getStarList(), Expanded(child: _gameList())],
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           await Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AddXboxGame(_games)));
+              MaterialPageRoute(builder: (context) => AddXboxGame()));
         },
         child: Icon(Icons.add, size: 40),
-        backgroundColor: Colors.green,
+        backgroundColor: addedColor,
       ),
       bottomNavigationBar: MyNavigator(2),
-      backgroundColor: Colors.grey,
+      backgroundColor: backgroundColor,
     );
+  }
+
+  Widget titleWidget() {
+    if (!filterMode) {
+      return Text('Xbox játékok listája', style: TextStyle(color: fontColor));
+    } else {
+      return searchBar("Játék címe", titleField);
+    }
   }
 
   Widget _gameList() {
@@ -139,13 +133,23 @@ class _XboxListState extends State<XboxList> {
         final item = _games[index];
         return InkWell(
           child: Card(
-            child: getGame(item),
-            color: Colors.grey,
+            child: getGame(item, starButton(item)),
+            color: cardBackgroundColor,
           ),
           onTap: () => openAchievements(item),
         );
       },
     );
+  }
+
+  Widget getStarList() {
+    if (_starred.isNotEmpty) {
+      return Container(
+          child: _starList(),
+          alignment: Alignment.centerLeft,
+          margin: EdgeInsets.all(20.0));
+    }
+    return Text("");
   }
 
   Widget _starList() {
@@ -165,32 +169,11 @@ class _XboxListState extends State<XboxList> {
     );
   }
 
-  Widget getGame(game) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        ListTile(
-          leading: ConstrainedBox(
-              constraints: BoxConstraints(
-                minWidth: 44,
-                minHeight: 44,
-                maxWidth: 200,
-                maxHeight: 200,
-              ),
-              child: img(game)),
-          title: Text(game.title),
-          subtitle: Text(calculatePercentage(game)),
-          trailing: starButton(game),
-        ),
-      ],
-    );
-  }
-
   Widget starButton(Game game) {
     return IconButton(
         icon: Icon(
           game.star ? Icons.star : Icons.star_border,
-          color: Colors.amber,
+          color: futureColor,
         ),
         onPressed: () {
           setState(() {
@@ -205,34 +188,6 @@ class _XboxListState extends State<XboxList> {
         });
   }
 
-  Widget logoutButton() {
-    return IconButton(
-        icon: Icon(
-          Icons.power_settings_new,
-          color: Colors.red,
-        ),
-        onPressed: () {
-          setState(() {
-            userStorage.deleteItem('user');
-            userStorage.deleteItem('options');
-            Navigator.pushReplacementNamed(context, '/');
-          });
-        });
-  }
-
-  Widget optionsButton() {
-    return IconButton(
-        icon: Icon(
-          Icons.settings,
-          color: Colors.grey,
-        ),
-        onPressed: () {
-          setState(() {
-            Navigator.pushReplacementNamed(context, '/options');
-          });
-        });
-  }
-
   void _scrollListener() {
     if (maxPageNumber >= pageNumber && controller.position.extentAfter == 0) {
       ProgressHud.showLoading();
@@ -241,9 +196,28 @@ class _XboxListState extends State<XboxList> {
     }
   }
 
-  openAchievements(Game game) async {
+  void openAchievements(Game game) async {
     await Navigator.push(context,
         MaterialPageRoute(builder: (context) => ShowAchievement(game)));
     _getXboxGames();
+  }
+
+  void doFilterChange() {
+    setState(() {
+      filterMode = !filterMode;
+    });
+  }
+
+  void doLogout() {
+    setState(() {
+      resetStorage();
+      Navigator.pushReplacementNamed(context, '/');
+    });
+  }
+
+  void doOptions() {
+    setState(() {
+      Navigator.pushReplacementNamed(context, '/options');
+    });
   }
 }
