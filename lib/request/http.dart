@@ -4,8 +4,8 @@ import 'package:http/http.dart' as http;
 
 import '../global.dart';
 
-const URL = 'http://localhost:3001/';
-//const URL = 'https://stuff-pages-server.herokuapp.com/';
+//const URL = 'http://localhost:3001/';
+const URL = 'https://stuff-pages-server.herokuapp.com/';
 
 class Api {
   static Future get(String endpoint) {
