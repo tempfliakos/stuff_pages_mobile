@@ -2,6 +2,7 @@ import 'package:Stuff_Pages/book/books.dart';
 import 'package:Stuff_Pages/options.dart';
 import 'package:Stuff_Pages/playstation/pslist.dart';
 import 'package:Stuff_Pages/switch/switchlist.dart';
+import 'package:Stuff_Pages/todo/todos.dart';
 import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:Stuff_Pages/wish/wishlist.dart';
 import 'package:bmprogresshud/progresshud.dart';
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
             '/playstation': (context) => PsList(),
             '/switch': (context) => SwitchList(),
             '/wish': (context) => WishList(),
+            '/todo': (context) => Todos(),
           },
           theme: ThemeData(
             brightness: Brightness.dark,

@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:Stuff_Pages/global.dart';
+import 'package:Stuff_Pages/request/entities/todoType.dart';
+import 'package:Stuff_Pages/request/http.dart';
 import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:Stuff_Pages/utils/optionsUtil.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'navigator.dart';
@@ -13,16 +16,21 @@ class Options extends StatefulWidget {
 
 class _OptionsState extends State<Options> {
   Map<String, Object> options;
+  List<TodoType> types = [];
 
-  var optionsValue = {
+  Map systemOptions = {
     'defaultPage': [
       '/movies',
       '/books',
       '/xbox',
       '/playstation',
       '/switch',
-      '/wish'
+      '/wish',
+      '/todo'
     ],
+  };
+
+  Map movieOptions = {
     'defaultSeen': [null, true, false],
     'defaultOwn': [null, true, false],
     'defaultFuture': [null, true, false],
@@ -37,6 +45,25 @@ class _OptionsState extends State<Options> {
     'defaultLiza': 'Liza filmek szűrő',
   };
 
+  _getTodoTypes() {
+    if (types.isEmpty) {
+      Api.get("todotype/").then((res) {
+        setState(() {
+          Iterable list = json.decode(res.body);
+          types = list.map((e) => TodoType.fromJson(e)).toList();
+          types.sort((a, b) => a.id.compareTo(b.id));
+        });
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getTodoTypes();
+    options = getOptions();
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -50,9 +77,26 @@ class _OptionsState extends State<Options> {
         backgroundColor: backgroundColor,
         title: Text('Beállítások', style: TextStyle(color: fontColor)),
       ),
-      body: Center(
+      body: Container(
+        padding: const EdgeInsets.all(20),
         child: Column(
-          children: [getDropdowns()],
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text('Rendszerbeállítások', style: TextStyle(color: fontColor)),
+            getDropdowns(systemOptions),
+            const SizedBox(
+              height: 20,
+            ),
+            Text('Film beállítások', style: TextStyle(color: fontColor)),
+            getDropdowns(movieOptions),
+            const SizedBox(
+              height: 20,
+            ),
+            Text('Feladat típusok', style: TextStyle(color: fontColor)),
+            Column(
+              children: getTypes(),
+            )
+          ],
         ),
       ),
       bottomNavigationBar: MyNavigator(0),
@@ -60,11 +104,10 @@ class _OptionsState extends State<Options> {
     );
   }
 
-  Widget getDropdowns() {
-    options = getOptions();
+  Widget getDropdowns(Map suboptions) {
     List<TableRow> rows = [];
-    for (var option in options.keys) {
-      rows.addAll(getRows(option));
+    for (var option in suboptions.keys) {
+      rows.addAll(getRows(suboptions, option));
     }
     return Table(
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
@@ -72,27 +115,29 @@ class _OptionsState extends State<Options> {
     );
   }
 
-  List<TableRow> getRows(option) {
+  List<TableRow> getRows(Map suboptions, option) {
     List<TableRow> result = [];
     result.add(TableRow(children: [
       TableCell(
           verticalAlignment: TableCellVerticalAlignment.middle,
           child: Container(
-            child: Text(optionsName[option], style: TextStyle(color: fontColor)),
+            child:
+                Text(optionsName[option], style: TextStyle(color: fontColor)),
           )),
       TableCell(
           verticalAlignment: TableCellVerticalAlignment.middle,
           child: Container(
-            child: getDropDown(option),
+            child: getDropDown(suboptions, option),
           ))
     ]));
     return result;
   }
 
-  Widget getDropDown(optionsKey) {
+  Widget getDropDown(Map suboptions, optionsKey) {
     return DropdownButton(
+        isExpanded: true,
         value: options[optionsKey],
-        items: getDropdownMenuItem(optionsKey),
+        items: getDropdownMenuItem(suboptions, optionsKey),
         onChanged: (newValue) {
           setState(() {
             options[optionsKey] = newValue;
@@ -101,8 +146,8 @@ class _OptionsState extends State<Options> {
         });
   }
 
-  List<DropdownMenuItem> getDropdownMenuItem(optionsKey) {
-    List<Object> options = optionsValue[optionsKey];
+  List<DropdownMenuItem> getDropdownMenuItem(Map suboptions, optionsKey) {
+    List<Object> options = suboptions[optionsKey];
     List<DropdownMenuItem> result = [];
     for (var option in options) {
       var text;
@@ -128,6 +173,9 @@ class _OptionsState extends State<Options> {
         case '/wish':
           text = 'Wishlist';
           break;
+        case '/todo':
+          text = 'Feladatok';
+          break;
         default:
           if (option != null) {
             text = option ? 'Megjelenít' : 'Elrejt';
@@ -139,6 +187,14 @@ class _OptionsState extends State<Options> {
         value: option,
         child: Text(text, style: TextStyle(color: fontColor)),
       ));
+    }
+    return result;
+  }
+
+  List<Widget> getTypes() {
+    List<Text> result = [];
+    for (var type in types) {
+      result.add(Text(type.name, style: TextStyle(color: fontColor)));
     }
     return result;
   }

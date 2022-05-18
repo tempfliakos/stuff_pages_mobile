@@ -21,7 +21,8 @@ class _MyNavigatorState extends State<MyNavigator> {
     '/xbox',
     '/playstation',
     '/switch',
-    '/wish'
+    '/wish',
+    '/todo'
   ];
 
   int index;
@@ -69,6 +70,10 @@ class _MyNavigatorState extends State<MyNavigator> {
         BottomNavigationBarItem(
           icon: Icon(Icons.videogame_asset_outlined),
           label: 'Wishlist',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.check),
+          label: 'Feladatok',
         ),
       ],
       currentIndex: index,

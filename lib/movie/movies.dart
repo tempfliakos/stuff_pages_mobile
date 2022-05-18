@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:Stuff_Pages/request/http.dart';
 import 'package:Stuff_Pages/utils/colorUtil.dart';
@@ -47,11 +46,13 @@ class _MoviesState extends State<Movies> {
     });
   }
 
+  @override
   initState() {
     super.initState();
     _getMovies();
   }
 
+  @override
   dispose() {
     super.dispose();
   }
