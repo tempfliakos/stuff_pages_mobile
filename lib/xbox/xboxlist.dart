@@ -62,6 +62,7 @@ class _XboxListState extends State<XboxList> {
     });
   }
 
+  @override
   initState() {
     super.initState();
     _getXboxGames();
@@ -69,6 +70,7 @@ class _XboxListState extends State<XboxList> {
     controller = ScrollController()..addListener(_scrollListener);
   }
 
+  @override
   dispose() {
     controller.removeListener(_scrollListener);
     super.dispose();

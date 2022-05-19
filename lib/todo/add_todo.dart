@@ -122,7 +122,6 @@ class _AddTodoState extends State<AddTodo> {
           } else {
             Api.put('todo/', body, actual.id);
           }
-          Navigator.pushReplacementNamed(context, '/todo');
         });
       },
       style: ElevatedButton.styleFrom(
