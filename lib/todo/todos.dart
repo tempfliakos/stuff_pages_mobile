@@ -21,6 +21,12 @@ class _TodosState extends State<Todos> {
   List<Todo> filterTodos = [];
   List<TodoType> types = [];
   TodoType actualType;
+  TodoType doneType = TodoType.fromJson({
+    "id": null,
+    "name": "Kész"
+  });
+
+  Map<TodoType, int> todoTypeMap = {};
 
   _getTodoTypes() {
     if (types.isEmpty) {
@@ -28,6 +34,7 @@ class _TodosState extends State<Todos> {
         Iterable list = json.decode(res.body);
         types = list.map((e) => TodoType.fromJson(e)).toList();
         types.sort((a, b) => a.id.compareTo(b.id));
+        types.add(doneType);
         actualType = types[0];
         _getTodos();
       });
@@ -40,7 +47,18 @@ class _TodosState extends State<Todos> {
       _todos = list.map((e) => Todo.fromJson(e)).toList();
       _todos.sort((a, b) => a.name.compareTo(b.name));
       filter();
+      _calculateTodoTypeMap();
     });
+  }
+
+  _calculateTodoTypeMap() {
+    todoTypeMap = {};
+    todoTypeMap.putIfAbsent(doneType, () => _todos.where((e) => e.done != null).length);
+    for (TodoType type in types) {
+      todoTypeMap.putIfAbsent(type, () => _todos
+              .where((e) => e.typeId == type.id && e.done == null)
+              .length);
+    }
   }
 
   @override
@@ -55,7 +73,7 @@ class _TodosState extends State<Todos> {
   }
 
   void filter() {
-    if (actualType != null) {
+    if (actualType.id != null) {
       filterTodos = _todos
           .where((e) => e.typeId == actualType.id && e.done == null)
           .toList();
@@ -98,11 +116,7 @@ class _TodosState extends State<Todos> {
   }
 
   Widget titleWidget() {
-    List<DropdownMenuItem> items = getDropdownMenuItem(types);
-    items.add(DropdownMenuItem(
-      value: null,
-      child: Text("Kész", style: TextStyle(color: fontColor)),
-    ));
+    List<DropdownMenuItem> items = getDropdownMenuItem(types, todoTypeMap, true);
     return DropdownButton(
         isExpanded: true,
         value: actualType,
@@ -189,6 +203,7 @@ class _TodosState extends State<Todos> {
       todo.done = null;
     }
     Api.put("todo/", todo, todo.id);
+    _calculateTodoTypeMap();
     filter();
   }
 
@@ -196,6 +211,7 @@ class _TodosState extends State<Todos> {
     Api.deleteWithParam("todo/", todo.id);
     _todos.remove(todo);
     filterTodos.remove(todo);
+    _calculateTodoTypeMap();
   }
 
   void doLogout() {

@@ -102,7 +102,7 @@ class _AddTodoState extends State<AddTodo> {
     return DropdownButton(
         isExpanded: true,
         value: actualType,
-        items: getDropdownMenuItem(types),
+        items: getDropdownMenuItem(types, {}),
         onChanged: (type) {
           setState(() {
             actualType = type;
