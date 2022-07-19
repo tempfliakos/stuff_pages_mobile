@@ -1,5 +1,5 @@
-import 'package:Stuff_Pages/request/entities/achievement.dart';
-import 'package:Stuff_Pages/request/entities/game.dart';
+import 'package:stuff_pages/request/entities/achievement.dart';
+import 'package:stuff_pages/request/entities/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';

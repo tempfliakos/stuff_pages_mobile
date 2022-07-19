@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:Stuff_Pages/request/entities/book.dart';
-import 'package:Stuff_Pages/utils/bookUtil.dart';
-import 'package:Stuff_Pages/utils/colorUtil.dart';
+import 'package:stuff_pages/request/entities/book.dart';
+import 'package:stuff_pages/utils/bookUtil.dart';
+import 'package:stuff_pages/utils/colorUtil.dart';
 import 'package:bmprogresshud/progresshud.dart';
 import 'package:flutter/material.dart';
 

@@ -1,11 +1,10 @@
 import 'dart:convert';
 
-import 'package:Stuff_Pages/global.dart';
-import 'package:Stuff_Pages/utils/colorUtil.dart';
-import 'package:Stuff_Pages/utils/movieUtil.dart';
 import 'package:bmprogresshud/progresshud.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:stuff_pages/global.dart';
+import 'package:stuff_pages/utils/colorUtil.dart';
+import 'package:stuff_pages/utils/movieUtil.dart';
 
 import '../request/entities/movie.dart';
 import '../request/http.dart';

@@ -1,4 +1,4 @@
-import 'package:Stuff_Pages/utils/genres.dart';
+import 'package:stuff_pages/utils/genres.dart';
 
 class Movie {
   String id;

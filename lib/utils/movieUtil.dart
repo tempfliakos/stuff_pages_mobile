@@ -1,5 +1,5 @@
-import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:flutter/material.dart';
+import 'package:stuff_pages/utils/colorUtil.dart';
 
 import '../request/entities/movie.dart';
 

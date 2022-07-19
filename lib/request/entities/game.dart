@@ -1,5 +1,5 @@
 
-import 'package:Stuff_Pages/request/entities/trophyNumber.dart';
+import 'package:stuff_pages/request/entities/trophyNumber.dart';
 
 class Game {
   String id;

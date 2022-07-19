@@ -1,4 +1,4 @@
-name: Stuff_Pages
+name: stuff_pages
 description: Stuff Pages mobile version
 
 # The following line prevents the package from being accidentally published to
@@ -31,9 +31,9 @@ dependencies:
   http: ^0.13.3
   localstorage: ^4.0.0+1
   flutter_multiselect: ^1.0.0
-  flutter_svg: ^0.22.0
+  flutter_svg: ^1.1.1+1
   url_launcher: ^6.0.9
-  flutter_slidable: ^1.0.0
+  flutter_slidable: ^2.0.0
   fluttertoast: ^8.0.8
   bmprogresshud: 1.0.1
   email_validator: ^2.0.1

@@ -1,7 +1,7 @@
-import 'package:Stuff_Pages/request/http.dart';
-import 'package:Stuff_Pages/utils/colorUtil.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:stuff_pages/request/http.dart';
+import 'package:stuff_pages/utils/colorUtil.dart';
 
 import 'login.dart';
 

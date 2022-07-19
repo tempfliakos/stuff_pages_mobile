@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:Stuff_Pages/register.dart';
-import 'package:Stuff_Pages/utils/colorUtil.dart';
-import 'package:Stuff_Pages/utils/optionsUtil.dart';
-import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:flutter/material.dart';
+import 'package:stuff_pages/register.dart';
+import 'package:stuff_pages/utils/colorUtil.dart';
+import 'package:stuff_pages/utils/optionsUtil.dart';
 
 import 'global.dart';
 import 'request/http.dart';

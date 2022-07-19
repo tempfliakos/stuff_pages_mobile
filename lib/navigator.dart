@@ -1,8 +1,5 @@
-import 'package:Stuff_Pages/utils/colorUtil.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import 'global.dart';
+import 'package:stuff_pages/utils/colorUtil.dart';
 
 class MyNavigator extends StatefulWidget {
   int index;

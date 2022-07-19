@@ -1,4 +1,4 @@
-import 'package:Stuff_Pages/global.dart';
+import 'package:stuff_pages/global.dart';
 
 Map<String, Object> defaultOptions = {
   'defaultPage': '/movies',

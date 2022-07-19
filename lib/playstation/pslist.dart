@@ -1,13 +1,13 @@
 import 'dart:convert';
 
-import 'package:Stuff_Pages/playstation/addpsgame.dart';
-import 'package:Stuff_Pages/playstation/trophylist.dart';
-import 'package:Stuff_Pages/request/entities/game.dart';
-import 'package:Stuff_Pages/request/http.dart';
-import 'package:Stuff_Pages/utils/colorUtil.dart';
-import 'package:Stuff_Pages/utils/gameUtil.dart';
 import 'package:bmprogresshud/progresshud.dart';
 import 'package:flutter/material.dart';
+import 'package:stuff_pages/playstation/addpsgame.dart';
+import 'package:stuff_pages/playstation/trophylist.dart';
+import 'package:stuff_pages/request/entities/game.dart';
+import 'package:stuff_pages/request/http.dart';
+import 'package:stuff_pages/utils/colorUtil.dart';
+import 'package:stuff_pages/utils/gameUtil.dart';
 
 import '../enums/gamesEnum.dart';
 import '../global.dart';

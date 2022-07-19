@@ -1,16 +1,16 @@
 import 'dart:convert';
 
-import 'package:Stuff_Pages/request/http.dart';
-import 'package:Stuff_Pages/utils/colorUtil.dart';
-import 'package:Stuff_Pages/utils/optionsUtil.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:stuff_pages/request/http.dart';
+import 'package:stuff_pages/utils/colorUtil.dart';
+import 'package:stuff_pages/utils/optionsUtil.dart';
 
 import '../global.dart';
 import '../navigator.dart';
 import '../request/entities/movie.dart';
 import '../utils/movieUtil.dart';
 import 'add_movie.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 
 class Movies extends StatefulWidget {
   @override

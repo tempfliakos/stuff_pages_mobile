@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:Stuff_Pages/request/entities/game.dart';
-import 'package:Stuff_Pages/request/http.dart';
-import 'package:Stuff_Pages/utils/colorUtil.dart';
-import 'package:Stuff_Pages/utils/gameUtil.dart';
 import 'package:bmprogresshud/progresshud.dart';
 import 'package:flutter/material.dart';
+import 'package:stuff_pages/request/entities/game.dart';
+import 'package:stuff_pages/request/http.dart';
+import 'package:stuff_pages/utils/colorUtil.dart';
+import 'package:stuff_pages/utils/gameUtil.dart';
 
 import '../enums/gamesEnum.dart';
 import '../global.dart';
