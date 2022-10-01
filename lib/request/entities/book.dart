@@ -5,6 +5,7 @@ class Book {
   String description;
   String picture;
   String title;
+  String priority;
 
   Book(
       {this.id,
@@ -12,7 +13,8 @@ class Book {
       this.author,
       this.description,
       this.picture,
-      this.title});
+      this.title,
+      this.priority});
 
   factory Book.fromJson(Map json) {
     return Book(
@@ -21,7 +23,8 @@ class Book {
         author: json['author'],
         description: json['description'],
         picture: json['picture'],
-        title: json['title']);
+        title: json['title'],
+        priority: json['priority']);
   }
 
   factory Book.fromJsonDelete(Map json) {
@@ -35,7 +38,8 @@ class Book {
         author: json['author'],
         description: json['description'],
         picture: json['picture'],
-        title: json['title']);
+        title: json['title'],
+        priority: json['priority']);
   }
 
   factory Book.addScreen(Map json) {
@@ -49,7 +53,8 @@ class Book {
       'author': author,
       'description': description,
       'picture': picture,
-      'title': title
+      'title': title,
+      'priority': priority
     };
   }
 }

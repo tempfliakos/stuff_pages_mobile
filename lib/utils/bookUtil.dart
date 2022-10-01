@@ -25,8 +25,8 @@ Widget getBook(Book book, Widget trailing) {
 }
 
 String cutString(String s, length) {
-  if(s.length > length) {
-    return s.substring(0,length-4) + "...";
+  if (s.length > length) {
+    return s.substring(0, length - 4) + "...";
   }
   return s;
 }
