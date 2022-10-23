@@ -27,8 +27,7 @@ class _BooksState extends State<Books> {
       setState(() {
         Iterable list = json.decode(res.body);
         _books = list.map((e) => Book.fromJson(e)).toList();
-        _books.sort((a, b) => a.title.compareTo(b.title));
-        filterBooks.addAll(_books);
+        doFilter();
       });
     });
   }
@@ -54,8 +53,11 @@ class _BooksState extends State<Books> {
   }
 
   void doFilter() {
-    filterBooks = _books.where(
-        (book) => book.title.toLowerCase().contains(titleFilter.toLowerCase())).toList();
+    _books.sort((a, b) => a.priority.compareTo(b.priority));
+    filterBooks = _books
+        .where((book) =>
+            book.title.toLowerCase().contains(titleFilter.toLowerCase()))
+        .toList();
   }
 
   @override
@@ -80,8 +82,8 @@ class _BooksState extends State<Books> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AddBook()));
+          await Navigator.push(
+              context, MaterialPageRoute(builder: (context) => AddBook()));
           _getBooks();
         },
         child: Icon(Icons.add, size: 40),
@@ -101,28 +103,42 @@ class _BooksState extends State<Books> {
   }
 
   Widget _bookList() {
-    return ListView.builder(
-      itemCount: filterBooks.length,
-      itemBuilder: (context, index) {
-        final item = filterBooks[index];
-        return Dismissible(
-            key: UniqueKey(),
-            onDismissed: (direction) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(item.title + ' törölve')));
-              setState(() {
-                deleteBook(item);
-              });
-            },
-            background: Container(color: deleteColor),
-            child: InkWell(
-              child: Card(
-                child: getBook(item, deleteButton(item)),
-                color: cardBackgroundColor,
-              ),
-            ));
-      },
-    );
+    return ReorderableListView.builder(
+        onReorder: (int oldIndex, int newIndex) {
+          setState(() {
+            Book drag = filterBooks[oldIndex];
+            Book drop = filterBooks[newIndex];
+            _books.remove(drag);
+
+            drag.priority = drop.priority;
+            Api.put("books/", drag, drag.bookId);
+
+            _books.add(drag);
+            doFilter();
+          });
+        },
+        itemCount: filterBooks.length,
+        itemBuilder: (context, index) {
+          final item = filterBooks[index];
+          return Dismissible(
+              key: ValueKey(item.id),
+              onDismissed: (direction) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(item.title + ' törölve')));
+                setState(() {
+                  deleteBook(item);
+                });
+              },
+              background: Container(color: deleteColor),
+              child: InkWell(
+                onTap: () {},
+                key: ValueKey(item.id),
+                child: Card(
+                  child: getBook(item, deleteButton(item)),
+                  color: cardBackgroundColor,
+                ),
+              ));
+        });
   }
 
   Widget deleteButton(book) {
