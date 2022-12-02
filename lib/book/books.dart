@@ -53,10 +53,10 @@ class _BooksState extends State<Books> {
   }
 
   void doFilter() {
-    _books.sort((a, b) => a.priority.compareTo(b.priority));
+    _books.sort((a, b) => a.priority!.compareTo(b.priority!));
     filterBooks = _books
         .where((book) =>
-            book.title.toLowerCase().contains(titleFilter.toLowerCase()))
+            book.title!.toLowerCase().contains(titleFilter.toLowerCase()))
         .toList();
   }
 
@@ -124,7 +124,7 @@ class _BooksState extends State<Books> {
               key: ValueKey(item.id),
               onDismissed: (direction) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(item.title + ' törölve')));
+                    SnackBar(content: Text(item.title! + ' törölve')));
                 setState(() {
                   deleteBook(item);
                 });

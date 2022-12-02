@@ -11,7 +11,7 @@ List<DropdownMenuItem> getDropdownMenuItem(List<TodoType> types, Map<TodoType, i
           todoTypeMap[type].toString() + ")" : "";
       result.add(DropdownMenuItem(
         value: type,
-        child: Text(type.name + countText, style: TextStyle(color: fontColor)),
+        child: Text(type.name! + countText, style: TextStyle(color: fontColor)),
       ));
     }
   }

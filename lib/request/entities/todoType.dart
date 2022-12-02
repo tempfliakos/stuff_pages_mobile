@@ -1,6 +1,6 @@
 class TodoType {
-  String id;
-  String name;
+  String? id;
+  String? name;
 
   TodoType({
     this.id,

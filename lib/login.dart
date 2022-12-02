@@ -23,7 +23,7 @@ class _LoginState extends State<Login> {
   _getLoggedIn() {
     userStorage.ready.then((value) {
       if (userStorage.getItem('user') != null) {
-        Map<String, Object> options = getOptions();
+        Map<String, Object?> options = getOptions();
         Navigator.pushReplacementNamed(
             context, options['defaultPage'].toString());
       }
@@ -41,7 +41,7 @@ class _LoginState extends State<Login> {
     return TextFormField(
       controller: emailEditingController,
       validator: (value) =>
-          EmailValidator.validate(value) ? null : "Kérlek valós emailt adj meg",
+          EmailValidator.validate(value!) ? null : "Kérlek valós emailt adj meg",
       maxLines: 1,
       decoration: InputDecoration(
         hintText: 'Email megadása',
@@ -77,7 +77,7 @@ class _LoginState extends State<Login> {
   Widget loginButton() {
     return ElevatedButton(
       onPressed: () {
-        if (_formKey.currentState.validate()) {
+        if (_formKey.currentState!.validate()) {
           _login();
         }
       },
@@ -100,7 +100,7 @@ class _LoginState extends State<Login> {
     final body = {'email': emailEditingController.text, 'password': passwordEditingController.text};
     final result = await Api.post('auth/login', body);
     userStorage.setItem('user', jsonDecode(result.body)['accessToken']);
-    Map<String, Object> options = getOptions();
+    Map<String, Object?> options = getOptions();
     Navigator.pushReplacementNamed(context, options['defaultPage'].toString());
   }
 
@@ -149,7 +149,7 @@ class _LoginState extends State<Login> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => RegisterPage(),
+                              builder: (context) => RegisterPage(key: _formKey,),
                             ),
                           );
                         },

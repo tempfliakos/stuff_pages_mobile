@@ -16,7 +16,7 @@ Widget getMovie(Movie movie, Widget trailing) {
               maxHeight: 200,
             ),
             child: img(movie)),
-        title: Text(movie.title, style: TextStyle(color: fontColor)),
+        title: Text(movie.title!, style: TextStyle(color: fontColor)),
         subtitle: getGenres(movie),
         trailing: trailing,
       ),
@@ -24,11 +24,11 @@ Widget getMovie(Movie movie, Widget trailing) {
   );
 }
 
-Text getGenres(Movie movie) {
-  if(movie != null && movie.genres.isNotEmpty) {
+Text? getGenres(Movie? movie) {
+  if(movie != null && movie.genres!.isNotEmpty) {
     String result = "";
     String separator = "";
-    for(var genre in movie.genres) {
+    for(var genre in movie.genres!) {
       result += separator;
       result += genre;
       separator = ", ";
@@ -42,7 +42,7 @@ Widget img(Movie movie) {
   if (movie.backdropPath != null && movie.backdropPath != "null") {
     return ClipRRect(
       child: Image.network(
-        'https://image.tmdb.org/t/p/w500/' + movie.backdropPath,
+        'https://image.tmdb.org/t/p/w500/' + movie.backdropPath!,
         scale: 4,
         filterQuality: FilterQuality.high,
       ),

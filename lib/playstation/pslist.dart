@@ -19,12 +19,12 @@ class PsList extends StatefulWidget {
 }
 
 class _PsListState extends State<PsList> {
-  ScrollController controller;
+  late ScrollController controller;
   List<Game> _games = [];
   List<Game> _starred = [];
   String titleFilter = "";
   int pageNumber = 1;
-  int maxPageNumber;
+  late int maxPageNumber;
   bool filterMode = false;
 
   _getPsGames() {
@@ -35,8 +35,9 @@ class _PsListState extends State<PsList> {
           Map<String, dynamic> data = json.decode(res.body);
           Iterable list = data[GamesEnum.games.name];
           maxPageNumber = (data[GamesEnum.count.name] / list.length).ceil();
-          List<Game> games = list.map((e) => Game.playstationFromJson(e)).toList();
-          List<String> _gamesIds = games.map((e) => e.gameId).toList();
+          List<Game> games =
+              list.map((e) => Game.playstationFromJson(e)).toList();
+          List<String> _gamesIds = games.map((e) => e.gameId!).toList();
           _games = _games.where((g) => !_gamesIds.contains(g.gameId)).toList();
           _games.addAll(createFinalGameList(games));
         } catch (e) {
@@ -105,8 +106,8 @@ class _PsListState extends State<PsList> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AddPsGame()));
+          await Navigator.push(
+              context, MaterialPageRoute(builder: (context) => AddPsGame()));
         },
         child: Icon(Icons.add, size: 40),
         backgroundColor: addedColor,
@@ -118,7 +119,8 @@ class _PsListState extends State<PsList> {
 
   Widget titleWidget() {
     if (!filterMode) {
-      return Text('Playstation játékok listája', style: TextStyle(color: fontColor));
+      return Text('Playstation játékok listája',
+          style: TextStyle(color: fontColor));
     } else {
       return searchBar("Játék címe", titleField);
     }
@@ -169,22 +171,31 @@ class _PsListState extends State<PsList> {
   }
 
   Widget starButton(Game game) {
-    return IconButton(
-        icon: Icon(
-          game.star ? Icons.star : Icons.star_border,
-          color: futureColor,
-        ),
-        onPressed: () {
-          setState(() {
-            game.star = !game.star;
-            Api.put("games/", game, game.id);
-            if (game.star) {
-              _starred.add(game);
-            } else {
-              _starred.removeWhere((g) => g.id == game.id);
-            }
+    if (game.star! || game.sum != game.earned) {
+      return IconButton(
+          icon: Icon(
+            game.star! ? Icons.star : Icons.star_border,
+            color: futureColor,
+          ),
+          onPressed: () {
+            setState(() {
+              game.star = !game.star!;
+              Api.put("games/", game, game.id);
+              if (game.star!) {
+                _starred.add(game);
+              } else {
+                _starred.removeWhere((g) => g.id == game.id);
+              }
+            });
           });
-        });
+    } else {
+      return IconButton(
+          icon: Icon(
+            Icons.done_all,
+            color: addedColor,
+          ),
+          onPressed: () {});
+    }
   }
 
   void _scrollListener() {

@@ -2,19 +2,19 @@
 import 'package:stuff_pages/request/entities/trophyNumber.dart';
 
 class Game {
-  String id;
-  String gameId;
-  String console;
-  String title;
-  String picture;
-  int earned;
-  int sum;
-  bool wish;
-  bool star;
-  TrophyNumber bronze;
-  TrophyNumber silver;
-  TrophyNumber gold;
-  TrophyNumber platinum;
+  String? id;
+  String? gameId;
+  String? console;
+  String? title;
+  String? picture;
+  int? earned;
+  int? sum;
+  bool? wish;
+  bool? star;
+  TrophyNumber? bronze;
+  TrophyNumber? silver;
+  TrophyNumber? gold;
+  TrophyNumber? platinum;
 
   Game(
       {this.id,

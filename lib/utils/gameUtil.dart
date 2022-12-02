@@ -1,3 +1,4 @@
+import 'package:stuff_pages/enums/searchEnum.dart';
 import 'package:stuff_pages/request/entities/achievement.dart';
 import 'package:stuff_pages/request/entities/game.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,7 @@ String pictureLink(String link) {
   return !link.startsWith("http") ? "https:" + link : link;
 }
 
-Widget getGame(Game game, Widget trailing) {
+Widget getGame(Game game, Widget? trailing) {
   return Column(
     mainAxisSize: MainAxisSize.min,
     children: <Widget>[
@@ -23,7 +24,7 @@ Widget getGame(Game game, Widget trailing) {
               maxHeight: 200,
             ),
             child: img(game)),
-        title: Text(game.title, style: TextStyle(color: fontColor)),
+        title: Text(game.title!, style: TextStyle(color: fontColor)),
         subtitle: calculatePercentageText(game),
         trailing: trailing,
       ),
@@ -40,7 +41,7 @@ Widget img(Game game, [maxHeight = 100.0, maxWidth = 100.0]) {
             minWidth: 5.0,
             maxHeight: maxHeight,
             maxWidth: maxWidth),
-        child: Image.network(pictureLink(game.picture),
+        child: Image.network(pictureLink(game.picture!),
             scale: 4, filterQuality: FilterQuality.low),
       ),
       borderRadius: BorderRadius.circular(8.0),
@@ -51,9 +52,9 @@ Widget img(Game game, [maxHeight = 100.0, maxWidth = 100.0]) {
 }
 
 Widget achievementImg(Achievement achievement) {
-  if (achievement.earned) {
+  if (achievement.earned!) {
     if (achievement.picture != null && achievement.picture != "null") {
-      return Image.network(achievement.picture,
+      return Image.network(achievement.picture!,
           filterQuality: FilterQuality.low, fit: BoxFit.cover);
     } else {
       return Image.asset('assets/images/default-movie-back.jpg');
@@ -64,13 +65,13 @@ Widget achievementImg(Achievement achievement) {
 }
 
 Widget trophyImg(Achievement achievement) {
-  if (achievement.earned) {
+  if (achievement.earned!) {
     if (achievement.picture != null && achievement.picture != "null") {
-      if (achievement.picture.startsWith("http")) {
-        return Image.network(achievement.picture,
+      if (achievement.picture!.startsWith("http")) {
+        return Image.network(achievement.picture!,
             filterQuality: FilterQuality.low, fit: BoxFit.cover);
       } else {
-        return Image.network("https:" + achievement.picture,
+        return Image.network("https:" + achievement.picture!,
             filterQuality: FilterQuality.low, fit: BoxFit.cover);
       }
     } else {
@@ -91,12 +92,34 @@ Widget highlightImg(game) {
   );
 }
 
-launchURL(destination) async {
-  var url = 'https://www.youtube.com/results?search_query=' + destination;
+Widget youtubeButton(game, achievement) {
+  return IconButton(
+      icon: Icon(
+        Icons.youtube_searched_for,
+        color: deleteColor,
+      ),
+      onPressed: () {
+        launchURL(game.title + " " + achievement.title, SearchEnum.youtube);
+      });
+}
+
+Widget googleButton(game, achievement) {
+  return IconButton(
+      icon: Icon(
+        Icons.youtube_searched_for,
+        color: addedColor,
+      ),
+      onPressed: () {
+        launchURL(game.title + " " + achievement.title, SearchEnum.google);
+      });
+}
+
+launchURL(destination, SearchEnum searchEnum) async {
+  String url = searchEnum.url + destination;
   if (!await launch(url)) throw 'Could not launch $url';
 }
 
-Text calculatePercentageText(Game game) {
+Text? calculatePercentageText(Game game) {
   if (game.sum != null && game.sum != 0) {
     return Text(calculatePercentage(game), style: TextStyle(color: fontColor));
   }
@@ -104,7 +127,7 @@ Text calculatePercentageText(Game game) {
 }
 
 calculatePercentage(Game game) {
-  double percentage = game.earned / game.sum * 100;
+  double percentage = game.earned! / game.sum! * 100;
   return game.earned.toString() +
       "/" +
       game.sum.toString() +
@@ -114,6 +137,6 @@ calculatePercentage(Game game) {
 }
 
 List<Game> createFinalGameList(List<Game> games) {
-  games.sort((a, b) => a.title.compareTo(b.title));
+  games.sort((a, b) => a.title!.compareTo(b.title!));
   return games;
 }

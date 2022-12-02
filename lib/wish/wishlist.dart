@@ -23,7 +23,7 @@ class _WishListState extends State<WishList> {
       setState(() {
         Iterable list = json.decode(res.body);
         _games = list.map((e) => Game.fromJson(e)).toList();
-        _games.sort((a, b) => a.title.compareTo(b.title));
+        _games.sort((a, b) => a.title!.compareTo(b.title!));
       });
     });
   }
@@ -85,7 +85,7 @@ class _WishListState extends State<WishList> {
   filterByConsole(console) {
     return _games
         .where(
-            (g) => g.console.toLowerCase() == console.toString().toLowerCase())
+            (g) => g.console!.toLowerCase() == console.toString().toLowerCase())
         .toList();
   }
 

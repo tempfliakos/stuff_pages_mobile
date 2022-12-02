@@ -18,11 +18,11 @@ class SwitchList extends StatefulWidget {
 }
 
 class _SwitchListState extends State<SwitchList> {
-  ScrollController controller;
+  late ScrollController controller;
   List<Game> _games = [];
   String titleFilter = "";
   int pageNumber = 1;
-  int maxPageNumber;
+  late int maxPageNumber;
   bool filterMode = false;
 
   _getSwitchGames() {
@@ -33,7 +33,7 @@ class _SwitchListState extends State<SwitchList> {
         Iterable list = data[GamesEnum.games.name];
         maxPageNumber = (data[GamesEnum.count.name] / list.length).ceil();
         List<Game> games = list.map((e) => Game.fromJson(e)).toList();
-        List<String> _gamesIds = games.map((e) => e.gameId).toList();
+        List<String> _gamesIds = games.map((e) => e.gameId!).toList();
         _games = _games.where((g) => !_gamesIds.contains(g.gameId)).toList();
         _games.addAll(createFinalGameList(games));
       });

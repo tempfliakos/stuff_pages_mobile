@@ -15,7 +15,7 @@ class Options extends StatefulWidget {
 }
 
 class _OptionsState extends State<Options> {
-  Map<String, Object> options;
+  late Map<String, Object?> options;
   List<TodoType> types = [];
 
   Map systemOptions = {
@@ -51,7 +51,7 @@ class _OptionsState extends State<Options> {
         setState(() {
           Iterable list = json.decode(res.body);
           types = list.map((e) => TodoType.fromJson(e)).toList();
-          types.sort((a, b) => a.id.compareTo(b.id));
+          types.sort((a, b) => a.id!.compareTo(b.id!));
         });
       });
     }
@@ -122,7 +122,7 @@ class _OptionsState extends State<Options> {
           verticalAlignment: TableCellVerticalAlignment.middle,
           child: Container(
             child:
-                Text(optionsName[option], style: TextStyle(color: fontColor)),
+                Text(optionsName[option]!, style: TextStyle(color: fontColor)),
           )),
       TableCell(
           verticalAlignment: TableCellVerticalAlignment.middle,
@@ -134,7 +134,7 @@ class _OptionsState extends State<Options> {
   }
 
   Widget getDropDown(Map suboptions, optionsKey) {
-    return DropdownButton(
+    return DropdownButton<dynamic>(
         isExpanded: true,
         value: options[optionsKey],
         items: getDropdownMenuItem(suboptions, optionsKey),
@@ -178,7 +178,7 @@ class _OptionsState extends State<Options> {
           break;
         default:
           if (option != null) {
-            text = option ? 'Megjelenít' : 'Elrejt';
+            text = option == true ? 'Megjelenít' : 'Elrejt';
           } else {
             text = 'Nincs beállítva';
           }
@@ -194,7 +194,7 @@ class _OptionsState extends State<Options> {
   List<Widget> getTypes() {
     List<Text> result = [];
     for (var type in types) {
-      result.add(Text(type.name, style: TextStyle(color: fontColor)));
+      result.add(Text(type.name!, style: TextStyle(color: fontColor)));
     }
     return result;
   }
