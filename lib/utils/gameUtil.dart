@@ -94,9 +94,8 @@ Widget highlightImg(game) {
 
 Widget youtubeButton(game, achievement) {
   return IconButton(
-      icon: Icon(
-        Icons.youtube_searched_for,
-        color: deleteColor,
+      icon: ImageIcon(
+        AssetImage("assets/images/youtube_logo.png"),
       ),
       onPressed: () {
         launchURL(game.title + " " + achievement.title, SearchEnum.youtube);
@@ -105,9 +104,8 @@ Widget youtubeButton(game, achievement) {
 
 Widget googleButton(game, achievement) {
   return IconButton(
-      icon: Icon(
-        Icons.youtube_searched_for,
-        color: addedColor,
+      icon: ImageIcon(
+        AssetImage("assets/images/google_logo.png"),
       ),
       onPressed: () {
         launchURL(game.title + " " + achievement.title, SearchEnum.google);

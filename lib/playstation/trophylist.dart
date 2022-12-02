@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:stuff_pages/enums/searchEnum.dart';
 import 'package:stuff_pages/request/entities/achievement.dart';
@@ -107,34 +108,18 @@ class _ShowTrophyState extends State<ShowTrophy> {
       itemCount: filteredAchievments.length,
       itemBuilder: (context, index) {
         final item = filteredAchievments[index];
-        return InkWell(
-          child: Dismissible(
+        return Slidable(
             key: UniqueKey(),
-            child: Card(
-              child: getTrophy(item),
-              color: cardBackgroundColor,
+            endActionPane: ActionPane(
+              motion: const ScrollMotion(),
+              children: [youtubeButton(game, item), googleButton(game, item)],
             ),
-            onDismissed: (direction) {
-              Fluttertoast.showToast(
-                  msg: item.title!,
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 3,
-                  backgroundColor: item.earned! ? deleteColor : addedColor,
-                  fontSize: 16.0);
-              setState(() {
-                item.earned = !item.earned!;
-                Api.put('achievements/', item, item.id);
-                filter();
-              });
-            },
-            background:
-                Container(color: item.earned! ? deleteColor : addedColor),
-          ),
-          onTap: () {
-            launchURL(game.title! + " " + item.title!, SearchEnum.youtube);
-          },
-        );
+            child: InkWell(
+              child: Card(
+                child: getTrophy(item),
+                color: cardBackgroundColor,
+              ),
+            ));
       },
     );
   }
@@ -161,8 +146,12 @@ class _ShowTrophyState extends State<ShowTrophy> {
               ? Text(secretDescription, style: TextStyle(color: fontColor))
               : Text(trophy.description!, style: TextStyle(color: fontColor)),
           trailing: showButton(trophy),
-          onTap: () {
-            launchURL(game.title! + " " + trophy.title!, SearchEnum.youtube);
+          onLongPress: () {
+            setState(() {
+              trophy.earned = !trophy.earned!;
+              Api.put('achievements/', trophy, trophy.id);
+              filter();
+            });
           },
         ),
       ],
