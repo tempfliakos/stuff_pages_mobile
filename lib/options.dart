@@ -15,8 +15,9 @@ class Options extends StatefulWidget {
 }
 
 class _OptionsState extends State<Options> {
-  Map<String, Object> options;
+  late Map<String, Object?> options;
   List<TodoType> types = [];
+  TextEditingController typeAddingController = TextEditingController();
 
   Map systemOptions = {
     'defaultPage': [
@@ -51,7 +52,7 @@ class _OptionsState extends State<Options> {
         setState(() {
           Iterable list = json.decode(res.body);
           types = list.map((e) => TodoType.fromJson(e)).toList();
-          types.sort((a, b) => a.id.compareTo(b.id));
+          types.sort((a, b) => a.id!.compareTo(b.id!));
         });
       });
     }
@@ -82,19 +83,22 @@ class _OptionsState extends State<Options> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text('Rendszerbeállítások', style: TextStyle(color: fontColor)),
+            Text('Rendszerbeállítások', style: TextStyle(color: fontColor, fontSize: 24.0)),
             getDropdowns(systemOptions),
             const SizedBox(
               height: 20,
             ),
-            Text('Film beállítások', style: TextStyle(color: fontColor)),
+            Text('Film beállítások', style: TextStyle(color: fontColor, fontSize: 24.0)),
             getDropdowns(movieOptions),
             const SizedBox(
               height: 20,
             ),
-            Text('Feladat típusok', style: TextStyle(color: fontColor)),
+            Text('Feladat típusok', style: TextStyle(color: fontColor, fontSize: 24.0)),
             Column(
               children: getTypes(),
+            ),
+            Column(
+              children: [newTypeField(), typeAddingButton()],
             )
           ],
         ),
@@ -122,7 +126,7 @@ class _OptionsState extends State<Options> {
           verticalAlignment: TableCellVerticalAlignment.middle,
           child: Container(
             child:
-                Text(optionsName[option], style: TextStyle(color: fontColor)),
+                Text(optionsName[option]!, style: TextStyle(color: fontColor)),
           )),
       TableCell(
           verticalAlignment: TableCellVerticalAlignment.middle,
@@ -134,7 +138,7 @@ class _OptionsState extends State<Options> {
   }
 
   Widget getDropDown(Map suboptions, optionsKey) {
-    return DropdownButton(
+    return DropdownButton<dynamic>(
         isExpanded: true,
         value: options[optionsKey],
         items: getDropdownMenuItem(suboptions, optionsKey),
@@ -147,7 +151,7 @@ class _OptionsState extends State<Options> {
   }
 
   List<DropdownMenuItem> getDropdownMenuItem(Map suboptions, optionsKey) {
-    List<Object> options = suboptions[optionsKey];
+    List<dynamic> options = suboptions[optionsKey];
     List<DropdownMenuItem> result = [];
     for (var option in options) {
       var text;
@@ -178,7 +182,7 @@ class _OptionsState extends State<Options> {
           break;
         default:
           if (option != null) {
-            text = option ? 'Megjelenít' : 'Elrejt';
+            text = option == true ? 'Megjelenít' : 'Elrejt';
           } else {
             text = 'Nincs beállítva';
           }
@@ -194,8 +198,65 @@ class _OptionsState extends State<Options> {
   List<Widget> getTypes() {
     List<Text> result = [];
     for (var type in types) {
-      result.add(Text(type.name, style: TextStyle(color: fontColor)));
+      result.add(Text(type.name!, style: TextStyle(color: fontColor, fontSize: 16.0)));
     }
     return result;
+  }
+
+  Widget newTypeField() {
+    return TextFormField(
+      controller: typeAddingController,
+      maxLines: 1,
+      decoration: InputDecoration(
+        hintText: 'Új típus megadása',
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+    );
+  }
+
+  Widget typeAddingButton() {
+    return ElevatedButton(
+      onPressed: () {
+          _createType();
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: cardBackgroundColor,
+        padding: const EdgeInsets.fromLTRB(40, 15, 40, 15),
+      ),
+      child: const Text(
+        'Hozzáadás',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  _createType() async {
+    String? name = typeAddingController.text;
+    if(typeIsValid(name)) {
+      final TodoType todoType = TodoType();
+      setState(() {
+        todoType.name = typeAddingController.text;
+        Api.post('todotype', todoType.toJson());
+        types.add(todoType);
+        getTypes();
+        typeAddingController = TextEditingController();
+      });
+    }
+  }
+
+  bool typeIsValid(String? name) {
+    if(name == null || name.isEmpty) {
+      return false;
+    }
+    for(var type in types) {
+      if(type.name == name) {
+        return false;
+      }
+    }
+    return true;
   }
 }

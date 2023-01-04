@@ -17,11 +17,14 @@ class Todos extends StatefulWidget {
 }
 
 class _TodosState extends State<Todos> {
-  List<Todo> _todos = [];
+  late List<Todo> _todos;
   List<Todo> filterTodos = [];
   List<TodoType> types = [];
-  TodoType actualType;
   TodoType doneType = TodoType.fromJson({
+    "id": null,
+    "name": "Kész"
+  });
+  TodoType actualType = TodoType.fromJson({
     "id": null,
     "name": "Kész"
   });
@@ -33,7 +36,7 @@ class _TodosState extends State<Todos> {
       Api.get("todotype/").then((res) {
         Iterable list = json.decode(res.body);
         types = list.map((e) => TodoType.fromJson(e)).toList();
-        types.sort((a, b) => a.id.compareTo(b.id));
+        types.sort((a, b) => a.id!.compareTo(b.id!));
         types.add(doneType);
         actualType = types[0];
         _getTodos();
@@ -45,7 +48,7 @@ class _TodosState extends State<Todos> {
     Api.get("todo/").then((res) {
       Iterable list = json.decode(res.body);
       _todos = list.map((e) => Todo.fromJson(e)).toList();
-      _todos.sort((a, b) => a.name.compareTo(b.name));
+      _todos.sort((a, b) => a.name!.compareTo(b.name!));
       filter();
       _calculateTodoTypeMap();
     });
@@ -117,7 +120,7 @@ class _TodosState extends State<Todos> {
 
   Widget titleWidget() {
     List<DropdownMenuItem> items = getDropdownMenuItem(types, todoTypeMap, true);
-    return DropdownButton(
+    return DropdownButton<dynamic>(
         isExpanded: true,
         value: actualType,
         items: items,
@@ -148,8 +151,8 @@ class _TodosState extends State<Todos> {
       children: <Widget>[
         ListTile(
           leading: doneButton(todo),
-          title: Text(todo.name, style: TextStyle(color: fontColor)),
-          subtitle: Text(getType(todo), style: TextStyle(color: fontColor)),
+          title: Text(todo.name!, style: TextStyle(color: fontColor)),
+          subtitle: Text(getType(todo)!, style: TextStyle(color: fontColor)),
           trailing: deleteButton(todo),
           onTap: () async {
             await Navigator.push(context,
@@ -179,7 +182,7 @@ class _TodosState extends State<Todos> {
         });
   }
 
-  String getType(Todo todo) {
+  String? getType(Todo todo) {
     return types.firstWhere((e) => e.id == todo.typeId).name;
   }
 

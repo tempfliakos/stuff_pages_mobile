@@ -1,11 +1,11 @@
 class Book {
-  String id;
-  String bookId;
-  String author;
-  String description;
-  String picture;
-  String title;
-  String priority;
+  String? id;
+  String? bookId;
+  String? author;
+  String? description;
+  String? picture;
+  String? title;
+  String? priority;
 
   Book(
       {this.id,

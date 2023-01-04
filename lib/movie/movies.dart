@@ -25,7 +25,7 @@ class _MoviesState extends State<Movies> {
   var owned;
   var futureMovie;
   var liza;
-  Map<String, Object> options;
+  late Map<String, Object?> options;
   bool filterMode = false;
 
   _getMovies() {
@@ -34,7 +34,7 @@ class _MoviesState extends State<Movies> {
       setState(() {
         Iterable list = json.decode(res.body);
         _movies = list.map((e) => Movie.fromJson(e)).toList();
-        _movies.sort((a, b) => a.title.compareTo(b.title));
+        _movies.sort((a, b) => a.title!.compareTo(b.title!));
         filterMovies.addAll(_movies);
         options = getOptions();
         seen = options['defaultSeen'];
@@ -182,7 +182,7 @@ class _MoviesState extends State<Movies> {
 
   void doFilter() {
     _movies.forEach((movie) {
-      if (movie.title.toLowerCase().contains(titleFilter.toLowerCase())) {
+      if (movie.title!.toLowerCase().contains(titleFilter.toLowerCase())) {
         if (seen != null ||
             owned != null ||
             futureMovie != null ||

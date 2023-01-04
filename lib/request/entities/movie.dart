@@ -1,16 +1,16 @@
 import 'package:stuff_pages/utils/genres.dart';
 
 class Movie {
-  String id;
-  String movieId;
-  String backdropPath;
-  String posterPath;
-  String releaseDate;
-  String title;
-  bool seen;
-  bool owned;
-  bool liza;
-  List<dynamic> genres;
+  String? id;
+  String? movieId;
+  String? backdropPath;
+  String? posterPath;
+  String? releaseDate;
+  String? title;
+  bool? seen;
+  bool? owned;
+  bool? liza;
+  List<dynamic>? genres;
 
   Movie(
       {this.id,

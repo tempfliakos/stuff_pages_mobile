@@ -19,12 +19,12 @@ class XboxList extends StatefulWidget {
 }
 
 class _XboxListState extends State<XboxList> {
-  ScrollController controller;
+  late ScrollController controller;
   List<Game> _games = [];
   List<Game> _starred = [];
   String titleFilter = "";
   int pageNumber = 1;
-  int maxPageNumber;
+  late int maxPageNumber;
   bool filterMode = false;
 
   _getXboxGames() {
@@ -36,7 +36,7 @@ class _XboxListState extends State<XboxList> {
           Iterable list = data[GamesEnum.games.name];
           maxPageNumber = (data[GamesEnum.count.name] / list.length).ceil();
           List<Game> games = list.map((e) => Game.fromJson(e)).toList();
-          List<String> _gamesIds = games.map((e) => e.gameId).toList();
+          List<String?> _gamesIds = games.map((e) => e.gameId).toList();
           _games = _games.where((g) => !_gamesIds.contains(g.gameId)).toList();
           _games.addAll(createFinalGameList(games));
         } catch (e) {
@@ -171,22 +171,31 @@ class _XboxListState extends State<XboxList> {
   }
 
   Widget starButton(Game game) {
-    return IconButton(
-        icon: Icon(
-          game.star ? Icons.star : Icons.star_border,
-          color: futureColor,
-        ),
-        onPressed: () {
-          setState(() {
-            game.star = !game.star;
-            Api.put("games/", game, game.id);
-            if (game.star) {
-              _starred.add(game);
-            } else {
-              _starred.removeWhere((g) => g.id == game.id);
-            }
+    if(game.star! || game.sum != game.earned) {
+      return IconButton(
+          icon: Icon(
+            game.star! ? Icons.star : Icons.star_border,
+            color: futureColor,
+          ),
+          onPressed: () {
+            setState(() {
+              game.star = !game.star!;
+              Api.put("games/", game, game.id);
+              if (game.star!) {
+                _starred.add(game);
+              } else {
+                _starred.removeWhere((g) => g.id == game.id);
+              }
+            });
           });
-        });
+    } else {
+      return IconButton(
+          icon: Icon(
+            Icons.done_all,
+            color: addedColor,
+          ),
+          onPressed: () {});
+    }
   }
 
   void _scrollListener() {

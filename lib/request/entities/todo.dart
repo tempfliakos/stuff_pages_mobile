@@ -1,10 +1,10 @@
 class Todo {
-  String id;
-  String userId;
-  String typeId;
-  String name;
-  String createdAt;
-  String done;
+  String? id;
+  String? userId;
+  String? typeId;
+  String? name;
+  String? createdAt;
+  String? done;
 
   Todo({
     this.id,

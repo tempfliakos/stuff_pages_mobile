@@ -6,7 +6,7 @@ import 'package:stuff_pages/utils/colorUtil.dart';
 import 'login.dart';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key key}) : super(key: key);
+  const RegisterPage({required Key key}) : super(key: key);
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -23,7 +23,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return TextFormField(
       controller: emailEditingController,
       validator: (value) =>
-          EmailValidator.validate(value) ? null : "Kérlek valós emailt adj meg",
+          EmailValidator.validate(value!) ? null : "Kérlek valós emailt adj meg",
       maxLines: 1,
       decoration: InputDecoration(
         hintText: 'Email megadása',
@@ -80,7 +80,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget registerButton() {
     return ElevatedButton(
       onPressed: () {
-        if (_formKey.currentState.validate()) {
+        if (_formKey.currentState!.validate()) {
           _register();
         }
       },

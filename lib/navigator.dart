@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:stuff_pages/utils/colorUtil.dart';
 
 class MyNavigator extends StatefulWidget {
-  int index;
+  int index = 0;
   MyNavigator(int i) {
     index = i;
   }
@@ -22,7 +22,7 @@ class _MyNavigatorState extends State<MyNavigator> {
     '/todo'
   ];
 
-  int index;
+  int index = 0;
 
   _MyNavigatorState(int index) {
     this.index = index;

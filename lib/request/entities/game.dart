@@ -2,19 +2,19 @@
 import 'package:stuff_pages/request/entities/trophyNumber.dart';
 
 class Game {
-  String id;
-  String gameId;
-  String console;
-  String title;
-  String picture;
-  int earned;
-  int sum;
-  bool wish;
-  bool star;
-  TrophyNumber bronze;
-  TrophyNumber silver;
-  TrophyNumber gold;
-  TrophyNumber platinum;
+  String? id;
+  String? gameId;
+  String? console;
+  String? title;
+  String? picture;
+  int? earned;
+  int? sum;
+  bool? wish;
+  bool? star;
+  TrophyNumber? bronze;
+  TrophyNumber? silver;
+  TrophyNumber? gold;
+  TrophyNumber? platinum;
 
   Game(
       {this.id,
@@ -33,6 +33,7 @@ class Game {
     this.console,
     this.title,
     this.picture,
+    this.star
   });
 
   Game.playstation({
@@ -70,7 +71,8 @@ class Game {
         gameId: json['game_id'],
         console: json['console'],
         title: json['title'],
-        picture: json['picture']);
+        picture: json['picture'],
+        star: json['star']);
   }
 
   factory Game.playstationFromJson(Map json) {

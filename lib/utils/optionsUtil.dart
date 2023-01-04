@@ -1,6 +1,6 @@
 import 'package:stuff_pages/global.dart';
 
-Map<String, Object> defaultOptions = {
+Map<String, Object?> defaultOptions = {
   'defaultPage': '/movies',
   'defaultSeen': null,
   'defaultOwn': null,
@@ -12,8 +12,8 @@ setDefault() {
   userStorage.setItem('options', defaultOptions);
 }
 
-Map<String, Object> getOptions() {
-  Map<String, Object> options = userStorage.getItem('options');
+Map<String, Object?> getOptions() {
+  Map<String, Object?>? options = userStorage.getItem('options');
   if (options == null) {
     return defaultOptions;
   }

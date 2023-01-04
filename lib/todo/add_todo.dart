@@ -7,8 +7,8 @@ import '../utils/colorUtil.dart';
 import '../utils/todoUtil.dart';
 
 class AddTodo extends StatefulWidget {
-  List<TodoType> types;
-  Todo actual;
+  late List<TodoType> types;
+  late Todo actual;
 
   AddTodo(List<TodoType> types, Todo actual) {
     this.types = types;
@@ -20,9 +20,9 @@ class AddTodo extends StatefulWidget {
 }
 
 class _AddTodoState extends State<AddTodo> {
-  List<TodoType> types;
-  Todo actual;
-  TodoType actualType;
+  late List<TodoType> types;
+  late Todo actual;
+  late TodoType actualType;
   final _formKey = GlobalKey<FormState>();
 
   _AddTodoState(List<TodoType> types, Todo actual) {
@@ -32,7 +32,7 @@ class _AddTodoState extends State<AddTodo> {
       actualType = types[0];
     } else {
       actualType = getType(actual);
-      nameEditingController.text = actual.name;
+      nameEditingController.text = actual.name!;
     }
   }
 
@@ -98,7 +98,7 @@ class _AddTodoState extends State<AddTodo> {
   }
 
   Widget typeField() {
-    return DropdownButton(
+    return DropdownButton<dynamic>(
         isExpanded: true,
         value: actualType,
         items: getDropdownMenuItem(types, {}),

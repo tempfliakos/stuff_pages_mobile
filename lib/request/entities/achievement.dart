@@ -1,14 +1,14 @@
 class Achievement {
-  String id;
-  String userId;
-  String gameId;
-  String title;
-  String description;
-  bool secret;
-  String picture;
-  String value;
-  bool earned;
-  bool show;
+  String? id;
+  String? userId;
+  String? gameId;
+  String? title;
+  String? description;
+  bool? secret;
+  String? picture;
+  String? value;
+  bool? earned;
+  bool? show;
 
   Achievement(
       {this.id,
