@@ -1,3 +1,4 @@
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:stuff_pages/enums/searchEnum.dart';
 import 'package:stuff_pages/request/entities/achievement.dart';
 import 'package:stuff_pages/request/entities/game.dart';
@@ -94,9 +95,7 @@ Widget highlightImg(game) {
 
 Widget youtubeButton(game, achievement) {
   return IconButton(
-      icon: ImageIcon(
-        AssetImage("assets/images/youtube_logo.png"),
-      ),
+      icon: FaIcon(FontAwesomeIcons.youtube, color: deleteColor,),
       onPressed: () {
         launchURL(game.title + " " + achievement.title, SearchEnum.youtube);
       });
@@ -104,9 +103,7 @@ Widget youtubeButton(game, achievement) {
 
 Widget googleButton(game, achievement) {
   return IconButton(
-      icon: ImageIcon(
-        AssetImage("assets/images/google_logo.png"),
-      ),
+      icon: FaIcon(FontAwesomeIcons.google, color: addedColor,),
       onPressed: () {
         launchURL(game.title + " " + achievement.title, SearchEnum.google);
       });

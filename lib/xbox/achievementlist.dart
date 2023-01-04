@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:stuff_pages/request/entities/achievement.dart';
 import 'package:stuff_pages/request/entities/game.dart';
 import 'package:stuff_pages/request/http.dart';
@@ -12,7 +11,7 @@ import 'package:stuff_pages/utils/gameUtil.dart';
 import '../navigator.dart';
 
 class ShowAchievement extends StatefulWidget {
-  Game game = new Game();
+  late Game game;
 
   ShowAchievement(Game game) {
     this.game = game;

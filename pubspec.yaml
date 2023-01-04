@@ -37,6 +37,7 @@ dependencies:
   fluttertoast: ^8.0.8
   bmprogresshud: 1.0.1
   email_validator: ^2.0.1
+  font_awesome_flutter: ^10.3.0
 
 dev_dependencies:
   flutter_test:
@@ -53,8 +54,6 @@ flutter:
     - assets/images/xbox_logo.png
     - assets/images/ps_logo.png
     - assets/images/switch_logo.png
-    - assets/images/youtube_logo.png
-    - assets/images/google_logo.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
