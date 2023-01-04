@@ -13,7 +13,7 @@ setDefault() {
 }
 
 Map<String, Object?> getOptions() {
-  Map<String, Object>? options = userStorage.getItem('options');
+  Map<String, Object?>? options = userStorage.getItem('options');
   if (options == null) {
     return defaultOptions;
   }

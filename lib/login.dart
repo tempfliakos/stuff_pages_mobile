@@ -82,7 +82,7 @@ class _LoginState extends State<Login> {
         }
       },
       style: ElevatedButton.styleFrom(
-        primary: cardBackgroundColor,
+        backgroundColor: cardBackgroundColor,
         padding: const EdgeInsets.fromLTRB(40, 15, 40, 15),
       ),
       child: const Text(
