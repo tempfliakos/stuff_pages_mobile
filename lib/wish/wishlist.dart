@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:stuff_pages/enums/menuEnum.dart';
 import 'package:stuff_pages/request/entities/game.dart';
 import 'package:stuff_pages/request/http.dart';
 import 'package:stuff_pages/utils/colorUtil.dart';
@@ -77,7 +78,7 @@ class _WishListState extends State<WishList> {
             child: Icon(Icons.add, size: 40),
             backgroundColor: addedColor,
           ),
-          bottomNavigationBar: MyNavigator(5),
+          bottomNavigationBar: CustomNavigator(MenuEnum.WISHLIST),
           backgroundColor: backgroundColor,
         ));
   }
@@ -135,7 +136,7 @@ class _WishListState extends State<WishList> {
 
   void doOptions() {
     setState(() {
-      Navigator.pushReplacementNamed(context, '/options');
+      Navigator.pushReplacementNamed(context, MenuEnum.OPTIONS.getAsPath());
     });
   }
 }

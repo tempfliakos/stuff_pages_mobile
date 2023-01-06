@@ -1,31 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:stuff_pages/enums/menuEnum.dart';
 import 'package:stuff_pages/utils/colorUtil.dart';
 
-class MyNavigator extends StatefulWidget {
-  int index = 0;
-  MyNavigator(int i) {
-    index = i;
+class CustomNavigator extends StatefulWidget {
+  late MenuEnum menuEnum;
+  CustomNavigator(MenuEnum menuEnum) {
+    this.menuEnum = menuEnum;
   }
 
   @override
-  _MyNavigatorState createState() => _MyNavigatorState(index);
+  _CustomNavigatorState createState() => _CustomNavigatorState(menuEnum);
 }
 
-class _MyNavigatorState extends State<MyNavigator> {
+class _CustomNavigatorState extends State<CustomNavigator> {
   final pages = [
-    '/movies',
-    '/books',
-    '/xbox',
-    '/playstation',
-    '/switch',
-    '/wish',
-    '/todo'
+    MenuEnum.MOVIES.getAsPath(),
+    MenuEnum.BOOKS.getAsPath(),
+    MenuEnum.XBOX_GAMES.getAsPath(),
+    MenuEnum.PS_GAMES.getAsPath(),
+    MenuEnum.SWITCH_GAMES.getAsPath(),
+    MenuEnum.WISHLIST.getAsPath(),
+    MenuEnum.TODOS.getAsPath()
   ];
 
-  int index = 0;
+  late MenuEnum menuEnum;
+  //int index = 0;
 
-  _MyNavigatorState(int index) {
-    this.index = index;
+  _CustomNavigatorState(MenuEnum menuEnum) {
+    this.menuEnum = menuEnum;
+    //this.index = index;
   }
 
   void _onItemTapped(int index) {
@@ -73,7 +76,7 @@ class _MyNavigatorState extends State<MyNavigator> {
           label: 'Feladatok',
         ),
       ],
-      currentIndex: index,
+      currentIndex: menuEnum.index,
       selectedItemColor: futureColor,
       onTap: _onItemTapped,
       backgroundColor: backgroundColor,

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:stuff_pages/enums/menuEnum.dart';
 import 'package:stuff_pages/request/entities/todo.dart';
 import 'package:stuff_pages/request/entities/todoType.dart';
 import 'package:stuff_pages/todo/add_todo.dart';
@@ -113,7 +114,7 @@ class _TodosState extends State<Todos> {
         child: Icon(Icons.add, size: 40),
         backgroundColor: addedColor,
       ),
-      bottomNavigationBar: MyNavigator(6),
+      bottomNavigationBar: CustomNavigator(MenuEnum.TODOS),
       backgroundColor: backgroundColor,
     );
   }
@@ -226,7 +227,7 @@ class _TodosState extends State<Todos> {
 
   void doOptions() {
     setState(() {
-      Navigator.pushReplacementNamed(context, '/options');
+      Navigator.pushReplacementNamed(context, MenuEnum.OPTIONS.getAsPath());
     });
   }
 }

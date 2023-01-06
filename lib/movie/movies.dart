@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:stuff_pages/enums/menuEnum.dart';
 import 'package:stuff_pages/request/http.dart';
 import 'package:stuff_pages/utils/colorUtil.dart';
 import 'package:stuff_pages/utils/optionsUtil.dart';
@@ -244,7 +245,7 @@ class _MoviesState extends State<Movies> {
         child: Icon(Icons.add, size: 40),
         backgroundColor: addedColor,
       ),
-      bottomNavigationBar: MyNavigator(0),
+      bottomNavigationBar: CustomNavigator(MenuEnum.MOVIES),
       backgroundColor: backgroundColor,
     );
   }
@@ -396,7 +397,7 @@ class _MoviesState extends State<Movies> {
 
   void doOptions() {
     setState(() {
-      Navigator.pushReplacementNamed(context, '/options');
+      Navigator.pushReplacementNamed(context, MenuEnum.OPTIONS.getAsPath());
     });
   }
 }

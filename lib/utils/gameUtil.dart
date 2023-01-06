@@ -1,10 +1,10 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:stuff_pages/enums/searchEnum.dart';
 import 'package:stuff_pages/request/entities/achievement.dart';
 import 'package:stuff_pages/request/entities/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:stuff_pages/constants/searchConstants.dart';
 
 import 'colorUtil.dart';
 
@@ -55,8 +55,13 @@ Widget img(Game game, [maxHeight = 100.0, maxWidth = 100.0]) {
 Widget achievementImg(Achievement achievement) {
   if (achievement.earned!) {
     if (achievement.picture != null && achievement.picture != "null") {
-      return Image.network(achievement.picture!,
-          filterQuality: FilterQuality.low, fit: BoxFit.cover);
+      if (achievement.picture!.startsWith("http")) {
+        return Image.network(achievement.picture!,
+            filterQuality: FilterQuality.low, fit: BoxFit.cover);
+      } else {
+        return Image.network("https:" + achievement.picture!,
+            filterQuality: FilterQuality.low, fit: BoxFit.cover);
+      }
     } else {
       return Image.asset('assets/images/default-movie-back.jpg');
     }
@@ -97,7 +102,7 @@ Widget youtubeButton(game, achievement) {
   return IconButton(
       icon: FaIcon(FontAwesomeIcons.youtube, color: deleteColor,),
       onPressed: () {
-        launchURL(game.title + " " + achievement.title, SearchEnum.youtube);
+        launchURL(game.title + " " + achievement.title, YOUTUBE);
       });
 }
 
@@ -105,12 +110,12 @@ Widget googleButton(game, achievement) {
   return IconButton(
       icon: FaIcon(FontAwesomeIcons.google, color: addedColor,),
       onPressed: () {
-        launchURL(game.title + " " + achievement.title, SearchEnum.google);
+        launchURL(game.title + " " + achievement.title, GOOGLE);
       });
 }
 
-launchURL(destination, SearchEnum searchEnum) async {
-  String url = searchEnum.url + destination;
+launchURL(destination, String requestedUrl) async {
+  String url = requestedUrl + destination;
   if (!await launch(url)) throw 'Could not launch $url';
 }
 

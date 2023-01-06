@@ -1,6 +1,14 @@
 import 'package:bmprogresshud/progresshud.dart';
 import 'package:flutter/material.dart';
 import 'package:stuff_pages/book/books.dart';
+import 'package:stuff_pages/enums/menuEnum.dart';
+import 'package:stuff_pages/enums/menuEnum.dart';
+import 'package:stuff_pages/enums/menuEnum.dart';
+import 'package:stuff_pages/enums/menuEnum.dart';
+import 'package:stuff_pages/enums/menuEnum.dart';
+import 'package:stuff_pages/enums/menuEnum.dart';
+import 'package:stuff_pages/enums/menuEnum.dart';
+import 'package:stuff_pages/enums/menuEnum.dart';
 import 'package:stuff_pages/options.dart';
 import 'package:stuff_pages/playstation/pslist.dart';
 import 'package:stuff_pages/switch/switchlist.dart';
@@ -25,14 +33,14 @@ class MyApp extends StatelessWidget {
           initialRoute: '/',
           routes: {
             '/': (context) => Login(),
-            '/options': (context) => Options(),
-            '/movies': (context) => Movies(),
-            '/books': (context) => Books(),
-            '/xbox': (context) => XboxList(),
-            '/playstation': (context) => PsList(),
-            '/switch': (context) => SwitchList(),
-            '/wish': (context) => WishList(),
-            '/todo': (context) => Todos(),
+            MenuEnum.MOVIES.getAsPath(): (context) => Movies(),
+            MenuEnum.BOOKS.getAsPath(): (context) => Books(),
+            MenuEnum.XBOX_GAMES.getAsPath(): (context) => XboxList(),
+            MenuEnum.PS_GAMES.getAsPath(): (context) => PsList(),
+            MenuEnum.SWITCH_GAMES.getAsPath(): (context) => SwitchList(),
+            MenuEnum.WISHLIST.getAsPath(): (context) => WishList(),
+            MenuEnum.TODOS.getAsPath(): (context) => Todos(),
+            MenuEnum.OPTIONS.getAsPath(): (context) => Options(),
           },
           theme: ThemeData(
             brightness: Brightness.dark,

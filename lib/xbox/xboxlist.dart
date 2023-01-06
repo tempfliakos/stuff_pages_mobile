@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:stuff_pages/constants/achievementConstants.dart';
 import 'package:stuff_pages/enums/gamesEnum.dart';
+import 'package:stuff_pages/enums/menuEnum.dart';
 import 'package:stuff_pages/request/entities/game.dart';
 import 'package:stuff_pages/request/http.dart';
 import 'package:stuff_pages/utils/colorUtil.dart';
@@ -10,7 +12,7 @@ import 'package:flutter/material.dart';
 
 import '../global.dart';
 import '../navigator.dart';
-import 'achievementlist.dart';
+import '../achievement/achievementlist.dart';
 import 'addxboxgame.dart';
 
 class XboxList extends StatefulWidget {
@@ -113,7 +115,7 @@ class _XboxListState extends State<XboxList> {
         child: Icon(Icons.add, size: 40),
         backgroundColor: addedColor,
       ),
-      bottomNavigationBar: MyNavigator(2),
+      bottomNavigationBar: CustomNavigator(MenuEnum.XBOX_GAMES),
       backgroundColor: backgroundColor,
     );
   }
@@ -208,7 +210,7 @@ class _XboxListState extends State<XboxList> {
 
   void openAchievements(Game game) async {
     await Navigator.push(context,
-        MaterialPageRoute(builder: (context) => ShowAchievement(game)));
+        MaterialPageRoute(builder: (context) => ShowAchievement(game, xboxSecretTitle, xboxSecretDescription)));
     _getXboxGames();
   }
 
@@ -227,7 +229,7 @@ class _XboxListState extends State<XboxList> {
 
   void doOptions() {
     setState(() {
-      Navigator.pushReplacementNamed(context, '/options');
+      Navigator.pushReplacementNamed(context, MenuEnum.OPTIONS.getAsPath());
     });
   }
 }

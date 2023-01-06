@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:bmprogresshud/progresshud.dart';
 import 'package:flutter/material.dart';
+import 'package:stuff_pages/achievement/achievementlist.dart';
+import 'package:stuff_pages/constants/achievementConstants.dart';
+import 'package:stuff_pages/enums/menuEnum.dart';
 import 'package:stuff_pages/playstation/addpsgame.dart';
-import 'package:stuff_pages/playstation/trophylist.dart';
 import 'package:stuff_pages/request/entities/game.dart';
 import 'package:stuff_pages/request/http.dart';
 import 'package:stuff_pages/utils/colorUtil.dart';
@@ -112,7 +114,7 @@ class _PsListState extends State<PsList> {
         child: Icon(Icons.add, size: 40),
         backgroundColor: addedColor,
       ),
-      bottomNavigationBar: MyNavigator(3),
+      bottomNavigationBar: CustomNavigator(MenuEnum.PS_GAMES),
       backgroundColor: backgroundColor,
     );
   }
@@ -208,7 +210,10 @@ class _PsListState extends State<PsList> {
 
   openTrophies(Game game) async {
     await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => ShowTrophy(game)));
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                ShowAchievement(game, psSecretTitle, psSecretDescription)));
     _getPsGames();
   }
 
@@ -227,7 +232,7 @@ class _PsListState extends State<PsList> {
 
   void doOptions() {
     setState(() {
-      Navigator.pushReplacementNamed(context, '/options');
+      Navigator.pushReplacementNamed(context, MenuEnum.OPTIONS.getAsPath());
     });
   }
 }

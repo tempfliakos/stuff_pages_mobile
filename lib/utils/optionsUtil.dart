@@ -1,7 +1,8 @@
+import 'package:stuff_pages/enums/menuEnum.dart';
 import 'package:stuff_pages/global.dart';
 
 Map<String, Object?> defaultOptions = {
-  'defaultPage': '/movies',
+  'defaultPage': MenuEnum.MOVIES.getAsPath(),
   'defaultSeen': null,
   'defaultOwn': null,
   'defaultFuture': null,

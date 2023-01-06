@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:bmprogresshud/progresshud.dart';
 import 'package:flutter/material.dart';
+import 'package:stuff_pages/enums/menuEnum.dart';
 import 'package:stuff_pages/request/entities/game.dart';
 import 'package:stuff_pages/request/http.dart';
 import 'package:stuff_pages/utils/colorUtil.dart';
@@ -87,7 +88,7 @@ class _SwitchListState extends State<SwitchList> {
         child: Icon(Icons.add, size: 40),
         backgroundColor: addedColor,
       ),
-      bottomNavigationBar: MyNavigator(4),
+      bottomNavigationBar: CustomNavigator(MenuEnum.SWITCH_GAMES),
       backgroundColor: backgroundColor,
     );
   }
@@ -138,7 +139,7 @@ class _SwitchListState extends State<SwitchList> {
 
   void doOptions() {
     setState(() {
-      Navigator.pushReplacementNamed(context, '/options');
+      Navigator.pushReplacementNamed(context, MenuEnum.OPTIONS.getAsPath());
     });
   }
 }

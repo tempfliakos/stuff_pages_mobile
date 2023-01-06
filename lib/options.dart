@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:stuff_pages/enums/menuEnum.dart';
 import 'package:stuff_pages/global.dart';
 import 'package:stuff_pages/request/entities/todoType.dart';
 import 'package:stuff_pages/request/http.dart';
@@ -21,13 +22,14 @@ class _OptionsState extends State<Options> {
 
   Map systemOptions = {
     'defaultPage': [
-      '/movies',
-      '/books',
-      '/xbox',
-      '/playstation',
-      '/switch',
-      '/wish',
-      '/todo'
+      MenuEnum.MOVIES.getAsPath(),
+      MenuEnum.BOOKS.getAsPath(),
+      MenuEnum.XBOX_GAMES.getAsPath(),
+      MenuEnum.PS_GAMES.getAsPath(),
+      MenuEnum.SWITCH_GAMES.getAsPath(),
+      MenuEnum.WISHLIST.getAsPath(),
+      MenuEnum.TODOS.getAsPath(),
+      MenuEnum.OPTIONS.getAsPath()
     ],
   };
 
@@ -83,17 +85,20 @@ class _OptionsState extends State<Options> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text('Rendszerbeállítások', style: TextStyle(color: fontColor, fontSize: 24.0)),
+            Text('Rendszerbeállítások',
+                style: TextStyle(color: fontColor, fontSize: 24.0)),
             getDropdowns(systemOptions),
             const SizedBox(
               height: 20,
             ),
-            Text('Film beállítások', style: TextStyle(color: fontColor, fontSize: 24.0)),
+            Text('Film beállítások',
+                style: TextStyle(color: fontColor, fontSize: 24.0)),
             getDropdowns(movieOptions),
             const SizedBox(
               height: 20,
             ),
-            Text('Feladat típusok', style: TextStyle(color: fontColor, fontSize: 24.0)),
+            Text('Feladat típusok',
+                style: TextStyle(color: fontColor, fontSize: 24.0)),
             Column(
               children: getTypes(),
             ),
@@ -103,7 +108,7 @@ class _OptionsState extends State<Options> {
           ],
         ),
       ),
-      bottomNavigationBar: MyNavigator(0),
+      bottomNavigationBar: CustomNavigator(MenuEnum.MOVIES),
       backgroundColor: backgroundColor,
     );
   }
@@ -155,37 +160,28 @@ class _OptionsState extends State<Options> {
     List<DropdownMenuItem> result = [];
     for (var option in options) {
       var text;
-      switch (option) {
-        case '/options':
-          text = 'Beállítások';
-          break;
-        case '/movies':
-          text = 'Filmek';
-          break;
-        case '/books':
-          text = 'Könyvek';
-          break;
-        case '/xbox':
-          text = 'Xbox játékok';
-          break;
-        case '/playstation':
-          text = 'Playstation játékok';
-          break;
-        case '/switch':
-          text = 'Switch játékok';
-          break;
-        case '/wish':
-          text = 'Wishlist';
-          break;
-        case '/todo':
-          text = 'Feladatok';
-          break;
-        default:
-          if (option != null) {
-            text = option == true ? 'Megjelenít' : 'Elrejt';
-          } else {
-            text = 'Nincs beállítva';
-          }
+      if (option == MenuEnum.MOVIES.getAsPath()) {
+        text = 'Filmek';
+      } else if (option == MenuEnum.BOOKS.getAsPath()) {
+        text = 'Könyvek';
+      } else if (option == MenuEnum.XBOX_GAMES.getAsPath()) {
+        text = 'Xbox játékok';
+      } else if (option == MenuEnum.PS_GAMES.getAsPath()) {
+        text = 'Playstation játékok';
+      } else if (option == MenuEnum.SWITCH_GAMES.getAsPath()) {
+        text = 'Switch játékok';
+      } else if (option == MenuEnum.WISHLIST.getAsPath()) {
+        text = 'Wishlist';
+      } else if (option == MenuEnum.TODOS.getAsPath()) {
+        text = 'Feladatok';
+      } else if (option == MenuEnum.OPTIONS.getAsPath()) {
+        text = 'Beállítások';
+      } else {
+        if (option != null) {
+          text = option == true ? 'Megjelenít' : 'Elrejt';
+        } else {
+          text = 'Nincs beállítva';
+        }
       }
       result.add(DropdownMenuItem(
         value: option,
@@ -198,7 +194,8 @@ class _OptionsState extends State<Options> {
   List<Widget> getTypes() {
     List<Text> result = [];
     for (var type in types) {
-      result.add(Text(type.name!, style: TextStyle(color: fontColor, fontSize: 16.0)));
+      result.add(
+          Text(type.name!, style: TextStyle(color: fontColor, fontSize: 16.0)));
     }
     return result;
   }
@@ -219,7 +216,7 @@ class _OptionsState extends State<Options> {
   Widget typeAddingButton() {
     return ElevatedButton(
       onPressed: () {
-          _createType();
+        _createType();
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: cardBackgroundColor,
@@ -236,7 +233,7 @@ class _OptionsState extends State<Options> {
 
   _createType() async {
     String? name = typeAddingController.text;
-    if(typeIsValid(name)) {
+    if (typeIsValid(name)) {
       final TodoType todoType = TodoType();
       setState(() {
         todoType.name = typeAddingController.text;
@@ -249,11 +246,11 @@ class _OptionsState extends State<Options> {
   }
 
   bool typeIsValid(String? name) {
-    if(name == null || name.isEmpty) {
+    if (name == null || name.isEmpty) {
       return false;
     }
-    for(var type in types) {
-      if(type.name == name) {
+    for (var type in types) {
+      if (type.name == name) {
         return false;
       }
     }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:stuff_pages/enums/menuEnum.dart';
 import 'package:stuff_pages/request/entities/book.dart';
 import 'package:stuff_pages/request/http.dart';
 import 'package:stuff_pages/utils/bookUtil.dart';
@@ -89,7 +90,7 @@ class _BooksState extends State<Books> {
         child: Icon(Icons.add, size: 40),
         backgroundColor: addedColor,
       ),
-      bottomNavigationBar: MyNavigator(1),
+      bottomNavigationBar: CustomNavigator(MenuEnum.BOOKS),
       backgroundColor: backgroundColor,
     );
   }
@@ -175,7 +176,7 @@ class _BooksState extends State<Books> {
 
   void doOptions() {
     setState(() {
-      Navigator.pushReplacementNamed(context, '/options');
+      Navigator.pushReplacementNamed(context, MenuEnum.OPTIONS.getAsPath());
     });
   }
 }
