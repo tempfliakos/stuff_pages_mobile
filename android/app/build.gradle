@@ -21,12 +21,21 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+def compileSdk = localProperties.getProperty('flutter.compileSdk')
+def minSdk = localProperties.getProperty('flutter.minSdk')
+def targetSdk = localProperties.getProperty('flutter.targetSdk')
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion compileSdk.toInteger()
+
+    /*compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }*/
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -36,13 +45,57 @@ android {
         disable 'InvalidPackage'
     }
 
-    defaultConfig {
+    /*defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "hu.tempfliakos.temp"
-        minSdkVersion 16
-        targetSdkVersion 31
+        minSdkVersion minSdk.toInteger()
+        targetSdkVersion targetSdk.toInteger()
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+    }*/
+
+    def versionPropsFile = file('version.properties')
+    def value = 0
+
+    Properties versionProps = new Properties()
+
+    if (!versionPropsFile.exists()) {
+        versionProps['VERSION_MAJOR'] = "1"
+        versionProps['VERSION_MINOR'] = "0"
+        versionProps['VERSION_PATCH'] = "0"
+        versionProps['VERSION_BUILD'] = "0"
+        versionProps.store(versionPropsFile.newWriter(), null)
+    }
+
+    def runTasks = gradle.startParameter.taskNames
+    if ('assembleRelease' in runTasks) {
+        value = 1
+    }
+
+    if (versionPropsFile.canRead()) {
+
+        versionProps.load(new FileInputStream(versionPropsFile))
+
+        versionProps['VERSION_PATCH'] = (versionProps['VERSION_PATCH'].toInteger() + value).toString()
+        versionProps['VERSION_BUILD'] = (versionProps['VERSION_BUILD'].toInteger() + 1).toString()
+
+        versionProps.store(versionPropsFile.newWriter(), null)
+
+        // change major and minor version here
+        def mVersionName = "${versionProps['VERSION_MAJOR']}.${versionProps['VERSION_MINOR']}.${versionProps['VERSION_PATCH']}"
+
+        defaultConfig {
+            // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+            applicationId "hu.tempfliakos.stuffpages"
+            minSdkVersion minSdk.toInteger()
+            targetSdkVersion targetSdk.toInteger()
+            versionCode versionProps['VERSION_BUILD'].toInteger()
+            versionName "${mVersionName} Build: ${versionProps['VERSION_BUILD']}"
+            testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        }
+    }
+    else {
+        throw new GradleException("Could not read version.properties!")
     }
 
     buildTypes {
