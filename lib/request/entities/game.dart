@@ -33,6 +33,7 @@ class Game {
     this.console,
     this.title,
     this.picture,
+    this.wish,
     this.star
   });
 
@@ -72,6 +73,7 @@ class Game {
         console: json['console'],
         title: json['title'],
         picture: json['picture'],
+        wish: false,
         star: json['star']);
   }
 
