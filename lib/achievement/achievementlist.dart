@@ -5,6 +5,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:stuff_pages/request/entities/achievement.dart';
 import 'package:stuff_pages/request/entities/game.dart';
 import 'package:stuff_pages/request/http.dart';
+import 'package:stuff_pages/utils/basicUtil.dart';
 import 'package:stuff_pages/utils/colorUtil.dart';
 import 'package:stuff_pages/utils/gameUtil.dart';
 
@@ -102,6 +103,7 @@ class _ShowAchievementState extends State<ShowAchievement> {
           children: <Widget>[Expanded(child: _achievementList())],
         ),
       ),
+
       backgroundColor: backgroundColor,
     );
   }
@@ -161,6 +163,11 @@ class _ShowAchievementState extends State<ShowAchievement> {
             setState(() {
               achievement.earned = !achievement.earned!;
               Api.put('achievements/', achievement, achievement.id);
+              if(achievement.earned!) {
+                showToast(context, achievement.title! + " kész!");
+              } else {
+                showToast(context, achievement.title! + " még hátravan!");
+              }
               filter();
             });
           },
