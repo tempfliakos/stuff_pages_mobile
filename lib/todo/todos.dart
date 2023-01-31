@@ -5,6 +5,7 @@ import 'package:stuff_pages/enums/menuEnum.dart';
 import 'package:stuff_pages/request/entities/todo.dart';
 import 'package:stuff_pages/request/entities/todoType.dart';
 import 'package:stuff_pages/todo/add_todo.dart';
+import 'package:stuff_pages/utils/basicUtil.dart';
 
 import '../global.dart';
 import '../navigator.dart';
@@ -203,8 +204,10 @@ class _TodosState extends State<Todos> {
   void doneTodo(Todo todo) {
     if (todo.done == null) {
       todo.done = DateTime.now().toString();
+      showToast(context, todo.name! + " kész!");
     } else {
       todo.done = null;
+      showToast(context, todo.name! + " nincs kész!");
     }
     Api.put("todo/", todo, todo.id);
     _calculateTodoTypeMap();
@@ -213,6 +216,7 @@ class _TodosState extends State<Todos> {
 
   void deleteTodo(Todo todo) {
     Api.deleteWithParam("todo/", todo.id);
+    showToast(context, todo.name! + " törölve!");
     _todos.remove(todo);
     filterTodos.remove(todo);
     _calculateTodoTypeMap();
