@@ -103,8 +103,6 @@ class _TodosState extends State<TodoTypeList> {
   }
 
   Widget _todoTypeList() {
-    print("_todoTypeList");
-    print(types.length);
     return GridView.count(
       crossAxisCount: 2,
       children: List.generate(types.length, (index) {
