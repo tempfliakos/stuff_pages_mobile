@@ -11,65 +11,49 @@ import '../global.dart';
 import '../navigator.dart';
 import '../request/http.dart';
 import '../utils/colorUtil.dart';
-import '../utils/todoUtil.dart';
 
-class Todos extends StatefulWidget {
+class ShowTodos extends StatefulWidget {
+  late TodoType todoType;
+  late List<TodoType> types;
+  late List<Todo> todos;
+
+  ShowTodos(List<TodoType> types, TodoType todoType, List<Todo> todos) {
+    this.todoType = todoType;
+    this.types = types;
+    this.todos = todos;
+  }
+
   @override
-  _TodosState createState() => _TodosState();
+  _TodosState createState() => _TodosState(types, todoType, todos);
 }
 
-class _TodosState extends State<Todos> {
-  late List<Todo> _todos;
+class _TodosState extends State<ShowTodos> {
+  late TodoType todoType;
+  late List<Todo> todos;
+  late List<TodoType> types;
   List<Todo> filterTodos = [];
-  List<TodoType> types = [];
-  TodoType doneType = TodoType.fromJson({
-    "id": null,
-    "name": "Kész"
-  });
-  TodoType actualType = TodoType.fromJson({
-    "id": null,
-    "name": "Kész"
-  });
+  TodoType doneType = TodoType.fromJson({"id": null, "name": "Kész"});
 
   Map<TodoType, int> todoTypeMap = {};
 
-  _getTodoTypes() {
-    if (types.isEmpty) {
-      Api.get("todotype/").then((res) {
-        Iterable list = json.decode(res.body);
-        types = list.map((e) => TodoType.fromJson(e)).toList();
-        types.sort((a, b) => a.id!.compareTo(b.id!));
-        types.add(doneType);
-        actualType = types[0];
-        _getTodos();
-      });
-    }
+  _TodosState(List<TodoType> types, TodoType todoType, List<Todo> todos) {
+    this.types = types;
+    this.todoType = todoType;
+    this.todos = todos;
   }
 
   _getTodos() {
     Api.get("todo/").then((res) {
       Iterable list = json.decode(res.body);
-      _todos = list.map((e) => Todo.fromJson(e)).toList();
-      _todos.sort((a, b) => a.name!.compareTo(b.name!));
+      todos = list.map((e) => Todo.fromJson(e)).toList();
+      todos.sort((a, b) => a.name!.compareTo(b.name!));
       filter();
-      _calculateTodoTypeMap();
     });
-  }
-
-  _calculateTodoTypeMap() {
-    todoTypeMap = {};
-    todoTypeMap.putIfAbsent(doneType, () => _todos.where((e) => e.done != null).length);
-    for (TodoType type in types) {
-      todoTypeMap.putIfAbsent(type, () => _todos
-              .where((e) => e.typeId == type.id && e.done == null)
-              .length);
-    }
   }
 
   @override
   void initState() {
     super.initState();
-    _getTodoTypes();
   }
 
   @override
@@ -77,13 +61,12 @@ class _TodosState extends State<Todos> {
     super.dispose();
   }
 
+  //TODO filtering done-re
   void filter() {
-    if (actualType.id != null) {
-      filterTodos = _todos
-          .where((e) => e.typeId == actualType.id && e.done == null)
-          .toList();
+    if (todoType.id != null) {
+      filterTodos = todos.where((e) => e.done == null).toList();
     } else {
-      filterTodos = _todos.where((e) => e.done != null).toList();
+      filterTodos = todos.where((e) => e.done != null).toList();
     }
     setState(() {});
   }
@@ -121,15 +104,7 @@ class _TodosState extends State<Todos> {
   }
 
   Widget titleWidget() {
-    List<DropdownMenuItem> items = getDropdownMenuItem(types, todoTypeMap, true);
-    return DropdownButton<dynamic>(
-        isExpanded: true,
-        value: actualType,
-        items: items,
-        onChanged: (type) {
-          actualType = type;
-          filter();
-        });
+    return Text(todoType.name!, style: TextStyle(color: fontColor));
   }
 
   Widget _todoList() {
@@ -154,7 +129,6 @@ class _TodosState extends State<Todos> {
         ListTile(
           leading: doneButton(todo),
           title: Text(todo.name!, style: TextStyle(color: fontColor)),
-          subtitle: Text(getType(todo)!, style: TextStyle(color: fontColor)),
           trailing: deleteButton(todo),
           onTap: () async {
             await Navigator.push(context,
@@ -210,16 +184,14 @@ class _TodosState extends State<Todos> {
       showToast(context, todo.name! + " nincs kész!");
     }
     Api.put("todo/", todo, todo.id);
-    _calculateTodoTypeMap();
     filter();
   }
 
   void deleteTodo(Todo todo) {
     Api.deleteWithParam("todo/", todo.id);
     showToast(context, todo.name! + " törölve!");
-    _todos.remove(todo);
+    todos.remove(todo);
     filterTodos.remove(todo);
-    _calculateTodoTypeMap();
   }
 
   void doLogout() {
