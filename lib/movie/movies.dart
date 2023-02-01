@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:stuff_pages/enums/menuEnum.dart';
@@ -35,7 +36,7 @@ class _MoviesState extends State<Movies> {
       setState(() {
         Iterable list = json.decode(res.body);
         _movies = list.map((e) => Movie.fromJson(e)).toList();
-        _movies.sort((a, b) => a.title!.compareTo(b.title!));
+        _movies.sort((a, b) => removeDiacritics(a.title!).compareTo(removeDiacritics(b.title!)));
         filterMovies.addAll(_movies);
         options = getOptions();
         seen = options['defaultSeen'];

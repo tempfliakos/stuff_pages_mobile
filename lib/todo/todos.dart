@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:stuff_pages/enums/menuEnum.dart';
 import 'package:stuff_pages/request/entities/todo.dart';
@@ -31,22 +32,21 @@ class _TodosState extends State<ShowTodos> {
   late TodoType todoType;
   late List<Todo> todos;
   late List<TodoType> types;
+  bool donefilter = false;
   List<Todo> filterTodos = [];
-  TodoType doneType = TodoType.fromJson({"id": null, "name": "Kész"});
 
   Map<TodoType, int> todoTypeMap = {};
 
   _TodosState(List<TodoType> types, TodoType todoType, List<Todo> todos) {
     this.types = types;
     this.todoType = todoType;
-    this.todos = todos;
+    this.todos = filterAndSort(todos);
   }
 
   _getTodos() {
     Api.get("todo/").then((res) {
       Iterable list = json.decode(res.body);
-      todos = list.map((e) => Todo.fromJson(e)).toList();
-      todos.sort((a, b) => a.name!.compareTo(b.name!));
+      todos = filterAndSort(list.map((e) => Todo.fromJson(e)).toList());
       filter();
     });
   }
@@ -54,6 +54,7 @@ class _TodosState extends State<ShowTodos> {
   @override
   void initState() {
     super.initState();
+    filter();
   }
 
   @override
@@ -61,12 +62,26 @@ class _TodosState extends State<ShowTodos> {
     super.dispose();
   }
 
-  //TODO filtering done-re
+  Widget doneFilter() {
+    return Switch(
+      value: donefilter,
+      onChanged: (value) {
+        setState(() {
+          donefilter = value;
+          filter();
+        });
+      },
+      activeTrackColor: addedColor,
+      activeColor: addedColor,
+      inactiveTrackColor: cardBackgroundColor,
+    );
+  }
+
   void filter() {
-    if (todoType.id != null) {
-      filterTodos = todos.where((e) => e.done == null).toList();
-    } else {
+    if (donefilter) {
       filterTodos = todos.where((e) => e.done != null).toList();
+    } else {
+      filterTodos = todos.where((e) => e.done == null).toList();
     }
     setState(() {});
   }
@@ -77,7 +92,11 @@ class _TodosState extends State<ShowTodos> {
       appBar: AppBar(
         backgroundColor: backgroundColor,
         title: titleWidget(),
-        actions: <Widget>[optionsButton(doOptions), logoutButton(doLogout)],
+        actions: <Widget>[
+          doneFilter(),
+          optionsButton(doOptions),
+          logoutButton(doLogout)
+        ],
         iconTheme: IconThemeData(color: fontColor),
       ),
       body: Center(
@@ -173,6 +192,13 @@ class _TodosState extends State<ShowTodos> {
             deleteTodo(todo);
           });
         });
+  }
+
+  List<Todo> filterAndSort(List<Todo> todos) {
+    todos = todos.where((todo) => todo.typeId == todoType.id).toList();
+    todos.sort((a, b) => removeDiacritics(a.name!.toLowerCase())
+        .compareTo(removeDiacritics(b.name!.toLowerCase())));
+    return todos;
   }
 
   void doneTodo(Todo todo) {

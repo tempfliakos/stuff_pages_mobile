@@ -1,19 +1,17 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:stuff_pages/enums/menuEnum.dart';
 import 'package:stuff_pages/request/entities/todo.dart';
 import 'package:stuff_pages/request/entities/todoType.dart';
 import 'package:stuff_pages/todo/add_todo.dart';
 import 'package:stuff_pages/todo/todos.dart';
-import 'package:stuff_pages/utils/basicUtil.dart';
+import 'package:diacritic/diacritic.dart';
 
 import '../global.dart';
 import '../navigator.dart';
 import '../request/http.dart';
 import '../utils/colorUtil.dart';
-import '../utils/todoUtil.dart';
 
 class TodoTypeList extends StatefulWidget {
   @override
@@ -21,28 +19,30 @@ class TodoTypeList extends StatefulWidget {
 }
 
 class _TodosState extends State<TodoTypeList> {
+  late List<TodoType> types;
   late List<Todo> _todos;
-  List<Todo> filterTodos = [];
-  List<TodoType> types = [];
   Map<TodoType, int> todoTypeMap = {};
 
   _getTodoTypes() {
-    if (types.isEmpty) {
-      Api.get("todotype/").then((res) {
+    Api.get("todotype/").then((res) {
+      setState(() {
         Iterable list = json.decode(res.body);
         types = list.map((e) => TodoType.fromJson(e)).toList();
-        types.sort((a, b) => a.name!.compareTo(b.name!));
-        _getTodos();
+        types.sort((a, b) =>
+            removeDiacritics(a.name!).compareTo(removeDiacritics(b.name!)));
       });
-    }
+    });
   }
 
   _getTodos() {
     Api.get("todo/").then((res) {
-      Iterable list = json.decode(res.body);
-      _todos = list.map((e) => Todo.fromJson(e)).toList();
-      _todos.sort((a, b) => a.name!.compareTo(b.name!));
-      _calculateTodoTypeMap();
+      setState(() {
+        Iterable list = json.decode(res.body);
+        _todos = list.map((e) => Todo.fromJson(e)).toList();
+        _todos.sort((a, b) =>
+            removeDiacritics(a.name!).compareTo(removeDiacritics(b.name!)));
+        _calculateTodoTypeMap();
+      });
     });
   }
 
@@ -58,6 +58,7 @@ class _TodosState extends State<TodoTypeList> {
   void initState() {
     super.initState();
     _getTodoTypes();
+    _getTodos();
   }
 
   @override
@@ -102,6 +103,8 @@ class _TodosState extends State<TodoTypeList> {
   }
 
   Widget _todoTypeList() {
+    print("_todoTypeList");
+    print(types.length);
     return GridView.count(
       crossAxisCount: 2,
       children: List.generate(types.length, (index) {
@@ -134,8 +137,22 @@ class _TodosState extends State<TodoTypeList> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Center(
-                    child: Text(_todos
+                    child: Text("Összesen: " +
+                        _todos
                             .where((e) => e.typeId == todoType.id)
+                            .length
+                            .toString() +
+                        " db"))
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                    child: Text("Kész: " +
+                        _todos
+                            .where((e) =>
+                                e.typeId == todoType.id && e.done != null)
                             .length
                             .toString() +
                         " db"))

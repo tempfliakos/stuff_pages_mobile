@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:stuff_pages/enums/menuEnum.dart';
 import 'package:stuff_pages/request/entities/game.dart';
@@ -24,7 +25,7 @@ class _WishListState extends State<WishList> {
       setState(() {
         Iterable list = json.decode(res.body);
         _games = list.map((e) => Game.fromJson(e)).toList();
-        _games.sort((a, b) => a.title!.compareTo(b.title!));
+        _games.sort((a, b) => removeDiacritics(a.title!).compareTo(removeDiacritics(b.title!)));
       });
     });
   }

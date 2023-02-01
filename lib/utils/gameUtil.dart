@@ -1,3 +1,4 @@
+import 'package:diacritic/diacritic.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:stuff_pages/request/entities/achievement.dart';
 import 'package:stuff_pages/request/entities/game.dart';
@@ -137,6 +138,6 @@ calculatePercentage(Game game) {
 }
 
 List<Game> createFinalGameList(List<Game> games) {
-  games.sort((a, b) => a.title!.compareTo(b.title!));
+  games.sort((a, b) => removeDiacritics(a.title!).compareTo(removeDiacritics(b.title!)));
   return games;
 }

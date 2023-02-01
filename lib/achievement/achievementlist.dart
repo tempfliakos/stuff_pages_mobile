@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:stuff_pages/request/entities/achievement.dart';
@@ -31,7 +32,7 @@ class _ShowAchievementState extends State<ShowAchievement> {
   late String secretDescription;
   bool donefilter = false;
   List<Achievement> _achievements = [];
-  List<Achievement> filteredAchievments = [];
+  List<Achievement> filteredAchievements = [];
 
   _ShowAchievementState(Game game, String secretTitle,
       String secretDescription) {
@@ -56,25 +57,25 @@ class _ShowAchievementState extends State<ShowAchievement> {
   }
 
   filter() {
-    filteredAchievments.clear();
-    filteredAchievments.addAll(_achievements);
+    filteredAchievements.clear();
+    filteredAchievements.addAll(_achievements);
     _achievements.forEach((achievement) {
       if (!achievement.earned! == donefilter) {
-        filteredAchievments.remove(achievement);
+        filteredAchievements.remove(achievement);
       }
     });
     setState(() {});
   }
 
   _getAchievements() {
-    filteredAchievments.clear();
+    filteredAchievements.clear();
     final endpoint = "achievements/game=" + game.gameId!;
     Api.get(endpoint).then((res) {
       setState(() {
         Iterable list = json.decode(res.body);
         _achievements = list.map((e) => Achievement.fromJson(e)).toList();
-        _achievements.sort((a, b) => a.title!.compareTo(b.title!));
-        filteredAchievments.addAll(_achievements);
+        _achievements.sort((a, b) => removeDiacritics(a.title!).compareTo(removeDiacritics(b.title!)));
+        filteredAchievements.addAll(_achievements);
         donefilter =
             game.earned != null && (game.earned! / game.sum! * 100) == 100;
         filter();
@@ -110,9 +111,9 @@ class _ShowAchievementState extends State<ShowAchievement> {
 
   Widget _achievementList() {
     return ListView.builder(
-      itemCount: filteredAchievments.length,
+      itemCount: filteredAchievements.length,
       itemBuilder: (context, index) {
-        final item = filteredAchievments[index];
+        final item = filteredAchievements[index];
         return Slidable(
             key: UniqueKey(),
             endActionPane: ActionPane(
