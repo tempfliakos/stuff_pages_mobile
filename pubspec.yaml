@@ -38,6 +38,7 @@ dependencies:
   bmprogresshud: 1.0.1
   email_validator: ^2.0.1
   font_awesome_flutter: ^10.3.0
+  diacritic: ^0.1.1
 
 dev_dependencies:
   flutter_test:

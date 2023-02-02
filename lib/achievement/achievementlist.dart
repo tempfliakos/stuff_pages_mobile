@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:stuff_pages/request/entities/achievement.dart';
 import 'package:stuff_pages/request/entities/game.dart';
 import 'package:stuff_pages/request/http.dart';
+import 'package:stuff_pages/utils/basicUtil.dart';
 import 'package:stuff_pages/utils/colorUtil.dart';
 import 'package:stuff_pages/utils/gameUtil.dart';
 
@@ -30,7 +32,7 @@ class _ShowAchievementState extends State<ShowAchievement> {
   late String secretDescription;
   bool donefilter = false;
   List<Achievement> _achievements = [];
-  List<Achievement> filteredAchievments = [];
+  List<Achievement> filteredAchievements = [];
 
   _ShowAchievementState(Game game, String secretTitle,
       String secretDescription) {
@@ -55,25 +57,25 @@ class _ShowAchievementState extends State<ShowAchievement> {
   }
 
   filter() {
-    filteredAchievments.clear();
-    filteredAchievments.addAll(_achievements);
+    filteredAchievements.clear();
+    filteredAchievements.addAll(_achievements);
     _achievements.forEach((achievement) {
       if (!achievement.earned! == donefilter) {
-        filteredAchievments.remove(achievement);
+        filteredAchievements.remove(achievement);
       }
     });
     setState(() {});
   }
 
   _getAchievements() {
-    filteredAchievments.clear();
+    filteredAchievements.clear();
     final endpoint = "achievements/game=" + game.gameId!;
     Api.get(endpoint).then((res) {
       setState(() {
         Iterable list = json.decode(res.body);
         _achievements = list.map((e) => Achievement.fromJson(e)).toList();
-        _achievements.sort((a, b) => a.title!.compareTo(b.title!));
-        filteredAchievments.addAll(_achievements);
+        _achievements.sort((a, b) => removeDiacritics(a.title!).compareTo(removeDiacritics(b.title!)));
+        filteredAchievements.addAll(_achievements);
         donefilter =
             game.earned != null && (game.earned! / game.sum! * 100) == 100;
         filter();
@@ -102,15 +104,16 @@ class _ShowAchievementState extends State<ShowAchievement> {
           children: <Widget>[Expanded(child: _achievementList())],
         ),
       ),
+
       backgroundColor: backgroundColor,
     );
   }
 
   Widget _achievementList() {
     return ListView.builder(
-      itemCount: filteredAchievments.length,
+      itemCount: filteredAchievements.length,
       itemBuilder: (context, index) {
-        final item = filteredAchievments[index];
+        final item = filteredAchievements[index];
         return Slidable(
             key: UniqueKey(),
             endActionPane: ActionPane(
@@ -161,6 +164,11 @@ class _ShowAchievementState extends State<ShowAchievement> {
             setState(() {
               achievement.earned = !achievement.earned!;
               Api.put('achievements/', achievement, achievement.id);
+              if(achievement.earned!) {
+                showToast(context, achievement.title! + " kész!");
+              } else {
+                showToast(context, achievement.title! + " még hátravan!");
+              }
               filter();
             });
           },

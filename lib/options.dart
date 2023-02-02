@@ -74,43 +74,51 @@ class _OptionsState extends State<Options> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: backgroundColor,
-        title: Text('Beállítások', style: TextStyle(color: fontColor)),
-      ),
-      body: Container(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text('Rendszerbeállítások',
-                style: TextStyle(color: fontColor, fontSize: 24.0)),
-            getDropdowns(systemOptions),
-            const SizedBox(
-              height: 20,
-            ),
-            Text('Film beállítások',
-                style: TextStyle(color: fontColor, fontSize: 24.0)),
-            getDropdowns(movieOptions),
-            const SizedBox(
-              height: 20,
-            ),
-            Text('Feladat típusok',
-                style: TextStyle(color: fontColor, fontSize: 24.0)),
-            Column(
-              children: getTypes(),
-            ),
-            Column(
-              children: [newTypeField(), typeAddingButton()],
-            )
-          ],
-        ),
-      ),
-      bottomNavigationBar: CustomNavigator(MenuEnum.MOVIES),
-      backgroundColor: backgroundColor,
-    );
+    return DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          appBar: AppBar(
+              automaticallyImplyLeading: false,
+              backgroundColor: backgroundColor,
+              title: Text('Beállítások', style: TextStyle(color: fontColor)),
+              bottom: const TabBar(
+                indicatorColor: futureColor,
+                tabs: [
+                  Tab(icon: Icon(Icons.settings_applications), text: "Rendszerbeállítások"),
+                  Tab(icon: Icon(Icons.movie_outlined), text: "Film beállítások"),
+                  Tab(icon: Icon(Icons.check), text: "Feladat típusok"),
+                ],
+              )),
+          body: TabBarView(
+            children: [
+              getDropdowns(systemOptions),
+              getDropdowns(movieOptions),
+              Container(
+                child: Column(
+                  children: [
+                    Expanded(child: getTypes()),
+                    Expanded(
+                        child: Column(
+                      children: [
+                        Container(
+                            padding: EdgeInsets.fromLTRB(20.0, 0, 20.0, 0),
+                            child: newTypeField()),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Container(
+                            padding: EdgeInsets.fromLTRB(20.0, 0, 20.0, 0),
+                            child: typeAddingButton()),
+                      ],
+                    ))
+                  ],
+                ),
+              ),
+            ],
+          ),
+          bottomNavigationBar: CustomNavigator(MenuEnum.MOVIES),
+          backgroundColor: backgroundColor,
+        ));
   }
 
   Widget getDropdowns(Map suboptions) {
@@ -130,12 +138,14 @@ class _OptionsState extends State<Options> {
       TableCell(
           verticalAlignment: TableCellVerticalAlignment.middle,
           child: Container(
+            padding: EdgeInsets.fromLTRB(20.0, 0, 20.0, 0),
             child:
                 Text(optionsName[option]!, style: TextStyle(color: fontColor)),
           )),
       TableCell(
           verticalAlignment: TableCellVerticalAlignment.middle,
           child: Container(
+            padding: EdgeInsets.fromLTRB(20.0, 0, 20.0, 0),
             child: getDropDown(suboptions, option),
           ))
     ]));
@@ -191,13 +201,27 @@ class _OptionsState extends State<Options> {
     return result;
   }
 
-  List<Widget> getTypes() {
-    List<Text> result = [];
-    for (var type in types) {
-      result.add(
-          Text(type.name!, style: TextStyle(color: fontColor, fontSize: 16.0)));
-    }
-    return result;
+  Widget getTypes() {
+    return GridView.count(
+      crossAxisCount: 4,
+      children: List.generate(types.length, (index) {
+        TodoType actual = types[index];
+        return Card(child: getTodoType(actual), color: cardBackgroundColor);
+      }),
+    );
+  }
+
+  Widget getTodoType(TodoType todoType) {
+    return SizedBox(
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [Center(child: Text(todoType.name!))],
+        )
+      ],
+    ));
   }
 
   Widget newTypeField() {

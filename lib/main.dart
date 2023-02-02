@@ -13,6 +13,7 @@ import 'package:stuff_pages/options.dart';
 import 'package:stuff_pages/playstation/pslist.dart';
 import 'package:stuff_pages/switch/switchlist.dart';
 import 'package:stuff_pages/todo/todos.dart';
+import 'package:stuff_pages/todo/todotypelist.dart';
 import 'package:stuff_pages/utils/colorUtil.dart';
 import 'package:stuff_pages/wish/wishlist.dart';
 
@@ -39,7 +40,7 @@ class MyApp extends StatelessWidget {
             MenuEnum.PS_GAMES.getAsPath(): (context) => PsList(),
             MenuEnum.SWITCH_GAMES.getAsPath(): (context) => SwitchList(),
             MenuEnum.WISHLIST.getAsPath(): (context) => WishList(),
-            MenuEnum.TODOS.getAsPath(): (context) => Todos(),
+            MenuEnum.TODOS.getAsPath(): (context) => TodoTypeList(),
             MenuEnum.OPTIONS.getAsPath(): (context) => Options(),
           },
           theme: ThemeData(

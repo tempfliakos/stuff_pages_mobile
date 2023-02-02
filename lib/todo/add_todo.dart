@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stuff_pages/request/entities/todoType.dart';
+import 'package:stuff_pages/utils/basicUtil.dart';
 
 import '../request/entities/todo.dart';
 import '../request/http.dart';
@@ -118,8 +119,10 @@ class _AddTodoState extends State<AddTodo> {
           final body = actual.toJson();
           if (actual.id == null) {
             Api.post('todo', body);
+            showToast(context, actual.name! + " létrehozva!");
           } else {
             Api.put('todo/', body, actual.id);
+            showToast(context, actual.name! + " módosítva!");
           }
         });
       },
