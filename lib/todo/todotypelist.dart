@@ -15,35 +15,20 @@ import '../utils/colorUtil.dart';
 
 class TodoTypeList extends StatefulWidget {
   @override
-  _TodosState createState() => _TodosState();
+  _TodoTyepeState createState() => _TodoTyepeState();
 }
 
-class _TodosState extends State<TodoTypeList> {
-  late List<TodoType> types;
-  late List<Todo> _todos;
+class _TodoTyepeState extends State<TodoTypeList> {
+  List<TodoType> types = [];
+  List<Todo> _todos = [];
   Map<TodoType, int> todoTypeMap = {};
 
-  _getTodoTypes() {
-    Api.get("todotype/").then((res) {
-      setState(() {
-        Iterable list = json.decode(res.body);
-        types = list.map((e) => TodoType.fromJson(e)).toList();
-        types.sort((a, b) =>
-            removeDiacritics(a.name!).compareTo(removeDiacritics(b.name!)));
-      });
-    });
+  Future<dynamic> _getTodoTypes() {
+    return Api.get("todotype/");
   }
 
-  _getTodos() {
-    Api.get("todo/").then((res) {
-      setState(() {
-        Iterable list = json.decode(res.body);
-        _todos = list.map((e) => Todo.fromJson(e)).toList();
-        _todos.sort((a, b) =>
-            removeDiacritics(a.name!).compareTo(removeDiacritics(b.name!)));
-        _calculateTodoTypeMap();
-      });
-    });
+  Future<dynamic> _getTodos() {
+    return Api.get("todo/");
   }
 
   _calculateTodoTypeMap() {
@@ -54,11 +39,24 @@ class _TodosState extends State<TodoTypeList> {
     }
   }
 
+  Future<void> initLists() async {
+    final result = await Future.wait([_getTodoTypes(), _getTodos()]);
+    Iterable typeList = json.decode(result[0].body);
+    types = typeList.map((e) => TodoType.fromJson(e)).toList();
+    types.sort((a, b) =>
+        removeDiacritics(a.name!).compareTo(removeDiacritics(b.name!)));
+
+    Iterable todoList = json.decode(result[1].body);
+    _todos = todoList.map((e) => Todo.fromJson(e)).toList();
+    _todos.sort((a, b) =>
+        removeDiacritics(a.name!).compareTo(removeDiacritics(b.name!)));
+    _calculateTodoTypeMap();
+  }
+
   @override
   void initState() {
     super.initState();
-    _getTodoTypes();
-    _getTodos();
+    initLists().whenComplete(() => setState((){}));
   }
 
   @override
