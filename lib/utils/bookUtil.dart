@@ -16,7 +16,7 @@ Widget getBook(Book book, Widget trailing) {
               maxHeight: 200,
             ),
             child: img(book)),
-        title: Text(cutString(book.title!, 30), style: TextStyle(color: fontColor)),
+        title: Text(cutString(book.priority! + ". " +book.title!, 30), style: TextStyle(color: fontColor)),
         subtitle: Text(cutString(book.author!, 33), style: TextStyle(color: fontColor)),
         trailing: trailing,
       ),

@@ -54,7 +54,7 @@ class _BooksState extends State<Books> {
   }
 
   void doFilter() {
-    _books.sort((a, b) => a.priority!.compareTo(b.priority!));
+    _books.sort((a, b) => int.parse(a.priority!).compareTo(int.parse(b.priority!)));
     filterBooks = _books
         .where((book) =>
             book.title!.toLowerCase().contains(titleFilter.toLowerCase()))
@@ -97,7 +97,8 @@ class _BooksState extends State<Books> {
 
   Widget titleWidget() {
     if (!filterMode) {
-      return Text('Könyvek', style: TextStyle(color: fontColor));
+      int booksLength = filterBooks.length;
+      return Text("Könyvek ($booksLength db)", style: TextStyle(color: fontColor));
     } else {
       return searchBar("Könyv címe", titleField);
     }
