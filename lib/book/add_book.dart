@@ -17,6 +17,7 @@ class AddBook extends StatefulWidget {
 class _AddBookState extends State<AddBook> {
   List<Book> addBooks = [];
   List<Book> books = [];
+  String queryString = "";
 
   _AddBookState() {
     Api.get("books/ids").then((res) {
@@ -32,7 +33,8 @@ class _AddBookState extends State<AddBook> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: backgroundColor,
-        title: searchBar("Könyv hozzáadása...", findBooks),
+        title: searchBar("Könyv hozzáadása...", searchField),
+        actions: [searchIcon()],
       ),
       body: Center(
         child: Column(
@@ -45,10 +47,23 @@ class _AddBookState extends State<AddBook> {
     );
   }
 
-  void findBooks(text) {
-    if (text.length > 2) {
+  void searchField(String text) {
+    queryString = text;
+  }
+
+  IconButton searchIcon() {
+    return IconButton(
+        icon: Icon(
+          Icons.search,
+          color: fontColor,
+        ),
+        onPressed: () => findBooks());
+  }
+
+  void findBooks() {
+    if (queryString.length > 2) {
       ProgressHud.showLoading();
-      Api.getFromApi("books", text.toString()).then((res) {
+      Api.getFromApi("books", queryString.toString()).then((res) {
         if (res != null) {
           List<dynamic> result = json.decode(res.body);
           setState(() {
