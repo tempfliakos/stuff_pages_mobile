@@ -87,7 +87,7 @@ class _AddXboxGameState extends State<AddXboxGame> {
           final item = addGames[index];
           return InkWell(
               child: Card(
-            child: getGame(item, addButton(item)),
+            child: getGame(context, item, addButton(item)),
             color: cardBackgroundColor,
           ));
         });

@@ -10,6 +10,8 @@ import 'package:stuff_pages/utils/basicUtil.dart';
 import 'package:stuff_pages/utils/colorUtil.dart';
 import 'package:stuff_pages/utils/gameUtil.dart';
 
+import '../global.dart';
+
 class ShowAchievement extends StatefulWidget {
   late Game game;
   late String secretTitle;
@@ -31,11 +33,13 @@ class _ShowAchievementState extends State<ShowAchievement> {
   late String secretTitle;
   late String secretDescription;
   bool donefilter = false;
+  String titleFilter = "";
+  bool filterMode = false;
   List<Achievement> _achievements = [];
   List<Achievement> filteredAchievements = [];
 
-  _ShowAchievementState(Game game, String secretTitle,
-      String secretDescription) {
+  _ShowAchievementState(
+      Game game, String secretTitle, String secretDescription) {
     this.game = game;
     this.secretTitle = secretTitle;
     this.secretDescription = secretDescription;
@@ -60,7 +64,8 @@ class _ShowAchievementState extends State<ShowAchievement> {
     filteredAchievements.clear();
     filteredAchievements.addAll(_achievements);
     _achievements.forEach((achievement) {
-      if (!achievement.earned! == donefilter) {
+      if (!achievement.earned! == donefilter ||
+          !achievement.title!.toLowerCase().contains(titleFilter.toLowerCase())) {
         filteredAchievements.remove(achievement);
       }
     });
@@ -74,7 +79,8 @@ class _ShowAchievementState extends State<ShowAchievement> {
       setState(() {
         Iterable list = json.decode(res.body);
         _achievements = list.map((e) => Achievement.fromJson(e)).toList();
-        _achievements.sort((a, b) => removeDiacritics(a.title!).compareTo(removeDiacritics(b.title!)));
+        _achievements.sort((a, b) =>
+            removeDiacritics(a.title!).compareTo(removeDiacritics(b.title!)));
         filteredAchievements.addAll(_achievements);
         donefilter =
             game.earned != null && (game.earned! / game.sum! * 100) == 100;
@@ -92,21 +98,43 @@ class _ShowAchievementState extends State<ShowAchievement> {
     super.dispose();
   }
 
+  void titleField(String text) {
+    titleFilter = text;
+    filter();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
           backgroundColor: backgroundColor,
-          title: Text(game.title!, style: TextStyle(color: fontColor)),
-          actions: <Widget>[starButton(), doneFilter()]),
+          title: titleWidget(),
+          actions: <Widget>[
+            filterButton(doFilterChange),
+            starButton(),
+            doneFilter()
+          ]),
       body: Center(
         child: Column(
           children: <Widget>[Expanded(child: _achievementList())],
         ),
       ),
-
       backgroundColor: backgroundColor,
     );
+  }
+
+  Widget titleWidget() {
+    if (!filterMode) {
+      return Text(game.title!, style: TextStyle(color: fontColor));
+    } else {
+      return searchBar("Cím", titleField);
+    }
+  }
+
+  void doFilterChange() {
+    setState(() {
+      filterMode = !filterMode;
+    });
   }
 
   Widget _achievementList() {
@@ -151,10 +179,10 @@ class _ShowAchievementState extends State<ShowAchievement> {
           subtitle: secret && !earned!
               ? Text(secretDescription, style: TextStyle(color: fontColor))
               : Text(achievement.description!,
-              style: TextStyle(color: fontColor)),
+                  style: TextStyle(color: fontColor)),
           trailing: showButton(achievement),
           onTap: () {
-            if(achievement.secret!) {
+            if (achievement.secret!) {
               setState(() {
                 achievement.show = !achievement.show!;
               });
@@ -164,7 +192,7 @@ class _ShowAchievementState extends State<ShowAchievement> {
             setState(() {
               achievement.earned = !achievement.earned!;
               Api.put('achievements/', achievement, achievement.id);
-              if(achievement.earned!) {
+              if (achievement.earned!) {
                 showToast(context, achievement.title! + " kész!");
               } else {
                 showToast(context, achievement.title! + " még hátravan!");
@@ -182,13 +210,13 @@ class _ShowAchievementState extends State<ShowAchievement> {
       return IconButton(
           icon: achievement.show!
               ? Icon(
-            Icons.lock_open_outlined,
-            color: fontColor,
-          )
+                  Icons.lock_open_outlined,
+                  color: fontColor,
+                )
               : Icon(
-            Icons.lock_outlined,
-            color: fontColor,
-          ),
+                  Icons.lock_outlined,
+                  color: fontColor,
+                ),
           onPressed: () {
             setState(() {
               achievement.show = !achievement.show!;

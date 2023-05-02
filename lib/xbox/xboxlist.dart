@@ -136,7 +136,7 @@ class _XboxListState extends State<XboxList> {
         final item = _games[index];
         return InkWell(
           child: Card(
-            child: getGame(item, starButton(item)),
+            child: getGame(context, item, starButton(item)),
             color: cardBackgroundColor,
           ),
           onTap: () => openAchievements(item),

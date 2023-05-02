@@ -90,7 +90,7 @@ class _AddPsGameState extends State<AddPsGame> {
           final item = addGames[index];
           return InkWell(
               child: Card(
-            child: getGame(item, addButton(item)),
+            child: getGame(context, item, addButton(item)),
             color: cardBackgroundColor,
           ));
         });

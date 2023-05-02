@@ -106,7 +106,7 @@ class _WishListState extends State<WishList> {
         final item = filterByConsole(console)[index];
         return InkWell(
           child: Card(
-            child: getGame(item, deleteButton(item)),
+            child: getGame(context, item, deleteButton(item)),
             color: cardBackgroundColor,
           )
         );

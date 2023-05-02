@@ -109,7 +109,7 @@ class _SwitchListState extends State<SwitchList> {
         final item = _games[index];
         return InkWell(
           child: Card(
-            child: getGame(item, null),
+            child: getGame(context, item, null),
             color: cardBackgroundColor,
           ),
         );
