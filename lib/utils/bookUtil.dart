@@ -4,6 +4,7 @@ import '../request/entities/book.dart';
 import 'colorUtil.dart';
 
 Widget getBook(Book book, Widget trailing) {
+  String bookTitle = book.priority != null ? book.priority! + ". " +book.title! : book.title!;
   return Column(
     mainAxisSize: MainAxisSize.min,
     children: <Widget>[
@@ -16,7 +17,7 @@ Widget getBook(Book book, Widget trailing) {
               maxHeight: 200,
             ),
             child: img(book)),
-        title: Text(cutString(book.title!, 30), style: TextStyle(color: fontColor)),
+        title: Text(cutString(bookTitle, 30), style: TextStyle(color: fontColor)),
         subtitle: Text(cutString(book.author!, 33), style: TextStyle(color: fontColor)),
         trailing: trailing,
       ),

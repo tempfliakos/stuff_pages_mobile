@@ -88,7 +88,7 @@ class _AddWishGameState extends State<AddWishGame> {
           final item = addGames[index];
           return InkWell(
               child: Card(
-            child: getGame(item, addButtons(item)),
+            child: getGame(context, item, addButtons(item)),
             color: cardBackgroundColor,
           ));
         });

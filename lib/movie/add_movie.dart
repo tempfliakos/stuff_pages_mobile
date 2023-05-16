@@ -17,6 +17,7 @@ class AddMovie extends StatefulWidget {
 class _AddMovieState extends State<AddMovie> {
   List<Movie> addMovies = [];
   List<Movie> movies = [];
+  String queryString = "";
 
   _AddMovieState() {
     Api.get("movies/ids").then((res) {
@@ -32,7 +33,8 @@ class _AddMovieState extends State<AddMovie> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: backgroundColor,
-        title: searchBar("Film hozzáadása...", findMovies),
+        title: searchBar("Film hozzáadása...", searchField),
+        actions: [searchIcon()],
       ),
       body: Center(
         child: Column(
@@ -45,10 +47,23 @@ class _AddMovieState extends State<AddMovie> {
     );
   }
 
-  void findMovies(text) {
-    if (text.length > 2) {
+  void searchField(String text) {
+    queryString = text;
+  }
+
+  IconButton searchIcon() {
+    return IconButton(
+        icon: Icon(
+          Icons.search,
+          color: fontColor,
+        ),
+        onPressed: () => findMovies());
+  }
+
+  void findMovies() {
+    if (queryString.length > 2) {
       ProgressHud.showLoading();
-      Api.getFromApi("movies", text.toString()).then((res) {
+      Api.getFromApi("movies", queryString.toString()).then((res) {
         if (res != null) {
           List<dynamic> result = json.decode(res.body);
           setState(() {

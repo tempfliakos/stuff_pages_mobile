@@ -13,7 +13,7 @@ String pictureLink(String link) {
   return !link.startsWith("http") ? "https:" + link : link;
 }
 
-Widget getGame(Game game, Widget? trailing) {
+Widget getGame(BuildContext context, Game game, Widget? trailing) {
   return Column(
     mainAxisSize: MainAxisSize.min,
     children: <Widget>[
@@ -30,6 +30,7 @@ Widget getGame(Game game, Widget? trailing) {
         subtitle: calculatePercentageText(game),
         trailing: trailing,
       ),
+      getGameProgressionBar(context, game),
     ],
   );
 }
@@ -101,7 +102,10 @@ Widget highlightImg(game) {
 
 Widget youtubeButton(game, achievement) {
   return IconButton(
-      icon: FaIcon(FontAwesomeIcons.youtube, color: deleteColor,),
+      icon: FaIcon(
+        FontAwesomeIcons.youtube,
+        color: deleteColor,
+      ),
       onPressed: () {
         launchURL(game.title + " " + achievement.title, YOUTUBE);
       });
@@ -109,7 +113,10 @@ Widget youtubeButton(game, achievement) {
 
 Widget googleButton(game, achievement) {
   return IconButton(
-      icon: FaIcon(FontAwesomeIcons.google, color: addedColor,),
+      icon: FaIcon(
+        FontAwesomeIcons.google,
+        color: addedColor,
+      ),
       onPressed: () {
         launchURL(game.title + " " + achievement.title, GOOGLE);
       });
@@ -117,27 +124,64 @@ Widget googleButton(game, achievement) {
 
 launchURL(destination, String requestedUrl) async {
   String url = requestedUrl + destination;
-  if (!await launch(url)) throw 'Could not launch $url';
+  if (!await launchUrl(Uri.parse(url))) throw 'Could not launch $url';
 }
 
 Text? calculatePercentageText(Game game) {
-  if (game.sum != null && game.sum != 0) {
+  if (!game.wish! && game.sum != null && game.sum != 0) {
     return Text(calculatePercentage(game), style: TextStyle(color: fontColor));
   }
   return null;
 }
 
+int getPercentage(Game game) {
+  return (game.earned! / game.sum! * 100).round();
+}
+
 calculatePercentage(Game game) {
-  double percentage = game.earned! / game.sum! * 100;
   return game.earned.toString() +
       "/" +
       game.sum.toString() +
       " (" +
-      percentage.round().toString() +
+      getPercentage(game).toString() +
       "%)";
 }
 
 List<Game> createFinalGameList(List<Game> games) {
-  games.sort((a, b) => removeDiacritics(a.title!).compareTo(removeDiacritics(b.title!)));
+  games.sort((a, b) =>
+      removeDiacritics(a.title!).compareTo(removeDiacritics(b.title!)));
   return games;
+}
+
+Widget getGameProgressionBar(BuildContext context, Game game) {
+  if (!game.wish! && (game.sum != null && game.sum != 0)) {
+    double width = MediaQuery
+        .of(context)
+        .size
+        .width;
+    int completePercentage = getPercentage(game);
+    return Padding(
+      padding: EdgeInsets.all(0.0),
+      child: Align(
+          alignment: FractionalOffset.centerLeft,
+          child: Container(
+            height: 5.0,
+            width: width * (completePercentage / 100),
+            color: getColorFromPercentage(completePercentage),
+          )),
+    );
+  }
+  return Padding(
+    padding: EdgeInsets.symmetric(horizontal: 0.0),
+    child: Container(height: 0, width: 0),
+  );
+}
+
+Color getColorFromPercentage(int percentage) {
+  if(percentage <= 33) {
+    return deleteColor;
+  } else if(percentage <= 66) {
+    return futureColor;
+  }
+  return addedColor;
 }

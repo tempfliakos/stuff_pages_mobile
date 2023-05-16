@@ -85,7 +85,7 @@ class _RegisterPageState extends State<RegisterPage> {
         }
       },
       style: ElevatedButton.styleFrom(
-        primary: cardBackgroundColor,
+        backgroundColor: cardBackgroundColor,
         padding: const EdgeInsets.fromLTRB(40, 15, 40, 15),
       ),
       child: const Text(
@@ -99,7 +99,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   _register() async {
     final body = {'email': emailEditingController.text, 'password': passwordEditingController.text};
-    final result = await Api.post('auth/register', body);
+    await Api.post('auth/register', body);
     Navigator.pushReplacementNamed(context, '/');
   }
 

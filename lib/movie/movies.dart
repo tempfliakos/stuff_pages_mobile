@@ -253,7 +253,8 @@ class _MoviesState extends State<Movies> {
 
   Widget titleWidget() {
     if (!filterMode) {
-      return Text('Filmek', style: TextStyle(color: fontColor));
+      int movieLength = filterMovies.length;
+      return Text('Filmek ($movieLength db)', style: TextStyle(color: fontColor));
     } else {
       return searchBar("Film címe", titleField);
     }

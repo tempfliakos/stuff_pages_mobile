@@ -4,7 +4,7 @@ import 'package:stuff_pages/utils/colorUtil.dart';
 
 final LocalStorage userStorage = new LocalStorage('user');
 
-var selectedIndex = 0;
+int selectedIndex = 0;
 
 Widget logoutButton(Function onPressed) {
   return IconButton(
