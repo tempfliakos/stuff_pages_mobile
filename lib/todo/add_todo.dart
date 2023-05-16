@@ -8,8 +8,8 @@ import '../utils/colorUtil.dart';
 import '../utils/todoUtil.dart';
 
 class AddTodo extends StatefulWidget {
-  late List<TodoType> types;
-  late Todo actual;
+  late final List<TodoType> types;
+  late final Todo actual;
 
   AddTodo(List<TodoType> types, Todo actual) {
     this.types = types;
@@ -127,7 +127,7 @@ class _AddTodoState extends State<AddTodo> {
         });
       },
       style: ElevatedButton.styleFrom(
-        primary: cardBackgroundColor,
+        backgroundColor: cardBackgroundColor,
         padding: const EdgeInsets.fromLTRB(40, 15, 40, 15),
       ),
       child: titleField(),

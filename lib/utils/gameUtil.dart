@@ -124,7 +124,7 @@ Widget googleButton(game, achievement) {
 
 launchURL(destination, String requestedUrl) async {
   String url = requestedUrl + destination;
-  if (!await launch(url)) throw 'Could not launch $url';
+  if (!await launchUrl(Uri.parse(url))) throw 'Could not launch $url';
 }
 
 Text? calculatePercentageText(Game game) {

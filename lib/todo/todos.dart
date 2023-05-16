@@ -14,9 +14,9 @@ import '../request/http.dart';
 import '../utils/colorUtil.dart';
 
 class ShowTodos extends StatefulWidget {
-  late TodoType todoType;
-  late List<TodoType> types;
-  late List<Todo> todos;
+  late final TodoType todoType;
+  late final List<TodoType> types;
+  late final List<Todo> todos;
 
   ShowTodos(List<TodoType> types, TodoType todoType, List<Todo> todos) {
     this.todoType = todoType;
