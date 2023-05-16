@@ -3,7 +3,8 @@ import 'package:stuff_pages/enums/menuEnum.dart';
 import 'package:stuff_pages/utils/colorUtil.dart';
 
 class CustomNavigator extends StatefulWidget {
-  late MenuEnum menuEnum;
+  late final MenuEnum menuEnum;
+
   CustomNavigator(MenuEnum menuEnum) {
     this.menuEnum = menuEnum;
   }

@@ -13,9 +13,9 @@ import 'package:stuff_pages/utils/gameUtil.dart';
 import '../global.dart';
 
 class ShowAchievement extends StatefulWidget {
-  late Game game;
-  late String secretTitle;
-  late String secretDescription;
+  late final Game game;
+  late final String secretTitle;
+  late final String secretDescription;
 
   ShowAchievement(Game game, String secretTitle, String secretDescription) {
     this.game = game;
