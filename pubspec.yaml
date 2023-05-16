@@ -39,6 +39,7 @@ dependencies:
   email_validator: ^2.0.1
   font_awesome_flutter: ^10.3.0
   diacritic: ^0.1.1
+  flutter_native_splash: ^2.3.0
 
 dev_dependencies:
   flutter_test:
@@ -50,11 +51,7 @@ dev_dependencies:
 # The following section is specific to Flutter.
 flutter:
   assets:
-    - assets/images/default-movie-back.jpg
-    - assets/images/locked_trophy.svg
-    - assets/images/xbox_logo.png
-    - assets/images/ps_logo.png
-    - assets/images/switch_logo.png
+    - assets/images/
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -75,12 +72,12 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Roboto-Regular.ttf
+  #         - asset: fonts/Schyler-Italic.ttf
+  #           style: italic
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

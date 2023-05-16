@@ -38,6 +38,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             brightness: Brightness.dark,
             primaryColor: backgroundColor,
+            fontFamily: 'Roboto',
           ),
         ));
   }
