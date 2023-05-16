@@ -81,7 +81,6 @@ android {
             targetSdkVersion targetSdk.toInteger()
             versionCode versionProps['VERSION_BUILD'].toInteger()
             versionName "${mVersionName} Build: ${versionProps['VERSION_BUILD']}"
-            testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         }
     }
     else {
