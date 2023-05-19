@@ -124,7 +124,8 @@ Widget googleButton(game, achievement) {
 
 launchURL(destination, String requestedUrl) async {
   String url = requestedUrl + destination;
-  if (!await launchUrl(Uri.parse(url))) throw 'Could not launch $url';
+  if (!await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication))
+    throw 'Could not launch $url';
 }
 
 Text? calculatePercentageText(Game game) {
@@ -155,10 +156,7 @@ List<Game> createFinalGameList(List<Game> games) {
 
 Widget getGameProgressionBar(BuildContext context, Game game) {
   if (!game.wish! && (game.sum != null && game.sum != 0)) {
-    double width = MediaQuery
-        .of(context)
-        .size
-        .width;
+    double width = MediaQuery.of(context).size.width;
     int completePercentage = getPercentage(game);
     return Padding(
       padding: EdgeInsets.all(0.0),
@@ -178,9 +176,9 @@ Widget getGameProgressionBar(BuildContext context, Game game) {
 }
 
 Color getColorFromPercentage(int percentage) {
-  if(percentage <= 33) {
+  if (percentage <= 33) {
     return deleteColor;
-  } else if(percentage <= 66) {
+  } else if (percentage <= 66) {
     return futureColor;
   }
   return addedColor;

@@ -32,9 +32,9 @@ class _ShowAchievementState extends State<ShowAchievement> {
   late Game game;
   late String secretTitle;
   late String secretDescription;
-  bool donefilter = false;
   String titleFilter = "";
   bool filterMode = false;
+  bool doneFilter = false;
   List<Achievement> _achievements = [];
   List<Achievement> filteredAchievements = [];
 
@@ -45,27 +45,13 @@ class _ShowAchievementState extends State<ShowAchievement> {
     this.secretDescription = secretDescription;
   }
 
-  Widget doneFilter() {
-    return Switch(
-      value: donefilter,
-      onChanged: (value) {
-        setState(() {
-          donefilter = value;
-          filter();
-        });
-      },
-      activeTrackColor: addedColor,
-      activeColor: addedColor,
-      inactiveTrackColor: cardBackgroundColor,
-    );
-  }
-
   filter() {
     filteredAchievements.clear();
     filteredAchievements.addAll(_achievements);
     _achievements.forEach((achievement) {
-      if (!achievement.earned! == donefilter ||
-          !achievement.title!.toLowerCase().contains(titleFilter.toLowerCase())) {
+      if (!achievement.title!
+          .toLowerCase()
+          .contains(titleFilter.toLowerCase())) {
         filteredAchievements.remove(achievement);
       }
     });
@@ -82,7 +68,7 @@ class _ShowAchievementState extends State<ShowAchievement> {
         _achievements.sort((a, b) =>
             removeDiacritics(a.title!).compareTo(removeDiacritics(b.title!)));
         filteredAchievements.addAll(_achievements);
-        donefilter =
+        doneFilter =
             game.earned != null && (game.earned! / game.sum! * 100) == 100;
         filter();
       });
@@ -105,6 +91,50 @@ class _ShowAchievementState extends State<ShowAchievement> {
 
   @override
   Widget build(BuildContext context) {
+    if (doneFilter) {
+      return doneScreen();
+    }
+    return inProgressScreen();
+  }
+
+  Widget inProgressScreen() {
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+            backgroundColor: backgroundColor,
+            title: titleWidget(),
+            actions: <Widget>[
+              filterButton(doFilterChange),
+              starButton(),
+            ],
+            bottom: const TabBar(
+              indicatorColor: futureColor,
+              tabs: [
+                Tab(
+                    icon: Icon(
+                  Icons.lock_outlined,
+                  color: fontColor,
+                )),
+                Tab(
+                    icon: Icon(
+                  Icons.lock_open_outlined,
+                  color: fontColor,
+                )),
+              ],
+            )),
+        body: TabBarView(
+          children: [
+            _tabContent(false),
+            _tabContent(true),
+          ],
+        ),
+        backgroundColor: backgroundColor,
+      ),
+    );
+  }
+
+  Widget doneScreen() {
     return Scaffold(
       appBar: AppBar(
           backgroundColor: backgroundColor,
@@ -112,13 +142,8 @@ class _ShowAchievementState extends State<ShowAchievement> {
           actions: <Widget>[
             filterButton(doFilterChange),
             starButton(),
-            doneFilter()
           ]),
-      body: Center(
-        child: Column(
-          children: <Widget>[Expanded(child: _achievementList())],
-        ),
-      ),
+      body: _tabContent(true),
       backgroundColor: backgroundColor,
     );
   }
@@ -137,11 +162,19 @@ class _ShowAchievementState extends State<ShowAchievement> {
     });
   }
 
-  Widget _achievementList() {
+  Widget _tabContent(bool earned) {
+    return Center(
+      child: Column(
+        children: <Widget>[Expanded(child: _achievementList(earned))],
+      ),
+    );
+  }
+
+  Widget _achievementList(bool earned) {
     return ListView.builder(
-      itemCount: filteredAchievements.length,
+      itemCount: filterByEarned(earned).length,
       itemBuilder: (context, index) {
-        final item = filteredAchievements[index];
+        final item = filterByEarned(earned)[index];
         return Slidable(
             key: UniqueKey(),
             endActionPane: ActionPane(
@@ -156,6 +189,12 @@ class _ShowAchievementState extends State<ShowAchievement> {
             ));
       },
     );
+  }
+
+  filterByEarned(bool earned) {
+    return filteredAchievements
+        .where((element) => element.earned! == earned)
+        .toList();
   }
 
   Widget getAchievement(Achievement achievement) {
