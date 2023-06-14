@@ -108,19 +108,29 @@ class _ShowAchievementState extends State<ShowAchievement> {
               filterButton(doFilterChange),
               starButton(),
             ],
-            bottom: const TabBar(
+            bottom: TabBar(
               indicatorColor: futureColor,
               tabs: [
                 Tab(
-                    icon: Icon(
-                  Icons.lock_outlined,
-                  color: fontColor,
-                )),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(filterByEarned(false).length.toString(), style: TextStyle(color: fontColor, fontSize: 20)),
+                      const SizedBox(width: 8),
+                      Icon(Icons.lock_outlined, color: fontColor)
+                    ],
+                  ),
+                ),
                 Tab(
-                    icon: Icon(
-                  Icons.lock_open_outlined,
-                  color: fontColor,
-                )),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(filterByEarned(true).length.toString(), style: TextStyle(color: fontColor, fontSize: 20)),
+                      const SizedBox(width: 8),
+                      Icon(Icons.lock_open_outlined, color: fontColor)
+                    ],
+                  ),
+                ),
               ],
             )),
         body: TabBarView(

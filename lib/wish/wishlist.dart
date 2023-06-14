@@ -19,6 +19,9 @@ class WishList extends StatefulWidget {
 
 class _WishListState extends State<WishList> {
   List<Game> _games = [];
+  static const String XBOX = "Xbox";
+  static const String PS = "Playstation";
+  static const String SWITCH = "Switch";
 
   _getWishGames() {
     Api.get("games/wishlist").then((res) {
@@ -49,27 +52,45 @@ class _WishListState extends State<WishList> {
               backgroundColor: backgroundColor,
               title: Text("Wishlist", style: TextStyle(color: fontColor)),
               actions: <Widget>[optionsButton(doOptions), logoutButton(doLogout)],
-              bottom: const TabBar(
+              bottom: TabBar(
                 indicatorColor: futureColor,
                 tabs: [
                   Tab(
-                      icon: ImageIcon(
-                    AssetImage("assets/images/xbox_logo.png"),
-                  )),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(filterByConsole(XBOX).length.toString(), style: TextStyle(color: fontColor, fontSize: 20)),
+                        const SizedBox(width: 8),
+                        ImageIcon(AssetImage("assets/images/xbox_logo.png"),)
+                      ],
+                    ),
+                  ),
                   Tab(
-                      icon: ImageIcon(
-                    AssetImage("assets/images/ps_logo.png"),
-                  )),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(filterByConsole(PS).length.toString(), style: TextStyle(color: fontColor, fontSize: 20)),
+                        const SizedBox(width: 8),
+                        ImageIcon(AssetImage("assets/images/ps_logo.png"),)
+                      ],
+                    ),
+                  ),
                   Tab(
-                      icon: ImageIcon(
-                    AssetImage("assets/images/switch_logo.png"),
-                  )),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(filterByConsole(SWITCH).length.toString(), style: TextStyle(color: fontColor, fontSize: 20)),
+                        const SizedBox(width: 8),
+                        ImageIcon(AssetImage("assets/images/switch_logo.png"),)
+                      ],
+                    ),
+                  ),
                 ],
               )),
           body: TabBarView(children: [
-            _tabContent("Xbox"),
-            _tabContent("Playstation"),
-            _tabContent("Switch"),
+            _tabContent(XBOX),
+            _tabContent(PS),
+            _tabContent(SWITCH),
           ]),
           floatingActionButton: FloatingActionButton(
             onPressed: () async {
