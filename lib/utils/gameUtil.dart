@@ -1,4 +1,7 @@
+import 'dart:typed_data';
+
 import 'package:diacritic/diacritic.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:stuff_pages/request/entities/achievement.dart';
 import 'package:stuff_pages/request/entities/game.dart';
@@ -14,6 +17,10 @@ String pictureLink(String link) {
 }
 
 Widget getGame(BuildContext context, Game game, Widget? trailing) {
+  Text? subtitle = calculatePercentageText(game);
+  if(subtitle == null && game.console != null && game.subConsole != null) {
+    subtitle = Text(game.console! + " " + game.subConsole!, style: TextStyle(color: fontColor));
+  }
   return Column(
     mainAxisSize: MainAxisSize.min,
     children: <Widget>[
@@ -27,7 +34,7 @@ Widget getGame(BuildContext context, Game game, Widget? trailing) {
             ),
             child: img(game)),
         title: Text(game.title!, style: TextStyle(color: fontColor)),
-        subtitle: calculatePercentageText(game),
+        subtitle: subtitle,
         trailing: trailing,
       ),
       getGameProgressionBar(context, game),
@@ -44,8 +51,10 @@ Widget img(Game game, [maxHeight = 100.0, maxWidth = 100.0]) {
             minWidth: 5.0,
             maxHeight: maxHeight,
             maxWidth: maxWidth),
-        child: Image.network(pictureLink(game.picture!),
-            scale: 4, filterQuality: FilterQuality.low),
+        child:
+            Image.network(pictureLink(game.picture!),
+                fit: BoxFit.cover,
+                filterQuality: FilterQuality.low)
       ),
       borderRadius: BorderRadius.circular(8.0),
     );

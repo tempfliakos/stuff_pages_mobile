@@ -5,6 +5,7 @@ class Game {
   String? id;
   String? gameId;
   String? console;
+  String? subConsole;
   String? title;
   String? picture;
   int? earned;
@@ -26,6 +27,17 @@ class Game {
       this.sum,
       this.wish,
       this.star});
+
+  Game.add({this.id,
+        this.gameId,
+        this.console,
+        this.subConsole,
+        this.title,
+        this.picture,
+        this.earned,
+        this.sum,
+        this.wish,
+        this.star});
 
   Game.highlight({
     this.id,
@@ -95,9 +107,10 @@ class Game {
   }
 
   factory Game.addFromJson(Map json) {
-    return Game(
+    return Game.add(
       gameId: json['game_id'].toString(),
       console: json['console'],
+      // subConsole: json['subConsole'],
       title: json['title'],
       picture: json['picture'],
       earned: json['earned'],
