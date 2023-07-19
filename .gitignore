@@ -44,3 +44,5 @@ app.*.map.json
 out/
 
 pubspec.lock
+
+android/gradle-local.properties
