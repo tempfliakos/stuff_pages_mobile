@@ -110,7 +110,7 @@ class Game {
     return Game.add(
       gameId: json['game_id'].toString(),
       console: json['console'],
-      // subConsole: json['subConsole'],
+      subConsole: json['subConsole'],
       title: json['title'],
       picture: json['picture'],
       earned: json['earned'],
