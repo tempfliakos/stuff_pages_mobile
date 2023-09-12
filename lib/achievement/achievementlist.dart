@@ -60,7 +60,7 @@ class _ShowAchievementState extends State<ShowAchievement> {
 
   _getAchievements() {
     filteredAchievements.clear();
-    final endpoint = "achievements/game=" + game.gameId!;
+    final endpoint = "achievements/game=" + game.id!;
     Api.get(endpoint).then((res) {
       setState(() {
         Iterable list = json.decode(res.body);
